@@ -1,0 +1,23 @@
+setCommandLineOptions("--std=3.6 -d=aliasConflicts");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+getErrorString();
+mkdir("build/belt-damping-checks");
+cd("build/belt-damping-checks");
+simulate(Roll2RollDynamicsTest.BeltDampingChecks.UniformExtension, fileNamePrefix="BeltDampingChecks.UniformExtension", stopTime=1, tolerance=1e-9);
+getErrorString();
+simulate(Roll2RollDynamicsTest.BeltDampingChecks.Creep, fileNamePrefix="BeltDampingChecks.Creep", stopTime=0.1, tolerance=1e-9);
+getErrorString();
+simulate(Roll2RollDynamicsTest.BeltDampingChecks.DampedEnergy, fileNamePrefix="BeltDampingChecks.DampedEnergy", stopTime=0.5, tolerance=1e-9);
+getErrorString();
+simulate(Roll2RollDynamicsTest.BeltDampingChecks.ReverseTransport, fileNamePrefix="BeltDampingChecks.ReverseTransport", stopTime=0.5, tolerance=1e-9);
+getErrorString();
+simulate(Roll2RollDynamicsTest.BeltDampingChecks.RingDown, fileNamePrefix="BeltDampingChecks.RingDown", stopTime=0.5, tolerance=1e-9,
+  numberOfIntervals=2000, outputFormat="csv");
+getErrorString();
+simulate(Roll2RollDynamicsTest.BeltDampingChecks.ElasticRingDown, fileNamePrefix="BeltDampingChecks.ElasticRingDown", stopTime=0.5, tolerance=1e-9,
+  numberOfIntervals=2000, outputFormat="csv");
+getErrorString();
+simulate(Roll2RollDynamicsTest.BeltDampingChecks.ElasticClosedLoop, fileNamePrefix="BeltDampingChecks.ElasticClosedLoop", stopTime=5, tolerance=1e-8);
+getErrorString();

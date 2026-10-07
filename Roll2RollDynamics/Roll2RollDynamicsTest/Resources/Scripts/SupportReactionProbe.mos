@@ -1,0 +1,20 @@
+setCommandLineOptions("--std=3.6");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+simulate(Roll2RollDynamicsTest.ComponentChecks.YawedRollBodySupportLoadCheck, fileNamePrefix="YawedRollBodySupportLoadCheck", startTime = 0, stopTime = 0.01,
+  numberOfIntervals = 1, tolerance = 1e-8);
+clearMessages();
+simulate(Roll2RollDynamicsTest.ComponentChecks.WinderSupportLoadCheck, fileNamePrefix="WinderSupportLoadCheck", startTime = 0, stopTime = 0.01,
+  numberOfIntervals = 1, tolerance = 1e-8);
+val(winder.frame_support.f[1], 0.01);
+clearMessages();
+simulate(Roll2RollDynamicsTest.ComponentChecks.RollerSupportLoadCheck, fileNamePrefix="RollerSupportLoadCheck", startTime = 0, stopTime = 0.01,
+  numberOfIntervals = 1, tolerance = 1e-8);
+val(roller.frame_support.f[1], 0.01);
+clearMessages();
+simulate(Roll2RollDynamicsTest.ComponentChecks.RollBodySupportLoadCheck, fileNamePrefix="RollBodySupportLoadCheck", startTime = 0, stopTime = 0.01,
+  numberOfIntervals = 1, tolerance = 1e-8);
+val(body.frame_support.f[1], 0.01);
+clearMessages();
+getErrorString();

@@ -1,0 +1,17 @@
+setCommandLineOptions("--std=3.6 -d=aliasConflicts");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+getErrorString();
+mkdir("build/lateral-steering");
+cd("build/lateral-steering");
+simulate(Roll2RollDynamicsTest.LateralSteeringChecks.AlignedRotation, fileNamePrefix="LateralSteeringChecks.AlignedRotation", stopTime=0.2, tolerance=1e-9);
+getErrorString();
+simulate(Roll2RollDynamicsTest.LateralSteeringChecks.DirectionAndMigration, fileNamePrefix="LateralSteeringChecks.DirectionAndMigration", stopTime=0.5, tolerance=1e-9);
+getErrorString();
+simulate(Roll2RollDynamicsTest.LateralSteeringChecks.ReversingSlip, fileNamePrefix="LateralSteeringChecks.ReversingSlip", stopTime=1, tolerance=1e-9);
+getErrorString();
+simulate(Roll2RollDynamicsTest.LateralChecks.RollLateralFrictionCheck, fileNamePrefix="RollLateralFrictionCheck", stopTime=10, tolerance=1e-8);
+getErrorString();
+simulate(Roll2RollDynamicsTest.ExamplePhysicsChecks.SteeringBoundaryPhysicsCheck, fileNamePrefix="SteeringBoundaryPhysicsCheck", stopTime=30, tolerance=1e-7);
+getErrorString();

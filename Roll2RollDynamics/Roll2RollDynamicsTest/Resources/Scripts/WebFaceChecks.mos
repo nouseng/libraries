@@ -1,0 +1,14 @@
+setCommandLineOptions("--std=3.6 -d=aliasConflicts");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+mkdir("build/web-face-checks");
+cd("build/web-face-checks");
+simulate(Roll2RollDynamicsTest.WebFaceChecks.InnerFace, fileNamePrefix="WebFaceChecks.InnerFace", stopTime=8, tolerance=1e-8);
+getErrorString();
+simulate(Roll2RollDynamicsTest.WebFaceChecks.OuterFace, fileNamePrefix="WebFaceChecks.OuterFace", stopTime=8, tolerance=1e-8);
+getErrorString();
+simulate(Roll2RollDynamicsTest.WebFaceChecks.ReverseInner, fileNamePrefix="WebFaceChecks.ReverseInner", stopTime=8, tolerance=1e-8);
+getErrorString();
+simulate(Roll2RollDynamicsTest.WebFaceChecks.ReverseOuter, fileNamePrefix="WebFaceChecks.ReverseOuter", stopTime=8, tolerance=1e-8);
+getErrorString();

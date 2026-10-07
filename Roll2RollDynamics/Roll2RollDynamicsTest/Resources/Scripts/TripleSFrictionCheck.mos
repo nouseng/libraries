@@ -1,0 +1,10 @@
+setCommandLineOptions("--std=3.6");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+checkModel(Roll2RollDynamicsTest.TripleSFrictionCheck);
+simulate(Roll2RollDynamicsTest.TripleSFrictionCheck, fileNamePrefix="TripleSFrictionCheck", stopTime = 0.01, tolerance = 1e-8);
+Roll2RollDynamics.Functions.tripleS(0.001, 0.05, 0.35, 0.22, 0.0);
+Roll2RollDynamics.Functions.tripleS(0.001, 0.05, 0.35, 0.22, 0.001);
+Roll2RollDynamics.Functions.tripleS(0.001, 0.05, 0.35, 0.22, 0.05);
+getErrorString();

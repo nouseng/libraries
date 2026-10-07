@@ -1,0 +1,66 @@
+setCommandLineOptions("--std=3.6 -d=aliasConflicts");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+getErrorString();
+mkdir("build/runout-checks");
+cd("build/runout-checks");
+// The span state the checks assert on and the post-processing reads.
+runoutVariables := "time|idlerSpanLength|idlerSpanTension|idlerLateralOffset"
+  + "|spanHarmonicAmplitude|idler[.]rollerVariables[.]angle"
+  + "|spanLengthMax|spanLengthMin|tensionMax|tensionMin";
+simulate(Roll2RollDynamicsTest.RunoutChecks.RunoutIdler, fileNamePrefix="RunoutChecks.RunoutIdler", stopTime=20, tolerance=1e-6,
+  outputFormat="csv", variableFilter=runoutVariables);
+getErrorString();
+{"RunoutIdler swing", val(spanLengthMax, 20) - val(spanLengthMin, 20),
+ "ripple", val(tensionMax, 20) - val(tensionMin, 20)};
+simulate(Roll2RollDynamicsTest.RunoutChecks.RunoutIdlerVariable, fileNamePrefix="RunoutChecks.RunoutIdlerVariable", stopTime=20, tolerance=1e-6,
+  outputFormat="csv", variableFilter=runoutVariables);
+getErrorString();
+{"RunoutIdlerVariable swing", val(spanLengthMax, 20) - val(spanLengthMin, 20),
+ "ripple", val(tensionMax, 20) - val(tensionMin, 20)};
+// Compiled at zero runout and overridden at run time; a structural switch
+// on runout would fold it at translation and this run would assert
+simulate(Roll2RollDynamicsTest.RunoutChecks.RunoutIdlerOverride, fileNamePrefix="RunoutChecks.RunoutIdlerOverride", stopTime=20, tolerance=1e-6,
+  simflags="-override=runoutMagnitude=0.0003",
+  outputFormat="csv", variableFilter=runoutVariables);
+getErrorString();
+{"RunoutIdlerOverride swing", val(spanLengthMax, 20) - val(spanLengthMin, 20),
+ "ripple", val(tensionMax, 20) - val(tensionMin, 20)};
+simulate(Roll2RollDynamicsTest.RunoutChecks.RunoutIdlerHalf, fileNamePrefix="RunoutChecks.RunoutIdlerHalf", stopTime=20, tolerance=1e-6,
+  outputFormat="csv", variableFilter=runoutVariables);
+getErrorString();
+simulate(Roll2RollDynamicsTest.RunoutChecks.RunoutIdlerQuarter, fileNamePrefix="RunoutChecks.RunoutIdlerQuarter", stopTime=20, tolerance=1e-6,
+  outputFormat="csv", variableFilter=runoutVariables);
+getErrorString();
+simulate(Roll2RollDynamicsTest.RunoutChecks.RunoutIdlerPhase, fileNamePrefix="RunoutChecks.RunoutIdlerPhase", stopTime=20, tolerance=1e-6,
+  outputFormat="csv", variableFilter=runoutVariables);
+getErrorString();
+simulate(Roll2RollDynamicsTest.RunoutChecks.AlignedIdler, fileNamePrefix="RunoutChecks.AlignedIdler", stopTime=20, tolerance=1e-6,
+  outputFormat="csv", variableFilter=runoutVariables);
+getErrorString();
+// The closed loop runs to 25 s; the return span only shows its share of the
+// ripple once the startup transient has died away.
+loopVariables := "time|risingSpan[.]tension|fallingSpan[.]tension"
+  + "|returnSpan[.]tension";
+simulate(Roll2RollDynamicsTest.RunoutChecks.LoopRunoutTop, fileNamePrefix="RunoutChecks.LoopRunoutTop", stopTime=25, tolerance=1e-6,
+  outputFormat="csv", variableFilter=loopVariables);
+getErrorString();
+simulate(Roll2RollDynamicsTest.RunoutChecks.LoopRunoutBoth, fileNamePrefix="RunoutChecks.LoopRunoutBoth", stopTime=25, tolerance=1e-6,
+  outputFormat="csv", variableFilter=loopVariables);
+getErrorString();
+// The eccentric roll is the driven one, under a PI speed loop.
+simulate(Roll2RollDynamicsTest.RunoutChecks.DrivenRunout, fileNamePrefix="RunoutChecks.DrivenRunout", stopTime=25, tolerance=1e-6,
+  numberOfIntervals=25000, outputFormat="csv",
+  variableFilter=loopVariables + "|driveAngle|driveTorque|speedSensor[.]w");
+getErrorString();
+// The nip is held on the loaded roller from 2 s to 5 s.
+nipVariables := "time|nip[.]nipContact[.]normalForce|nip[.]nipContact[.]penetration"
+  + "|nip[.]nipContact[.]loadCentre|nip[.]nipContact[.]wedgeAngle"
+  + "|nip[.]rollerVariables[.]angle|loadMax|loadMin|penetrationMax"
+  + "|penetrationMin|centreMax|centreMin";
+simulate(Roll2RollDynamicsTest.RunoutChecks.NipRunoutLoad, fileNamePrefix="RunoutChecks.NipRunoutLoad", stopTime=8, tolerance=1e-8,
+  outputFormat="csv", variableFilter=nipVariables);
+getErrorString();
+{"NipRunoutLoad penetration swing", val(penetrationMax, 8)
+  - val(penetrationMin, 8), "load swing", val(loadMax, 8) - val(loadMin, 8)};

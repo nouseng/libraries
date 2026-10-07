@@ -1,0 +1,42 @@
+setCommandLineOptions("--std=3.6 -d=aliasConflicts");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+mkdir("build/detachment-checks");
+cd("build/detachment-checks");
+simulate(Roll2RollDynamicsTest.DetachmentChecks.RigidRegression, fileNamePrefix="DetachmentChecks.RigidRegression", stopTime=25, tolerance=1e-8);
+getErrorString();
+val(wrapReference, 25, "DetachmentChecks.RigidRegression_res.mat");
+val(tractionReference, 25, "DetachmentChecks.RigidRegression_res.mat");
+
+simulate(Roll2RollDynamicsTest.DetachmentChecks.Detached, fileNamePrefix="DetachmentChecks.Detached", stopTime=25, tolerance=1e-8);
+getErrorString();
+val(topRoll.rollerVariables.webWrapped, 8, "DetachmentChecks.Detached_res.mat");
+val(topRoll.rollerVariables.webWrapped, 12, "DetachmentChecks.Detached_res.mat");
+val(topRoll.rollerVariables.webWrapped, 22, "DetachmentChecks.Detached_res.mat");
+val(topRoll.gap, 12, "DetachmentChecks.Detached_res.mat");
+val(topRoll.rollerVariables.arcAngle, 12, "DetachmentChecks.Detached_res.mat");
+val(transportMismatch, 12, "DetachmentChecks.Detached_res.mat");
+simulate(Roll2RollDynamicsTest.DetachmentChecks.EngagementContinuity, fileNamePrefix="DetachmentChecks.EngagementContinuity", stopTime=25, tolerance=1e-8);
+getErrorString();
+
+simulate(Roll2RollDynamicsTest.DetachmentChecks.RoundTrip, fileNamePrefix="DetachmentChecks.RoundTrip", stopTime=25, tolerance=1e-8);
+getErrorString();
+val(inventory, 0, "DetachmentChecks.RoundTrip_res.mat");
+val(inventoryStart, 0, "DetachmentChecks.RoundTrip_res.mat");
+val(inventory, 25, "DetachmentChecks.RoundTrip_res.mat");
+val(netInflow, 25, "DetachmentChecks.RoundTrip_res.mat");
+
+simulate(Roll2RollDynamicsTest.DetachmentChecks.StartDetached, fileNamePrefix="DetachmentChecks.StartDetached", stopTime=25, tolerance=1e-8);
+getErrorString();
+val(topRoll.rollerVariables.webWrapped, 0, "DetachmentChecks.StartDetached_res.mat");
+val(topRoll.rollerVariables.webWrapped, 25, "DetachmentChecks.StartDetached_res.mat");
+
+simulate(Roll2RollDynamicsTest.DetachmentChecks.NipConflict, fileNamePrefix="DetachmentChecks.NipConflict", stopTime=1, tolerance=1e-8);
+getErrorString();
+
+simulate(Roll2RollDynamicsTest.DetachmentChecks.LateralTransition, fileNamePrefix="DetachmentChecks.LateralTransition", stopTime=25, tolerance=1e-8);
+getErrorString();
+val(topRoll.rollerVariables.webWrapped, 8, "DetachmentChecks.LateralTransition_res.mat");
+val(topRoll.rollerVariables.webWrapped, 12, "DetachmentChecks.LateralTransition_res.mat");
+val(topRoll.rollerVariables.webWrapped, 22, "DetachmentChecks.LateralTransition_res.mat");

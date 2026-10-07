@@ -1,0 +1,8 @@
+setCommandLineOptions("--std=3.6 -d=initialization");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+simulate(Roll2RollDynamics.Examples.WebLines.MisalignedIdlerLine, startTime = 0, stopTime = 0.2,
+  numberOfIntervals = 20, tolerance = 1e-6, method = "dassl");
+val(dancerPrismatic.s, 0.0);
+val(dancerPrismatic.s, 0.2);
+getErrorString();

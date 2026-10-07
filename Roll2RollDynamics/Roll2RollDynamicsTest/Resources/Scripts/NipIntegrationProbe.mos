@@ -1,0 +1,37 @@
+setCommandLineOptions("--std=3.6");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+simulate(Roll2RollDynamicsTest.NipIntegrationChecks.NipMomentumCheck, fileNamePrefix="NipMomentumCheck", startTime = 0, stopTime = 8,
+  numberOfIntervals = 1600, tolerance = 1e-8, method = "dassl");
+getErrorString();
+simulate(Roll2RollDynamicsTest.NipIntegrationChecks.ReverseNipMomentumCheck, fileNamePrefix="ReverseNipMomentumCheck", startTime = 0, stopTime = 8,
+  numberOfIntervals = 1600, tolerance = 1e-8, method = "dassl");
+getErrorString();
+simulate(Roll2RollDynamicsTest.NipIntegrationChecks.OpenNipRegressionCheck, fileNamePrefix="OpenNipRegressionCheck", startTime = 0, stopTime = 0.2,
+  numberOfIntervals = 20, tolerance = 1e-6, method = "dassl");
+simulate(Roll2RollDynamicsTest.NipIntegrationChecks.NipFrictionOwnershipCheck, fileNamePrefix="NipFrictionOwnershipCheck", startTime = 0, stopTime = 8,
+  numberOfIntervals = 1600, tolerance = 1e-8, method = "dassl");
+getErrorString();
+simulate(Roll2RollDynamicsTest.NipIntegrationChecks.NipIntegrationCheck, fileNamePrefix="NipIntegrationCheck", startTime = 0, stopTime = 8,
+  numberOfIntervals = 1600, tolerance = 1e-8, method = "dassl");
+val(topRoll.rollerVariables.bearingTorque, 3.0);
+val(topRoll.rollerVariables.nipLoad, 0.5);
+val(topRoll.rollerVariables.nipLoad, 3.0);
+val(capacityIncrement, 3.0);
+val(expectedIncrement, 3.0);
+val(nip.nipVariables.angularVelocity, 1.0);
+val(nip.nipVariables.angularVelocity, 5.0);
+val(nip.nipVariables.nipTraction, 7.0);
+val(nip.nipVariables.angularVelocity, 6.0);
+val(nip.nipVariables.angularVelocity, 8.0);
+getErrorString();
+simulate(Roll2RollDynamicsTest.NipIntegrationChecks.PrescribedNipLoadCheck, fileNamePrefix="PrescribedNipLoadCheck", startTime = 0, stopTime = 1,
+  numberOfIntervals = 100, tolerance = 1e-8, method = "dassl");
+getErrorString();
+simulate(Roll2RollDynamicsTest.NipIntegrationChecks.FullPrescribedNipLoadCheck, fileNamePrefix="FullPrescribedNipLoadCheck", startTime = 0, stopTime = 1,
+  numberOfIntervals = 100, tolerance = 1e-8, method = "dassl");
+getErrorString();
+simulate(Roll2RollDynamicsTest.NipIntegrationChecks.DisabledNipRegressionCheck, fileNamePrefix="DisabledNipRegressionCheck", startTime = 0, stopTime = 0.2,
+  numberOfIntervals = 20, tolerance = 1e-6, method = "dassl");
+val(idler.rollerVariables.nipLoad, 0.2);

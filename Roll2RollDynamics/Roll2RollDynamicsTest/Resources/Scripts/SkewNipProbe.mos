@@ -1,0 +1,6 @@
+setCommandLineOptions("--std=3.6");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+simulate(Roll2RollDynamicsTest.SkewNipChecks.SkewNipStaticChecks, fileNamePrefix="SkewNipStaticChecks", stopTime = 1, numberOfIntervals = 10, tolerance = 1e-8);
+getErrorString();

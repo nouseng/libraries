@@ -1,0 +1,19 @@
+# OpenModelica build output
+*.o
+*.c
+*.h
+*.exe
+*.bat
+*.bin
+*.libs
+*.log
+*.makefile
+*.mat
+*.json
+*.xml
+*_res.*
+*.mos
+!**/Resources/Scripts/*.mos
+
+build/
+__pycache__/

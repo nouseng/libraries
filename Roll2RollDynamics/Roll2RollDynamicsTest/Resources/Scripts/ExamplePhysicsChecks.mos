@@ -1,0 +1,16 @@
+setCommandLineOptions("--std=3.6 -d=aliasConflicts");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+mkdir("build/example-physics-checks");
+cd("build/example-physics-checks");
+simulate(Roll2RollDynamicsTest.SlipCapacityCheck, fileNamePrefix="SlipCapacityCheck", stopTime=5, tolerance=1e-8);
+getErrorString();
+simulate(Roll2RollDynamicsTest.ExamplePhysicsChecks.IdlerBoundaryPhysicsCheck, fileNamePrefix="IdlerBoundaryPhysicsCheck", stopTime=120, tolerance=1e-8);
+getErrorString();
+simulate(Roll2RollDynamicsTest.ExamplePhysicsChecks.SteeringBoundaryPhysicsCheck, fileNamePrefix="SteeringBoundaryPhysicsCheck", stopTime=8, tolerance=1e-9);
+getErrorString();
+simulate(Roll2RollDynamicsTest.ExamplePhysicsChecks.CapstanCapacityPhysicsCheck, fileNamePrefix="CapstanCapacityPhysicsCheck", stopTime=5, tolerance=1e-6);
+getErrorString();
+simulate(Roll2RollDynamicsTest.ExamplePhysicsChecks.CapstanFrictionSweepCheck, fileNamePrefix="CapstanFrictionSweepCheck", stopTime=1, tolerance=1e-8);
+getErrorString();

@@ -1,0 +1,16 @@
+setCommandLineOptions("--std=3.6 -d=aliasConflicts");
+loadModel(Modelica, {"4.1.0"});
+loadFile("Roll2RollDynamics/package.mo");
+loadFile("Roll2RollDynamicsTest/package.mo");
+getErrorString();
+mkdir("build/shelton-checks");
+cd("build/shelton-checks");
+simulate(Roll2RollDynamicsTest.SheltonChecks.PositiveYaw, fileNamePrefix="SheltonChecks.PositiveYaw", stopTime=8, tolerance=1e-9,
+  numberOfIntervals=1600, outputFormat="csv");
+getErrorString();
+simulate(Roll2RollDynamicsTest.SheltonChecks.NegativeYaw, fileNamePrefix="SheltonChecks.NegativeYaw", stopTime=8, tolerance=1e-9,
+  numberOfIntervals=1600, outputFormat="csv");
+getErrorString();
+simulate(Roll2RollDynamicsTest.SheltonChecks.HalfSpeed, fileNamePrefix="SheltonChecks.HalfSpeed", stopTime=8, tolerance=1e-9,
+  numberOfIntervals=1600, outputFormat="csv");
+getErrorString();
