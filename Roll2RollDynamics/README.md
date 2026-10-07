@@ -40,12 +40,16 @@ verified.
 ## Installation
 
 1. Install OpenModelica and the Modelica Standard Library 4.1.0.
-2. Clone the repository and change into this folder:
+2. Get the library, either way:
+   - Download `Roll2RollDynamics-1.0.0.zip` from the
+     [1.0.0 release](https://github.com/nouseng/libraries/releases/tag/Roll2RollDynamics-v1.0.0)
+     and unzip it.
+   - Or clone the repository and change into this folder:
 
-   ```sh
-   git clone https://github.com/nouseng/libraries.git
-   cd libraries/Roll2RollDynamics
-   ```
+     ```sh
+     git clone https://github.com/nouseng/libraries.git
+     cd libraries/Roll2RollDynamics
+     ```
 
 3. In OMEdit, open `Roll2RollDynamics/package.mo`. From the command line:
 
