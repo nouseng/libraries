@@ -8,7 +8,7 @@ coaters, calenders and belt drives.
 
 Worked examples with results and discussion are on
 [nouseng.co/libraries](https://www.nouseng.co/libraries/):
-[misaligned winding line](https://www.nouseng.co/examples/misaligned-idler/),
+[misaligned idler](https://www.nouseng.co/examples/misaligned-idler/),
 [nip loading](https://www.nouseng.co/examples/nip-loading/) and
 [retracting idler](https://www.nouseng.co/examples/retracting-idler/).
 
