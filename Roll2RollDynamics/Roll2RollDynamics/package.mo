@@ -412,8 +412,9 @@ package Roll2RollDynamics
         Polygon(lineColor = {193, 206, 215}, fillColor = {193, 206, 215}, pattern = LinePattern.None, fillPattern = FillPattern.Solid, points = {{33.99, -28.69}, {73.28, 1.27}, {71.4, 2.18}, {32.11, -27.78}}),
         Polygon(lineColor = {190, 203, 212}, fillColor = {190, 203, 212}, pattern = LinePattern.None, fillPattern = FillPattern.Solid, points = {{35.95, -30.01}, {75.24, -0.05}, {73.28, 1.27}, {33.99, -28.69}}),
         Polygon(lineColor = {184, 196, 205}, fillColor = {184, 196, 205}, pattern = LinePattern.None, fillPattern = FillPattern.Solid, points = {{37.91, -31.68}, {77.2, -1.72}, {75.24, -0.05}, {35.95, -30.01}})}),
-    version = "1.0.0",
-    versionDate = "2026-10-07",
+    version = "1.0.1",
+    conversion(noneFromVersion = "1.0.0"),
+    versionDate = "2026-10-23",
     Documentation(info = "<html>
 <h4>What is the Roll to Roll Dynamics library?</h4>
 <p>Roll to Roll Dynamics models tension, traction and lateral tracking in

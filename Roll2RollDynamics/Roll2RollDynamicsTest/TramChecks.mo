@@ -18,6 +18,8 @@ package TramChecks "Out-of-plane roll tilt regressions"
       assert(abs(idlerLateralOffset) > 1e-3,
         "Tram must walk the web through the inclined spans");
     end when;
+    annotation(Documentation(info = "<html><h4>Trammed idler</h4>
+<p>Tilt the idler out of plane by 0.004 rad with zero yaw in the converting line. Terminal checks require normal entry at the tilted axis, span skew matching the projected tilt and lateral web travel greater than 1 mm.</p></html>"));
   end TrammedIdler;
 
   model TrammedNip "Tilted nip reports a wedge and no crossed-axis edge lift"
@@ -36,6 +38,8 @@ package TramChecks "Out-of-plane roll tilt regressions"
       "The wedge angle must report the out-of-plane tilt");
     assert(nip.nipContact.loadCentre*nip.nipContact.normalForce <= 0,
       "The load resultant must sit toward the closed end of the wedge");
+    annotation(Documentation(info = "<html><h4>Trammed nip</h4>
+<p>Tilt the nip out of plane by 0.0025 rad with zero yaw during the loading stroke. Assertions require the correct wedge angle, relative tilt and end opening, zero crossed-axis edge lift and a normal-load resultant on the closed side.</p></html>"));
   end TrammedNip;
 
   model CrossedNip "Yawed nip still reports crossed axes and no wedge"
@@ -46,6 +50,8 @@ package TramChecks "Out-of-plane roll tilt regressions"
       "In-plane yaw above the roller must give no wedge");
     assert(abs(nip.nipContact.endOpening) < 1e-9,
       "In-plane yaw above the roller must open neither end");
+    annotation(Documentation(info = "<html><h4>Crossed nip</h4>
+<p>Yaw the nip by -0.06 rad without out-of-plane tilt during the loading stroke. Assertions require zero wedge angle and zero end opening, distinguishing crossed-axis contact from a tram-induced wedge.</p></html>"));
   end CrossedNip;
   annotation(Documentation(info = "<html>
 <h4>Tram checks</h4>

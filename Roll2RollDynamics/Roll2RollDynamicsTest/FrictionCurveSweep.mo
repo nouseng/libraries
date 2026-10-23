@@ -1,6 +1,7 @@
 within Roll2RollDynamicsTest;
 model FrictionCurveSweep
   "Signed slip sweep behind the tripleS documentation figure"
+  extends Modelica.Icons.Example;
   parameter Roll2RollDynamics.Utilities.Types.TractionFrictionParameters traction(
     viscousSlope = 5)
     "Friction parameters shared by both curves";
@@ -29,10 +30,5 @@ model FrictionCurveSweep
     "Classical Stribeck coefficient, signed by the slip direction";
   annotation(
     experiment(StartTime = 0, StopTime = 1, Interval = 0.0005),
-    Documentation(info = "<html>
-<p>Sweeps the slip velocity from <code>-maximumSlipVelocity</code> to
-<code>+maximumSlipVelocity</code> and evaluates both friction laws on it, for
-the friction-curve documentation figure. It is a reference probe rather
-than a library class, since it models no machine.</p>
-</html>"));
+    Documentation(info = "<html><h4>Friction curve sweep</h4><p>Reference helper that sweeps <code>slipVelocity</code> from <code>-maximumSlipVelocity</code> to <code>+maximumSlipVelocity</code> and evaluates Triple-S and classical Stribeck coefficients with the same viscous slope. Its outputs supply the friction-curve documentation figure; it contains no acceptance assertions and models no machine.</p></html>"));
 end FrictionCurveSweep;

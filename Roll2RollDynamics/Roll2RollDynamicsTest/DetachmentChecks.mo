@@ -19,14 +19,17 @@ package DetachmentChecks "Web detachment on a retractable roller"
     assert(abs(topRoll.gap) < 1e-12,
       "Rigid contact leaves no clearance while engaged");
     annotation(experiment(StopTime=25, Tolerance=1e-8),
-      Documentation(info="<html><p>The engaged contact path with detachment
+      Documentation(info="<html><h4>Rigid regression</h4><p>Enables detachment on a roller that stays engaged in the three-roll loop. Positive wrap, engaged contact and zero gap must persist throughout the run.</p><p>The engaged contact path with detachment
       enabled must reproduce the rigid roller.</p></html>"));
   end RigidRegression;
 
   model Retracting
     "Open line whose middle roll is pulled out of the line and back"
+    extends Modelica.Icons.Example;
     inner Roll2RollDynamics.WebWorld world(enableAnimation = false)
-      "Multibody world and shared line defaults";
+      "Multibody world and shared line defaults"
+      annotation(Placement(visible = true, transformation(origin = {-320, 200},
+        extent = {{-10, -10}, {10, 10}})));
 
     Roll2RollDynamics.Components.Roller entryRoll(
       radius = 0.15,
@@ -37,7 +40,9 @@ package DetachmentChecks "Web detachment on a retractable roller"
       zPosition = 0,
       rotationDirection = 1,
       entryAngleStart = -3.14,
-      exitAngleStart = -1.01) "Driven roll at the upstream corner";
+      exitAngleStart = -1.01) "Driven roll at the upstream corner"
+      annotation(Placement(visible = true, transformation(origin = {-160, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller topRoll(
       radius = 0.12,
       useSupport = true,
@@ -47,7 +52,9 @@ package DetachmentChecks "Web detachment on a retractable roller"
       fixedInitialSpeed = true,
       rotationDirection = 1,
       entryAngleStart = -1.01,
-      exitAngleStart = 1.01) "Retractable idling roll at the apex";
+      exitAngleStart = 1.01) "Retractable idling roll at the apex"
+      annotation(Placement(visible = true, transformation(origin = {0, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller exitRoll(
       radius = 0.09,
       fixedInitialAngle = true,
@@ -57,59 +64,103 @@ package DetachmentChecks "Web detachment on a retractable roller"
       zPosition = 0,
       rotationDirection = 1,
       entryAngleStart = 1.01,
-      exitAngleStart = 3.14) "Idling roll at the downstream corner";
+      exitAngleStart = 3.14) "Idling roll at the downstream corner"
+      annotation(Placement(visible = true, transformation(origin = {160, 0},
+        extent = {{-10, -10}, {10, 10}})));
 
     Roll2RollDynamics.Components.Belt risingSpan
-      "Span from the driven roll up to the apex";
+      "Span from the driven roll up to the apex"
+      annotation(Placement(visible = true, transformation(origin = {-80, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Belt fallingSpan
-      "Span from the apex down to the downstream roll";
+      "Span from the apex down to the downstream roll"
+      annotation(Placement(visible = true, transformation(origin = {80, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce upstreamLoad(direction = 1)
-      "Incoming web held at the nominal line tension";
+      "Incoming web held at the nominal line tension"
+      annotation(Placement(visible = true, transformation(origin = {-240, 120},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce downstreamLoad(direction = -1)
-      "Outgoing web held at the nominal line tension";
+      "Outgoing web held at the nominal line tension"
+      annotation(Placement(visible = true, transformation(origin = {240, 0},
+        extent = {{-10, -10}, {10, 10}})));
 
     Modelica.Mechanics.Rotational.Sources.ConstantSpeed drive(
       w_fixed = world.lineSpeed/(entryRoll.radius + entryRoll.beltThickness/2))
-      "Line speed master";
+      "Line speed master"
+      annotation(Placement(visible = true, transformation(origin = {-240, 40},
+        extent = {{-10, -10}, {10, 10}})));
 
     Modelica.Mechanics.MultiBody.Parts.FixedTranslation mount(
       r = {0.5, 0, 0.8}, animation = false)
-      "Nominal apex position the stroke is measured from";
+      "Nominal apex position the stroke is measured from"
+      annotation(Placement(visible = true, transformation(origin = {-240, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Joints.Prismatic lift(
       n = {0, 0, -1},
       useAxisFlange = true,
       animation = false,
       s(start = 0, fixed = false),
-      v(start = 0, fixed = false)) "Retraction freedom of the apex roll";
+      v(start = 0, fixed = false)) "Retraction freedom of the apex roll"
+      annotation(Placement(visible = true, transformation(origin = {-80, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Translational.Sources.Position stroke(
-      exact = true) "Prescribed retraction stroke";
+      exact = true) "Prescribed retraction stroke"
+      annotation(Placement(visible = true, transformation(origin = {-160, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Trapezoid sweep(
       amplitude = 0.9,
       rising = 5,
       width = 5,
       falling = 5,
       period = 40,
-      startTime = 5) "Out of the line and back, once";
+      startTime = 5) "Out of the line and back, once"
+      annotation(Placement(visible = true, transformation(origin = {-240, -120},
+        extent = {{-10, -10}, {10, 10}})));
 
     output Modelica.Units.SI.Length apexHeight = 0.8 - lift.s
       "Height of the apex roll centre above the two fixed roll centres";
   equation
     upstreamLoad.force = {world.tension, 0, 0};
     downstreamLoad.force = {-world.tension, 0, 0};
-    connect(drive.flange, entryRoll.flange_a);
-    connect(upstreamLoad.frame_b, entryRoll.frame_a);
-    connect(entryRoll.frame_b, risingSpan.frame_a);
-    connect(risingSpan.frame_b, topRoll.frame_a);
-    connect(topRoll.frame_b, fallingSpan.frame_a);
-    connect(fallingSpan.frame_b, exitRoll.frame_a);
-    connect(exitRoll.frame_b, downstreamLoad.frame_b);
-    connect(world.frame_b, mount.frame_a);
-    connect(mount.frame_b, lift.frame_a);
-    connect(lift.frame_b, topRoll.frame_support);
-    connect(stroke.flange, lift.axis);
-    connect(sweep.y, stroke.s_ref);
+    connect(drive.flange, entryRoll.flange_a)
+      annotation(Line(visible = true, points = {{-230, 40}, {-160, 40}},
+        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(upstreamLoad.frame_b, entryRoll.frame_a)
+      annotation(Line(visible = true, points = {{-230, 120}, {-170, 40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(entryRoll.frame_b, risingSpan.frame_a)
+      annotation(Line(visible = true, points = {{-150, 40}, {-90, 40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(risingSpan.frame_b, topRoll.frame_a)
+      annotation(Line(visible = true, points = {{-70, 40}, {-10, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(topRoll.frame_b, fallingSpan.frame_a)
+      annotation(Line(visible = true, points = {{10, 0}, {70, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(fallingSpan.frame_b, exitRoll.frame_a)
+      annotation(Line(visible = true, points = {{90, 0}, {150, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(exitRoll.frame_b, downstreamLoad.frame_b)
+      annotation(Line(visible = true, points = {{170, 0}, {250, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(world.frame_b, mount.frame_a)
+      annotation(Line(visible = true, points = {{-310, 200}, {-250, -40}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(mount.frame_b, lift.frame_a)
+      annotation(Line(visible = true, points = {{-230, -40}, {-90, -40}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(lift.frame_b, topRoll.frame_support)
+      annotation(Line(visible = true, points = {{-70, -40}, {0, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(stroke.flange, lift.axis)
+      annotation(Line(visible = true, points = {{-150, -40}, {-72, -34}},
+        color = {0, 127, 0}, smooth = Smooth.None));
+    connect(sweep.y, stroke.s_ref)
+      annotation(Line(visible = true, points = {{-229, -120}, {-172, -40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
     annotation(experiment(StopTime=25, Tolerance=1e-8),
-      Documentation(info="<html><p>The apex roll is withdrawn from the line and
+      Documentation(info="<html><h4>Retracting</h4><p>Shared open-line fixture that withdraws the apex roll beyond release and then returns it to engagement. Derived checks examine the released state, switching continuity and boundary-flow accounting.</p><p>The apex roll is withdrawn from the line and
       returned to it.</p>
       <h4>Why the line is open</h4>
       <p>A closed loop cannot release a roll. Withdrawing the apex of
@@ -132,6 +183,8 @@ package DetachmentChecks "Web detachment on a retractable roller"
       of the two spans cancelling, so release happens at a stroke of exactly
       0.8 m. The 0.9 m amplitude carries the roll 0.1 m past that, leaving a
       clearance of about 0.0998 m at full retraction.</p></html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-360, -160}, {280, 240}})));
   end Retracting;
 
   model Detached "A released roll transmits nothing to the web"
@@ -180,7 +233,7 @@ package DetachmentChecks "Web detachment on a retractable roller"
       "The wrapped-material load WebFriction applies at the roll centre must be negligible "
       + "once a released roll's mode-switch transient has settled; a bound violation here "
       + "means the inventory floor is leaking material weight into the support reaction");
-    annotation(Documentation(info="<html><p>Zero is asserted exactly, not to
+    annotation(Documentation(info="<html><h4>Detached</h4><p>Checks the released state during the withdrawal-and-return cycle. Wrap angle, friction and true wrapped mass must be exactly zero while detached, the tangencies must coincide, clearance must be nonnegative, and the settled wrapped-material support load must remain below 1e-3 N.</p><p>Zero is asserted exactly, not to
     tolerance: the wrap angle is set to zero by the equation that swaps, and
     the friction follows through <code>tanh</code> of it. <code>wrappedMass</code>
     is likewise asserted exactly zero: it is <code>WebFriction</code>'s true,
@@ -204,7 +257,7 @@ package DetachmentChecks "Web detachment on a retractable roller"
     and 20 s, each of which is a time event with its own momentary spike.
     Neither is the leak this check exists to catch. The bound (1e-3 N) sits
     far above the observed residual -- five to six orders of magnitude --
-    but still four orders of magnitude below the roughly 0.13 N leak this
+    but still about two orders of magnitude below the roughly 0.13 N leak this
     check exists to catch if the weight term were ever wired back to the
     floored inventory. Confirmed by deliberately reintroducing that exact
     regression: the bound fires; restoring the fix passes cleanly again
@@ -238,7 +291,7 @@ package DetachmentChecks "Web detachment on a retractable roller"
     end when;
     assert(wrapMagnitude >= 0,
       "The wrap angle must never go negative");
-    annotation(Documentation(info="<html><p>Both switching variables must
+    annotation(Documentation(info="<html><h4>Engagement continuity</h4><p>Checks release and re-engagement in the retracting-roll fixture. Wrap and gap must already be at zero when contact mode changes, and unsigned wrap must never become negative.</p><p>Both switching variables must
     already be at their threshold when the mode changes. A jump here means
     the release is behaving as an impact.</p></html>"));
   end EngagementContinuity;
@@ -265,7 +318,7 @@ package DetachmentChecks "Web detachment on a retractable roller"
       + "inventory, steady for the whole dwell) -- not created or destroyed "
       + "at the releasing roll beyond that characterised, bounded cost");
     annotation(experiment(StopTime=25, Tolerance=1e-8),
-      Documentation(info="<html><p>The fixture is an open line with a
+      Documentation(info="<html><h4>Round trip</h4><p>Compares true span-and-wrap inventory change with integrated signed boundary flow through a release-and-return cycle. The residual must stay below one percent of starting inventory, allowing the characterized material-expulsion suppression caused by the detached contact inventory floor.</p><p>The fixture is an open line with a
       <code>WebForce</code> boundary at each end, so material legitimately
       flows in and out and total inventory is not constant. What must hold
       instead is that any inventory change is accounted for by the boundary
@@ -325,8 +378,11 @@ package DetachmentChecks "Web detachment on a retractable roller"
   end RoundTrip;
 
   model StartDetached "A model may initialize with the roll already clear"
+    extends Modelica.Icons.Example;
     inner Roll2RollDynamics.WebWorld world(enableAnimation = false)
-      "Multibody world and shared line defaults";
+      "Multibody world and shared line defaults"
+      annotation(Placement(visible = true, transformation(origin = {-320, 200},
+        extent = {{-10, -10}, {10, 10}})));
 
     Roll2RollDynamics.Components.Roller entryRoll(
       radius = 0.15,
@@ -337,7 +393,9 @@ package DetachmentChecks "Web detachment on a retractable roller"
       zPosition = 0,
       rotationDirection = 1,
       entryAngleStart = -3.14,
-      exitAngleStart = -1.01) "Driven roll at the upstream corner";
+      exitAngleStart = -1.01) "Driven roll at the upstream corner"
+      annotation(Placement(visible = true, transformation(origin = {-160, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller topRoll(
       radius = 0.12,
       useSupport = true,
@@ -348,7 +406,9 @@ package DetachmentChecks "Web detachment on a retractable roller"
       fixedInitialSpeed = true,
       rotationDirection = 1,
       entryAngleStart = -1.01,
-      exitAngleStart = 1.01) "Retractable idling roll at the apex, starting clear";
+      exitAngleStart = 1.01) "Retractable idling roll at the apex, starting clear"
+      annotation(Placement(visible = true, transformation(origin = {0, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller exitRoll(
       radius = 0.09,
       fixedInitialAngle = true,
@@ -358,61 +418,105 @@ package DetachmentChecks "Web detachment on a retractable roller"
       zPosition = 0,
       rotationDirection = 1,
       entryAngleStart = 1.01,
-      exitAngleStart = 3.14) "Idling roll at the downstream corner";
+      exitAngleStart = 3.14) "Idling roll at the downstream corner"
+      annotation(Placement(visible = true, transformation(origin = {160, 0},
+        extent = {{-10, -10}, {10, 10}})));
 
     Roll2RollDynamics.Components.Belt risingSpan
-      "Span from the driven roll up to the apex";
+      "Span from the driven roll up to the apex"
+      annotation(Placement(visible = true, transformation(origin = {-80, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Belt fallingSpan
-      "Span from the apex down to the downstream roll";
+      "Span from the apex down to the downstream roll"
+      annotation(Placement(visible = true, transformation(origin = {80, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce upstreamLoad(direction = 1)
-      "Incoming web held at the nominal line tension";
+      "Incoming web held at the nominal line tension"
+      annotation(Placement(visible = true, transformation(origin = {-240, 120},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce downstreamLoad(direction = -1)
-      "Outgoing web held at the nominal line tension";
+      "Outgoing web held at the nominal line tension"
+      annotation(Placement(visible = true, transformation(origin = {240, 0},
+        extent = {{-10, -10}, {10, 10}})));
 
     Modelica.Mechanics.Rotational.Sources.ConstantSpeed drive(
       w_fixed = world.lineSpeed/(entryRoll.radius + entryRoll.beltThickness/2))
-      "Line speed master";
+      "Line speed master"
+      annotation(Placement(visible = true, transformation(origin = {-240, 40},
+        extent = {{-10, -10}, {10, 10}})));
 
     Modelica.Mechanics.MultiBody.Parts.FixedTranslation mount(
       r = {0.5, 0, 0.8}, animation = false)
-      "Nominal apex position the stroke is measured from";
+      "Nominal apex position the stroke is measured from"
+      annotation(Placement(visible = true, transformation(origin = {-240, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Joints.Prismatic lift(
       n = {0, 0, -1},
       useAxisFlange = true,
       animation = false,
       s(start = 0.9, fixed = false),
-      v(start = 0, fixed = false)) "Retraction freedom of the apex roll, starting clear";
+      v(start = 0, fixed = false)) "Retraction freedom of the apex roll, starting clear"
+      annotation(Placement(visible = true, transformation(origin = {-80, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Translational.Sources.Position stroke(
-      exact = true) "Prescribed retraction stroke";
+      exact = true) "Prescribed retraction stroke"
+      annotation(Placement(visible = true, transformation(origin = {-160, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Ramp sweep(
       height = -0.9,
       duration = 10,
       offset = 0.9,
-      startTime = 2) "Starts past release, clear of the line, and lowers the stroke into it";
+      startTime = 2) "Starts past release, clear of the line, and lowers the stroke into it"
+      annotation(Placement(visible = true, transformation(origin = {-240, -120},
+        extent = {{-10, -10}, {10, 10}})));
 
     output Modelica.Units.SI.Length apexHeight = 0.8 - lift.s
       "Height of the apex roll centre above the two fixed roll centres";
   equation
     upstreamLoad.force = {world.tension, 0, 0};
     downstreamLoad.force = {-world.tension, 0, 0};
-    connect(drive.flange, entryRoll.flange_a);
-    connect(upstreamLoad.frame_b, entryRoll.frame_a);
-    connect(entryRoll.frame_b, risingSpan.frame_a);
-    connect(risingSpan.frame_b, topRoll.frame_a);
-    connect(topRoll.frame_b, fallingSpan.frame_a);
-    connect(fallingSpan.frame_b, exitRoll.frame_a);
-    connect(exitRoll.frame_b, downstreamLoad.frame_b);
-    connect(world.frame_b, mount.frame_a);
-    connect(mount.frame_b, lift.frame_a);
-    connect(lift.frame_b, topRoll.frame_support);
-    connect(stroke.flange, lift.axis);
-    connect(sweep.y, stroke.s_ref);
+    connect(drive.flange, entryRoll.flange_a)
+      annotation(Line(visible = true, points = {{-230, 40}, {-160, 40}},
+        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(upstreamLoad.frame_b, entryRoll.frame_a)
+      annotation(Line(visible = true, points = {{-230, 120}, {-170, 40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(entryRoll.frame_b, risingSpan.frame_a)
+      annotation(Line(visible = true, points = {{-150, 40}, {-90, 40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(risingSpan.frame_b, topRoll.frame_a)
+      annotation(Line(visible = true, points = {{-70, 40}, {-10, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(topRoll.frame_b, fallingSpan.frame_a)
+      annotation(Line(visible = true, points = {{10, 0}, {70, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(fallingSpan.frame_b, exitRoll.frame_a)
+      annotation(Line(visible = true, points = {{90, 0}, {150, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(exitRoll.frame_b, downstreamLoad.frame_b)
+      annotation(Line(visible = true, points = {{170, 0}, {250, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(world.frame_b, mount.frame_a)
+      annotation(Line(visible = true, points = {{-310, 200}, {-250, -40}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(mount.frame_b, lift.frame_a)
+      annotation(Line(visible = true, points = {{-230, -40}, {-90, -40}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(lift.frame_b, topRoll.frame_support)
+      annotation(Line(visible = true, points = {{-70, -40}, {0, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(stroke.flange, lift.axis)
+      annotation(Line(visible = true, points = {{-150, -40}, {-72, -34}},
+        color = {0, 127, 0}, smooth = Smooth.None));
+    connect(sweep.y, stroke.s_ref)
+      annotation(Line(visible = true, points = {{-229, -120}, {-172, -40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
     when initial() then
       assert(not topRoll.rollerVariables.webWrapped,
         "The model must initialize released when initiallyEngaged is false");
     end when;
     annotation(experiment(StopTime=25, Tolerance=1e-8),
-      Documentation(info="<html><p>Same fixture as <code>Retracting</code>,
+      Documentation(info="<html><h4>Start detached</h4><p>Starts the apex roll clear of the web with its contact state initialized as released, then returns it into the line. The initialization assertion must confirm release, and the run should end engaged.</p><p>Same fixture as <code>Retracting</code>,
       restated rather than extended because the actuation block must change
       class, from <code>Modelica.Blocks.Sources.Trapezoid</code> to
       <code>Modelica.Blocks.Sources.Ramp</code>, and <code>Retracting.sweep</code>
@@ -436,27 +540,44 @@ package DetachmentChecks "Web detachment on a retractable roller"
       starts detached: if the <code>initiallyEngaged</code> wiring were
       broken, or the geometry above were wrong and the roll were still within
       the line at a stroke of 0.9 m, this would fire immediately.</p></html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-360, -160}, {280, 240}})));
   end StartDetached;
 
   model NipConflict "A detachable roll must not accept a nip"
+    extends Modelica.Icons.Example;
     inner Roll2RollDynamics.WebWorld world(enableAnimation = false)
-      "Shared material and line defaults";
+      "Shared material and line defaults"
+      annotation(Placement(visible = true, transformation(origin = {-160, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller roller(
       useSupport = true,
       useDetachment = true,
       useNip = true,
-      fixedInitialWebState = true) "Rejected combination";
+      fixedInitialWebState = true) "Rejected combination"
+      annotation(Placement(visible = true, transformation(origin = {0, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce upstreamLoad(direction = 1)
-      "Incoming web held at the nominal line tension, so the model is otherwise complete";
+      "Incoming web held at the nominal line tension, so the model is otherwise complete"
+      annotation(Placement(visible = true, transformation(origin = {-80, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce downstreamLoad(direction = -1)
-      "Outgoing web held at the nominal line tension, so the model is otherwise complete";
+      "Outgoing web held at the nominal line tension, so the model is otherwise complete"
+      annotation(Placement(visible = true, transformation(origin = {80, 0},
+        extent = {{-10, -10}, {10, 10}})));
   equation
     upstreamLoad.force = {world.tension, 0, 0};
     downstreamLoad.force = {-world.tension, 0, 0};
-    connect(world.frame_b, roller.frame_support);
-    connect(upstreamLoad.frame_b, roller.frame_a);
-    connect(roller.frame_b, downstreamLoad.frame_b);
-    annotation(Documentation(info="<html><p>The combination of
+    connect(world.frame_b, roller.frame_support)
+      annotation(Line(visible = true, points = {{-150, 80}, {0, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(upstreamLoad.frame_b, roller.frame_a)
+      annotation(Line(visible = true, points = {{-70, 0}, {-10, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(roller.frame_b, downstreamLoad.frame_b)
+      annotation(Line(visible = true, points = {{10, 0}, {90, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    annotation(Documentation(info="<html><h4>Nip conflict</h4><p>Intentional negative test combining detachment and nip loading on one roller. Expected assertion failure must report the unsupported combination during translation or initialization; a successful simulation is a test failure.</p><p>The combination of
     <code>useDetachment</code> and <code>useNip</code> must be rejected.
     The runner checks the failed <code>simulate()</code> result and the
     intended diagnostic; OpenModelica can evaluate the assertion during
@@ -464,6 +585,8 @@ package DetachmentChecks "Web detachment on a retractable roller"
     The expected message is
     <code>Roller: a detachable roll cannot carry a nip, because a nip load
     has no meaning with no web between the rolls</code>.</p></html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-200, -100}, {120, 120}})));
   end NipConflict;
 
   model LateralTransition
@@ -471,7 +594,7 @@ package DetachmentChecks "Web detachment on a retractable roller"
     extends Retracting(world(lateralDynamics = true));
   equation
     annotation(experiment(StopTime=25, Tolerance=1e-8),
-      Documentation(info="<html><p>Enables the lateral momentum balance
+      Documentation(info="<html><h4>Lateral transition</h4><p>Enables lateral momentum dynamics during the aligned release-and-return cycle. The run should complete through both contact transitions; nonzero lateral motion while detached is outside this check.</p><p>Enables the lateral momentum balance
       throughout a release and return. Zero wrap removes contact friction;
       the regularized material inventory remains in the momentum equation.
       This fixture checks an aligned transition; nonzero lateral motion

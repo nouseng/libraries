@@ -248,8 +248,8 @@ if ($modelCheck -notmatch "Check of Roll2RollDynamicsTest.ComponentChecks.Extern
 if ($modelCheck -notmatch "Check of Roll2RollDynamics.Examples.WebLines.MisalignedIdlerLine completed successfully") {
     throw "OpenModelica model check failed: $modelCheck"
 }
-if ($output[-2] -ne '{"1.0.0"}') {
-    throw "Roll2RollDynamics package version is $($output[-2]); expected 1.0.0"
+if ($output[-2] -ne '{"1.0.1"}') {
+    throw "Roll2RollDynamics package version is $($output[-2]); expected 1.0.1"
 }
 if ($output[-1] -ne '""') {
     throw "OpenModelica reported interface errors: $($output[-1])"

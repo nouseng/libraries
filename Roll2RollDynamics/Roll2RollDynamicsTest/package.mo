@@ -3,8 +3,10 @@ package Roll2RollDynamicsTest "Regression scenarios for Roll to Roll Dynamics"
   extends Modelica.Icons.ExamplesPackage;
 
   annotation(
-    version = "1.0.0",
-    uses(Modelica(version = "4.1.0"), Roll2RollDynamics(version = "1.0.0")),
+    version = "1.0.1",
+    versionDate = "2026-10-23",
+    conversion(noneFromVersion = "1.0.0"),
+    uses(Modelica(version = "4.1.0"), Roll2RollDynamics(version = "1.0.1")),
     Documentation(info = "<html>
 <h4>Roll to Roll Dynamics tests</h4>
 <p>Regression scenarios for components, belt dynamics, material conservation,

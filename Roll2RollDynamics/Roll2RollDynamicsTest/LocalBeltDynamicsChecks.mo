@@ -5,6 +5,7 @@ package LocalBeltDynamicsChecks
 
   model ForceBoundary
     "Prescribed position and transport force with free tangent direction"
+    extends Modelica.Icons.Example;
     //Inputs and Outputs
     input Modelica.Units.SI.Position position[3] = zeros(3)
       "Prescribed tangency position";
@@ -15,7 +16,9 @@ package LocalBeltDynamicsChecks
     Modelica.Units.SI.Angle skew(start=0) "Free tangent skew";
     //Physical connectors
     Roll2RollDynamics.Utilities.Interfaces.RollPort port
-      "Connection to one span end";
+      "Connection to one span end"
+      annotation(Placement(visible = true, transformation(origin = {100, 0},
+        extent = {{-10, -10}, {10, 10}})));
   initial equation
     port.web.s = 0;
   equation
@@ -26,13 +29,14 @@ package LocalBeltDynamicsChecks
     port.frame.R = Modelica.Mechanics.MultiBody.Frames.axesRotations(
       {2,3,1}, {yaw,skew,0}, {der(yaw),der(skew),0});
     port.web.f = force;
-    annotation(Documentation(info="<html><p>The span determines the two
-    tangent angles. This fixture prescribes neither frame force nor moment;
-    it therefore receives the span's complete support reaction.</p></html>"));
+    annotation(Documentation(info="<html><h4>Force boundary</h4><p>Helper boundary that prescribes tangency position and transport force while the attached span determines the tangent angles. It leaves frame force and moment free so the span can deliver its complete support reaction; it is not a standalone test.</p></html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-100, -100}, {140, 100}})));
   end ForceBoundary;
 
   partial model Fixture
     "Integrate external mass, momentum and energy exchange independently"
+    extends Modelica.Icons.Example;
     //Parameters
     parameter Modelica.Units.SI.Acceleration gravity = 0 "Gravity magnitude";
     parameter Modelica.Units.SI.Mass initialMass(fixed=false)
@@ -81,20 +85,32 @@ package LocalBeltDynamicsChecks
     Modelica.Units.SI.Energy energyResidual "Energy accounting residual";
     //Components
     inner Roll2RollDynamics.WebWorld world(enableAnimation=false, g=gravity)
-      "Reference material and gravity";
+      "Reference material and gravity"
+      annotation(Placement(visible = true, transformation(origin = {-160, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Belt belt(fixedInitialTension=false, dampingTime=0)
-      "Span under test";
+      "Span under test"
+      annotation(Placement(visible = true, transformation(origin = {0, 0},
+        extent = {{-10, -10}, {10, 10}})));
     ForceBoundary inlet(position=positionA, force=entryTension)
-      "Prescribed entry force and position";
+      "Prescribed entry force and position"
+      annotation(Placement(visible = true, transformation(origin = {-80, 0},
+        extent = {{-10, -10}, {10, 10}})));
     ForceBoundary outlet(position=positionB, force=-exitTension)
-      "Prescribed exit force and position";
+      "Prescribed exit force and position"
+      annotation(Placement(visible = true, transformation(origin = {80, 0},
+        extent = {{-10, -10}, {10, 10}})));
   initial equation
     initialMass = belt.beltVariables.webMass;
     initialMomentum = belt.beltVariables.webMass*belt.physicalVelocity;
     initialEnergy = storedEnergy;
   equation
-    connect(inlet.port, belt.frame_a);
-    connect(belt.frame_b, outlet.port);
+    connect(inlet.port, belt.frame_a)
+      annotation(Line(visible = true, points = {{-70, 0}, {-10, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(belt.frame_b, outlet.port)
+      annotation(Line(visible = true, points = {{10, 0}, {90, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     direction = (positionB-positionA)/Modelica.Math.Vectors.length(positionB-positionA);
     boundaryVelocityA = der(positionA);
     boundaryVelocityB = der(positionB);
@@ -151,10 +167,9 @@ package LocalBeltDynamicsChecks
     assert(dissipatedPower >= -1e-8
       and abs(belt.dampingPower - dissipatedPower) < 1e-7,
       "Dashpot loss must equal nonnegative viscous work at the material velocities");
-    annotation(Documentation(info="<html><p>The balances use prescribed end
-    tensions and actual connector forces. Energy includes the explicitly
-    measured central-velocity approximation; it is not a claim of passivity.
-    Gravity is included as body-force work.</p></html>"));
+    annotation(Documentation(info="<html><h4>Span balance fixture</h4><p>Partial helper for independently integrating a span's external mass, spatial momentum and energy exchange from actual connector forces and boundary fluxes. Derived cases must satisfy these balances, including gravity work, the declared central-velocity kinetic defect and nonnegative viscous dissipation; this fixture is not a standalone test.</p></html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-200, -100}, {120, 120}})));
   end Fixture;
 
   model ForceDriven
@@ -168,8 +183,7 @@ package LocalBeltDynamicsChecks
         "Span acceleration must reflect its own material mass");
     end when;
     annotation(experiment(StopTime=0.5, Tolerance=1e-9),
-      Documentation(info="<html><p>The 1 N excess exit tension accelerates
-      only the free span's approximately 2.65 kg of material.</p></html>"));
+      Documentation(info="<html><h4>Force driven</h4><p>Applies 1 N more exit tension than entry tension to a fixed span containing approximately 2.65 kg of material. The material must accelerate forward according to its own mass while the independent conservation checks remain satisfied.</p></html>"));
   end ForceDriven;
 
   model InclinedGravity
@@ -181,9 +195,7 @@ package LocalBeltDynamicsChecks
     assert(abs(supportResultant*direction) < 1e-6,
       "Equal tensions must leave no artificial axial support reaction");
     annotation(experiment(StopTime=0.2, Tolerance=1e-9),
-      Documentation(info="<html><p>Equal tensions on a 45-degree incline leave
-      material free to accelerate downhill. Supports carry only the normal
-      gravity component.</p></html>"));
+      Documentation(info="<html><h4>Inclined gravity</h4><p>Holds equal end tensions on a 45-degree incline so gravity drives material downhill. Axial acceleration must equal the projected gravitational acceleration, and the supports must add no artificial axial force while carrying the normal load.</p></html>"));
   end InclinedGravity;
 
   model TranslatingSupports
@@ -197,9 +209,7 @@ package LocalBeltDynamicsChecks
     assert(abs(belt.aBelt) < 1e-7,
       "Purely transverse mount acceleration must not accelerate material longitudinally");
     annotation(experiment(StopTime=0.5, Tolerance=1e-9),
-      Documentation(info="<html><p>Both endpoints accelerate sideways at
-      2 m/s2. The full material mass supplies the reaction through the span
-      connectors, together with its vertical weight.</p></html>"));
+      Documentation(info="<html><h4>Translating supports</h4><p>Accelerates both endpoints sideways at 2 m/s2 in gravity. The connector reactions must carry the full span inertia and weight without creating longitudinal material acceleration, while the independent balances close.</p></html>"));
   end TranslatingSupports;
 
   model RotatingSpan
@@ -211,9 +221,7 @@ package LocalBeltDynamicsChecks
     assert(abs(belt.aBelt) < 1e-6,
       "A rotating projection must not be mistaken for physical longitudinal acceleration");
     annotation(experiment(StopTime=0.5, Tolerance=1e-9),
-      Documentation(info="<html><p>A unit span rotates at 1 rad/s about its
-      inlet. The midpoint boundary velocity produces a 0.5 m/s2 rate of
-      change of the absolute projected material velocity.</p></html>"));
+      Documentation(info="<html><h4>Rotating span</h4><p>Rotates a unit span about its inlet at 1 rad/s. The absolute projected material velocity must grow as 0.5 times time while physical longitudinal acceleration remains zero, and the independent conservation checks must pass.</p></html>"));
   end RotatingSpan;
 
   model ChangingInventory
@@ -228,10 +236,7 @@ package LocalBeltDynamicsChecks
         "This case must exercise the central-velocity energy approximation");
     end when;
     annotation(experiment(StopTime=0.5, Tolerance=1e-9),
-      Documentation(info="<html><p>Independent smooth boundary motion and
-      tension changes produce varying material inventory and a nonzero kinetic
-      energy defect. The integrated energy check includes that defect explicitly.
-      </p></html>"));
+      Documentation(info="<html><h4>Changing inventory</h4><p>Combines smooth endpoint motion with independently varying end tensions to exercise nonzero material exchange and a nonzero central-velocity kinetic defect. The integrated mass, momentum and energy checks must close with that defect included explicitly.</p></html>"));
   end ChangingInventory;
   model ReverseTransport "Nonzero reverse transport with externally initialized momentum"
     extends Fixture(belt(fixedInitialMomentum=false));
@@ -243,6 +248,7 @@ package LocalBeltDynamicsChecks
     assert(belt.massFlowIn < 0 and belt.massFlowOut < 0,
       "Reverse material velocity must produce signed reverse boundary fluxes");
     annotation(experiment(StopTime=0.5,Tolerance=1e-9));
+    annotation(Documentation(info="<html><h4>Reverse transport</h4><p>Initializes material velocity at -1.5 m/s between fixed boundaries with equal tensions. Velocity must remain constant, both boundary mass flows must be negative, and the independent mass, momentum and energy checks must pass.</p></html>"));
   end ReverseTransport;
   annotation(uses(Modelica(version="4.1.0")),
     Documentation(info="<html><p>Force-driven isolated span regressions for

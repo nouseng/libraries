@@ -6,10 +6,10 @@ results and discussion are on [nouseng.co/libraries](https://www.nouseng.co/libr
 
 | Library | Version | What it models |
 | --- | --- | --- |
-| [Roll2RollDynamics](Roll2RollDynamics/) | 1.0.0 | Roll-to-roll web handling: tension, traction, winding, pressure nips and lateral tracking |
+| [Roll2RollDynamics](Roll2RollDynamics/) | 1.0.1 | Roll-to-roll web handling: tension, traction, winding, pressure nips and lateral tracking |
 
 Each library sits in its own folder with its test library, README and licence.
-Releases are tagged per library, for example `Roll2RollDynamics-v1.0.0`.
+Releases are tagged per library, for example `Roll2RollDynamics-v1.0.1`.
 
 ## Requirements
 

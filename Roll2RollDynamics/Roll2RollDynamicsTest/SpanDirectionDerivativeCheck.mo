@@ -1,6 +1,7 @@
 within Roll2RollDynamicsTest;
 model SpanDirectionDerivativeCheck
   "First and second direction derivatives along analytic trajectories"
+  extends Modelica.Icons.Example;
   Real direction[3,3] "Direction components for three trajectories";
   Real rate[3,3] "First derivatives supplied through annotations";
   Real acceleration[3,3] "Second derivatives supplied through annotations";
@@ -32,6 +33,7 @@ equation
 <h4>Span direction derivative check</h4>
 <p>Compare the first and second derivatives supplied by the span-direction
 functions with derivatives of their defining expressions. Circular, accelerating
-planar and spatial trajectories exercise all three direction components.</p>
+planar and spatial trajectories exercise all three direction components, with
+each derivative residual required to remain below 1e-9.</p>
 </html>"));
 end SpanDirectionDerivativeCheck;

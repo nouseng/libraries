@@ -20,4 +20,6 @@ equation
     assert(totalTraction > 0 and totalTraction < totalCapacity,
       "Positive sliding must carry less traction than the adhesion peak");
   end when;
+  annotation(Documentation(info = "<html><h4>Slip capacity check</h4>
+<p>Sweep positive and negative slip on wrap-only and nip-loaded test rollers while a high-grip master holds the web speed. Assertions require dissipative traction, the prescribed static nip load and commanded final slip; the nip must increase positive sliding traction while that traction stays below the adhesion capacity.</p></html>"));
 end SlipCapacityCheck;

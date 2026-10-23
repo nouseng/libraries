@@ -4,6 +4,7 @@ package VisualGeometryChecks "Animation geometry and component composition regre
 
   model VisualSpanBoundary
     "Fixed material endpoint with free tangent alignment and prescribed width reference"
+    extends Modelica.Icons.Example;
     //Parameters
     parameter Modelica.Units.SI.Position position[3]=zeros(3) "Endpoint position";
     parameter Real directionGuess[3]={1,0,0} "Nominal span direction";
@@ -13,7 +14,9 @@ package VisualGeometryChecks "Animation geometry and component composition regre
     Modelica.Units.SI.Angle skew(start=0) "Free tangent skew";
     Real localDirection[3](each unit="1") "Span direction in the prescribed reference basis";
     //Physical connectors
-    Roll2RollDynamics.Utilities.Interfaces.RollPort port "Closed span endpoint";
+    Roll2RollDynamics.Utilities.Interfaces.RollPort port "Closed span endpoint"
+      annotation(Placement(visible = true, transformation(origin = {100, 0},
+        extent = {{-10, -10}, {10, 10}})));
   equation
     Connections.root(port.frame.R);
     port.frame.r_0=position;
@@ -27,11 +30,16 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       Modelica.Mechanics.MultiBody.Frames.axesRotations(
         {2,3,1},{yaw,skew,0},{der(yaw),der(skew),0}));
     port.web.s=0;
+    annotation(
+      Diagram(coordinateSystem(extent = {{-100, -100}, {140, 100}})));
+    annotation(Documentation(info = "<html><h4>Visual span boundary</h4><p>Helper endpoint that fixes position and material transport while allowing tangent alignment relative to a prescribed width reference. Parent visual tests use it to impose endpoint geometry and width orientation; it is not a standalone scenario.</p></html>"));
   end VisualSpanBoundary;
 
   model VisualBeltProbe
     "Belt exposing numeric visual geometry for regression checks"
-    extends Roll2RollDynamics.Components.Belt;
+    extends Modelica.Icons.Example;
+    extends Roll2RollDynamics.Components.Belt
+      annotation(IconMap(primitivesVisible = false));
     output Real visualLengthDirection[3](each unit = "1")
       "Ribbon length direction resolved in world coordinates";
     output Real firstWidthDirection[3](each unit = "1")
@@ -59,18 +67,27 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         ribbon[ribbonSegments].r_shape
           + ribbon[ribbonSegments].lengthDirection*ribbon[ribbonSegments].length);
     visualMidpoint = 0.5*(visualStart + visualEnd);
+    annotation(Documentation(info = "<html><h4>Visual belt probe</h4><p>Helper derived from <code>Belt</code> that exposes ribbon endpoints, midpoint, longitudinal direction and the two end width directions. These numeric results support parent geometry assertions; the probe is not a standalone scenario.</p></html>"));
   end VisualBeltProbe;
 
   model BeltVisualGeometryCheck
     "Centred straight-span visual follows the full endpoint geometry"
     extends Modelica.Icons.Example;
-    inner Roll2RollDynamics.WebWorld world "Shared line defaults";
+    inner Roll2RollDynamics.WebWorld world "Shared line defaults"
+      annotation(Placement(visible = true, transformation(origin = {-120, 120},
+        extent = {{-10, -10}, {10, 10}})));
     VisualSpanBoundary anchorA(directionGuess=expectedDirection,
-      widthReference=widthAxisA) "Upstream fixed material boundary";
+      widthReference=widthAxisA) "Upstream fixed material boundary"
+      annotation(Placement(visible = true, transformation(origin = {-40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     VisualSpanBoundary anchorB(position={1,0.1,0.5},
       directionGuess=expectedDirection, widthReference=widthAxisB)
-      "Downstream fixed material boundary";
-    VisualBeltProbe span "Span under test";
+      "Downstream fixed material boundary"
+      annotation(Placement(visible = true, transformation(origin = {-40, -40},
+        extent = {{-10, -10}, {10, 10}})));
+    VisualBeltProbe span "Span under test"
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     final parameter Real expectedDirection[3](each unit = "1") =
       {1, 0.1, 0.5}/sqrt(1^2 + 0.1^2 + 0.5^2)
       "Expected three-dimensional span direction";
@@ -96,8 +113,12 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       Modelica.Math.acos(expectedWidthA*expectedWidthB)
       "Total twist the ribbon has to cover between its ends";
   equation
-    connect(anchorA.port, span.frame_a);
-    connect(anchorB.port, span.frame_b);
+    connect(anchorA.port, span.frame_a)
+      annotation(Line(visible = true, points = {{-30, 40}, {30, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(anchorB.port, span.frame_b)
+      annotation(Line(visible = true, points = {{-30, -40}, {50, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     when terminal() then
       assert(Modelica.Math.Vectors.length(
         span.visualLengthDirection - expectedDirection) < 1e-9,
@@ -127,11 +148,16 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "Ribbon twist check must be run on a span that actually twists");
     end when;
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -100}, {100, 160}})));
+    annotation(Documentation(info = "<html><h4>Belt visual geometry check</h4><p>Holds a spatial span with different projected width directions at its two ends. The ribbon must cover the endpoints, follow the full three-dimensional centreline, remain centred, and meet both normalized transverse width directions within 1e-9 while carrying a nonzero twist.</p></html>"));
   end BeltVisualGeometryCheck;
 
   model VisualWinderProbe
     "Winder exposing numeric visual geometry for regression checks"
-    extends Roll2RollDynamics.Components.Winder;
+    extends Modelica.Icons.Example;
+    extends Roll2RollDynamics.Components.Winder
+      annotation(IconMap(primitivesVisible = false));
     output Modelica.Units.SI.Position woundWebCenter[3]
       "Wound-web visual centre in world coordinates";
     output Modelica.Units.SI.Position hubCenter[3]
@@ -143,24 +169,39 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       winder.R, winder.r_shape + winder.lengthDirection*winder.length/2);
     hubCenter = hub.r + Modelica.Mechanics.MultiBody.Frames.resolve1(
       hub.R, hub.r_shape + hub.lengthDirection*hub.length/2);
+    annotation(Documentation(info = "<html><h4>Visual winder probe</h4><p>Helper derived from <code>Winder</code> that exposes wound-web and hub centres and the drawn web width. The parent test supplies connections and checks these internal visual results; the probe is not a standalone scenario.</p></html>"));
   end VisualWinderProbe;
 
   model WinderVisualGeometryCheck
     "Centred winder visuals distinguish web width from roll-face width"
     extends Modelica.Icons.Example;
-    inner Roll2RollDynamics.WebWorld world(web(width = 0.6)) "Shared line defaults";
+    inner Roll2RollDynamics.WebWorld world(web(width = 0.6)) "Shared line defaults"
+      annotation(Placement(visible = true, transformation(origin = {-120, 200},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Components.Fixed defaultDrive
-      "Fixed drive for the default-width winder";
+      "Fixed drive for the default-width winder"
+      annotation(Placement(visible = true, transformation(origin = {-40, 120},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Components.Fixed overrideDrive
-      "Fixed drive for the overridden-width winder";
+      "Fixed drive for the overridden-width winder"
+      annotation(Placement(visible = true, transformation(origin = {-40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     VisualWinderProbe defaultWinder(useSupport = true, fixedInitialWebState=true,
       tangencyAngleStart=Modelica.Constants.pi)
-      "Winder using the line-level width";
+      "Winder using the line-level width"
+      annotation(Placement(visible = true, transformation(origin = {40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     VisualWinderProbe overrideWinder(useSupport = true, width = 0.72, fixedInitialWebState=true,
       tangencyAngleStart=Modelica.Constants.pi)
-      "Winder using a component-level width override";
-    Roll2RollDynamics.Components.WebForce boundaryA(direction=1,force={150,0,0});
-    Roll2RollDynamics.Components.WebForce boundaryB(direction=1,force={150,0,0});
+      "Winder using a component-level width override"
+      annotation(Placement(visible = true, transformation(origin = {40, -40},
+        extent = {{-10, -10}, {10, 10}})));
+    Roll2RollDynamics.Components.WebForce boundaryA(direction=1,force={150,0,0})
+      annotation(Placement(visible = true, transformation(origin = {-40, -40},
+        extent = {{-10, -10}, {10, 10}})));
+    Roll2RollDynamics.Components.WebForce boundaryB(direction=1,force={150,0,0})
+      annotation(Placement(visible = true, transformation(origin = {-40, -120},
+        extent = {{-10, -10}, {10, 10}})));
     final parameter Modelica.Units.SI.Mass expectedMass =
       world.web.density*Modelica.Constants.pi*
       (defaultWinder.radius0^2 - defaultWinder.coreRadius^2)*world.web.width
@@ -169,12 +210,24 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       0.5*expectedMass*(defaultWinder.radius0^2 + defaultWinder.coreRadius^2)
       "Expected initial wound-web inertia";
   equation
-    connect(boundaryA.frame_b,defaultWinder.frame_t);
-    connect(boundaryB.frame_b,overrideWinder.frame_t);
-    connect(world.frame_b, defaultWinder.frame_support);
-    connect(world.frame_b, overrideWinder.frame_support);
-    connect(defaultDrive.flange, defaultWinder.flange_a);
-    connect(overrideDrive.flange, overrideWinder.flange_a);
+    connect(boundaryA.frame_b, defaultWinder.frame_t)
+      annotation(Line(visible = true, points = {{-30, -40}, {50, 40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(boundaryB.frame_b, overrideWinder.frame_t)
+      annotation(Line(visible = true, points = {{-30, -120}, {50, -40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(world.frame_b, defaultWinder.frame_support)
+      annotation(Line(visible = true, points = {{-110, 200}, {40, 50}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(world.frame_b, overrideWinder.frame_support)
+      annotation(Line(visible = true, points = {{-110, 200}, {40, -30}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(defaultDrive.flange, defaultWinder.flange_a)
+      annotation(Line(visible = true, points = {{-40, 120}, {40, 30}},
+        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(overrideDrive.flange, overrideWinder.flange_a)
+      annotation(Line(visible = true, points = {{-40, 40}, {40, -50}},
+        color = {0, 0, 0}, smooth = Smooth.None));
     when terminal() then
       assert(abs(defaultWinder.width - 0.66) < 1e-12,
         "Default roll face must be 10% wider than the web");
@@ -194,11 +247,16 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "Wound inertia must use web width, not face width");
     end when;
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -160}, {100, 240}})));
+    annotation(Documentation(info = "<html><h4>Winder visual geometry check</h4><p>Compares winders using the line default face width and a local override. The default face must be 10% wider than the 0.6 m web, the override must take precedence, and the centred visuals, wound mass and inertia must use web width rather than face width.</p></html>"));
   end WinderVisualGeometryCheck;
 
   model VisualRollBodyProbe
     "Roll body exposing protected visualizer geometry for regression checks"
-    extends Roll2RollDynamics.Utilities.Parts.RollBody;
+    extends Modelica.Icons.Example;
+    extends Roll2RollDynamics.Utilities.Parts.RollBody
+      annotation(IconMap(primitivesVisible = false));
     output Modelica.Units.SI.Position rollCenter[3] = revolute.frame_b.r_0
       "Mechanical roll centre in world coordinates";
     output Modelica.Units.SI.Length drumShapeRadius = drumSurface.width/2
@@ -213,11 +271,14 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         drumSurface.R,
         drumSurface.r_shape
           + drumSurface.lengthDirection*drumSurface.length/2);
+    annotation(Documentation(info = "<html><h4>Visual roll body probe</h4><p>Helper derived from <code>RollBody</code> that exposes the mechanical centre, drum centre, drawn drum radius and face-mark reach. The parent wrap test checks their geometry; the probe is not a standalone scenario.</p></html>"));
   end VisualRollBodyProbe;
 
   model VisualWebWrapProbe
     "Web wrap exposing numeric visual geometry for regression checks"
-    extends Roll2RollDynamics.Utilities.Parts.WebWrap;
+    extends Modelica.Icons.Example;
+    extends Roll2RollDynamics.Utilities.Parts.WebWrap
+      annotation(IconMap(primitivesVisible = false));
     output Modelica.Units.SI.Position visualEntryPoint[3]
       "Centreline endpoint of the first wrap box";
     output Modelica.Units.SI.Position visualExitPoint[3]
@@ -272,6 +333,7 @@ package VisualGeometryChecks "Animation geometry and component composition regre
             wrapArc[drawingSegments].length/2);
     visualEntryPoint = firstCenter - firstAxis*chord/2;
     visualExitPoint = lastCenter + lastAxis*chord/2;
+    annotation(Documentation(info = "<html><h4>Visual web wrap probe</h4><p>Helper derived from <code>WebWrap</code> that exposes drawn endpoints, solved tangencies, web width, radii and overhang dimensions. Parent tests compare these internal visual results with mechanical geometry; the probe is not a standalone scenario.</p></html>"));
   end VisualWebWrapProbe;
 
   model RollerWrapVisualGeometryCheck
@@ -280,19 +342,31 @@ package VisualGeometryChecks "Animation geometry and component composition regre
     inner Roll2RollDynamics.WebWorld world(
       web(width = 0.6),
       lateralDynamics = true)
-      "Shared line defaults with lateral contact motion";
+      "Shared line defaults with lateral contact motion"
+      annotation(Placement(visible = true, transformation(origin = {-200, 160},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant entryLoad[3](
       k = {-100*cos(0.6), 40, -100*sin(0.6)})
-      "Entry load selecting a known tangent";
+      "Entry load selecting a known tangent"
+      annotation(Placement(visible = true, transformation(origin = {-120, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant exitLoad[3](
       k = {100*cos(0.6), 40, -100*sin(0.6)})
-      "Exit load selecting a known tangent";
+      "Exit load selecting a known tangent"
+      annotation(Placement(visible = true, transformation(origin = {-120, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Forces.WorldForce entryForce(animation = false)
-      "Entry span force stand-in";
+      "Entry span force stand-in"
+      annotation(Placement(visible = true, transformation(origin = {-40, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Forces.WorldForce exitForce(animation = false)
-      "Exit span force stand-in";
+      "Exit span force stand-in"
+      annotation(Placement(visible = true, transformation(origin = {-40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Components.Fixed fixedDrive(phi0 = 0.37)
-      "Fixed roller drive";
+      "Fixed roller drive"
+      annotation(Placement(visible = true, transformation(origin = {-120, -80},
+        extent = {{-10, -10}, {10, 10}})));
     VisualRollBodyProbe body(
       radius = world.rollRadius,
       width = world.rollWidth,
@@ -303,7 +377,9 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       bearingDamping = world.bearingDamping,
       normalForce = wrap.normalForce,
       drumDrawnRadius = wrap.drumDrawnRadius)
-      "Yawed roll body under test";
+      "Yawed roll body under test"
+      annotation(Placement(visible = true, transformation(origin = {-40, -80},
+        extent = {{-10, -10}, {10, 10}})));
     VisualWebWrapProbe wrap(
       spanDirectionA=-entryLoad.k/Modelica.Math.Vectors.length(entryLoad.k),
       spanDirectionB=exitLoad.k/Modelica.Math.Vectors.length(exitLoad.k),
@@ -319,7 +395,9 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       stressNominal = world.stressNominal,
       stressHigh = world.stressHigh,
       colorGamma = world.stressColorGamma)
-      "Yawed web wrap under test";
+      "Yawed web wrap under test"
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Utilities.Parts.WebFriction friction(
       fixedInitialWebState=true,
       meanTension = wrap.meanTension,
@@ -330,28 +408,39 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       lateral = true,
       spanDirectionA = wrap.spanDirectionA,
       spanDirectionB = wrap.spanDirectionB)
-      "Contact closure for the web transport coordinates";
+      "Contact closure for the web transport coordinates"
+      annotation(Placement(visible = true, transformation(origin = {120, 0},
+        extent = {{-10, -10}, {10, 10}})));
   equation
     connect(world.frame_b, body.frame_support)
-      annotation(Line(points = {{-80, 80}, {-40, 80}, {-40, 60}, {0, 60}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{-190, 160}, {-40, -90}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     connect(fixedDrive.flange, body.flange_a)
-      annotation(Line(points = {{-80, -80}, {-40, -80}, {-40, -60}, {0, -60}}, color = {0, 0, 0}));
+      annotation(Line(visible = true, points = {{-120, -80}, {-30, -80}},
+        color = {0, 0, 0}, smooth = Smooth.None));
     connect(body.frame_center, wrap.frame_center)
-      annotation(Line(points = {{20, 40}, {40, 40}, {40, 20}, {60, 20}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{-49, -70}, {31, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     connect(entryLoad.y, entryForce.force)
-      annotation(Line(points = {{-80, 30}, {-60, 30}, {-60, 10}, {-40, 10}}, color = {0, 0, 127}));
+      annotation(Line(visible = true, points = {{-109, 80}, {-52, 80}},
+        color = {0, 0, 127}, smooth = Smooth.None));
     connect(exitLoad.y, exitForce.force)
-      annotation(Line(points = {{-80, -30}, {-60, -30}, {-60, -10}, {-40, -10}}, color = {0, 0, 127}));
+      annotation(Line(visible = true, points = {{-109, 0}, {-52, 0}},
+        color = {0, 0, 127}, smooth = Smooth.None));
     connect(entryForce.frame_b, wrap.frame_a)
-      annotation(Line(points = {{-20, 10}, {20, 10}, {20, 30}, {60, 30}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{-30, 80}, {30, 0}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     connect(exitForce.frame_b, wrap.frame_b)
-      annotation(Line(points = {{-20, -10}, {20, -10}, {20, 0}, {60, 0}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{-30, 0}, {50, 0}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     0 = wrap.frame_a.R.T[3,:]*entryLoad.y;
     0 = wrap.frame_b.R.T[3,:]*exitLoad.y;
     connect(body.frame_drum, friction.frame_drum)
-      annotation(Line(points = {{20, -30}, {40, -30}, {40, -70}, {70, -70}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{-40, -70}, {120, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     connect(wrap.lateralFlange, friction.lateralFlange)
-      annotation(Line(points = {{70, 40}, {100, 40}, {100, -40}, {70, -40}}, color = {0, 127, 0}));
+      annotation(Line(visible = true, points = {{40, -10}, {120, 10}},
+        color = {0, 127, 0}, smooth = Smooth.None));
     when terminal() then
       // A band stopping exactly on the tangency leaves a notch there, so it runs
       // past both by the overhang the yaw and the chord angle call for.
@@ -393,11 +482,16 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "Lateral roller regression must move the contact line");
     end when;
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-240, -120}, {160, 200}})));
+    annotation(Documentation(info = "<html><h4>Roller wrap visual geometry check</h4><p>Loads a yawed roll body and web wrap while allowing lateral contact motion. Terminal checks require the drawn overhang to meet the solved tangencies on the belt circle, keep the drum and wrap separated and centred, respect web width and overhang bounds, keep the face mark inside the rim, and exercise nonzero lateral motion.</p></html>"));
   end RollerWrapVisualGeometryCheck;
 
   model VisualRollerFacadeProbe
     "Roller exposing how far each republished value sits from its owning part"
-    extends Roll2RollDynamics.Components.Roller;
+    extends Modelica.Icons.Example;
+    extends Roll2RollDynamics.Components.Roller
+      annotation(IconMap(primitivesVisible = false));
     output Real wrapDeviation
       "Largest gap between a republished wrap value and webWrap";
     output Real bodyDeviation
@@ -439,6 +533,7 @@ package VisualGeometryChecks "Animation geometry and component composition regre
     compositionDeviation = max(
       Modelica.Math.Vectors.length(webFriction.spanDirectionA - frame_a.spanDirection),
       Modelica.Math.Vectors.length(webFriction.spanDirectionB - frame_b.spanDirection));
+    annotation(Documentation(info = "<html><h4>Visual roller facade probe</h4><p>Helper derived from <code>Roller</code> that exposes deviations between public facade values and their owning body, wrap and contact parts, together with contact drift and initial entry angle. The parent composition test supplies the loaded driven scenario and checks these results; the probe is not standalone.</p></html>"));
   end VisualRollerFacadeProbe;
 
   model RollerFacadeCompositionCheck
@@ -447,19 +542,31 @@ package VisualGeometryChecks "Animation geometry and component composition regre
     inner Roll2RollDynamics.WebWorld world(
       web(width = 0.6),
       lateralDynamics = true)
-      "Shared line defaults with lateral contact motion";
+      "Shared line defaults with lateral contact motion"
+      annotation(Placement(visible = true, transformation(origin = {-160, 160},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant entryLoad[3](
       k = {-100*cos(0.6), 40, -100*sin(0.6)})
-      "Entry load selecting a known tangent";
+      "Entry load selecting a known tangent"
+      annotation(Placement(visible = true, transformation(origin = {-80, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant exitLoad[3](
       k = {100*cos(0.6), 40, -100*sin(0.6)})
-      "Exit load selecting a known tangent";
+      "Exit load selecting a known tangent"
+      annotation(Placement(visible = true, transformation(origin = {-80, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce entryForce(direction=1)
-      "Entry span force stand-in";
+      "Entry span force stand-in"
+      annotation(Placement(visible = true, transformation(origin = {0, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce exitForce(direction=-1)
-      "Exit span force stand-in";
+      "Exit span force stand-in"
+      annotation(Placement(visible = true, transformation(origin = {0, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Sources.ConstantTorque drive(tau_constant = 20)
-      "Drive that keeps the roll turning under the web";
+      "Drive that keeps the roll turning under the web"
+      annotation(Placement(visible = true, transformation(origin = {-80, -80},
+        extent = {{-10, -10}, {10, 10}})));
     VisualRollerFacadeProbe roller(
       yaw = 0.2,
       useFlange = true,
@@ -467,18 +574,25 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       fixedInitialSpeed = true,
       fixedInitialWebState = true,
       useDynamicColor = true)
-      "Assembled roller under composition test";
+      "Assembled roller under composition test"
+      annotation(Placement(visible = true, transformation(origin = {80, 0},
+        extent = {{-10, -10}, {10, 10}})));
   equation
     connect(entryLoad.y, entryForce.force)
-      annotation(Line(points = {{-80, 30}, {-60, 30}, {-60, 10}, {-40, 10}}, color = {0, 0, 127}));
+      annotation(Line(visible = true, points = {{-69, 80}, {-10, 40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
     connect(exitLoad.y, exitForce.force)
-      annotation(Line(points = {{-80, -30}, {-60, -30}, {-60, -10}, {-40, -10}}, color = {0, 0, 127}));
+      annotation(Line(visible = true, points = {{-69, 0}, {-10, -40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
     connect(entryForce.frame_b, roller.frame_a)
-      annotation(Line(points = {{-20, 10}, {20, 10}, {20, 30}, {60, 30}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{10, 40}, {70, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(exitForce.frame_b, roller.frame_b)
-      annotation(Line(points = {{-20, -10}, {20, -10}, {20, 0}, {60, 0}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{10, -40}, {90, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(drive.flange, roller.flange_a)
-      annotation(Line(points = {{-80, -70}, {-20, -70}, {-20, -40}, {60, -40}}, color = {0, 0, 0}));
+      annotation(Line(visible = true, points = {{-70, -80}, {80, 0}},
+        color = {0, 0, 0}, smooth = Smooth.None));
     when terminal() then
       // The facade owns no physics; every public value it reports has to be the
       // one its part computed. Comparing against the parts, rather than against
@@ -508,6 +622,9 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "Solved tangency must not turn with the drum under a constant load");
     end when;
     annotation(experiment(StopTime = 0.05, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-200, -120}, {120, 200}})));
+    annotation(Documentation(info = "<html><h4>Roller facade composition check</h4><p>Drives a loaded yawed roller with torque and checks its public values against the three internal parts. All republished-value and supplied-direction deviations must stay below 1e-12 at termination, with real rotation, lateral drift and contact motion, while the tangency angle remains fixed under constant world loads.</p></html>"));
   end RollerFacadeCompositionCheck;
 
   model SpanColorGradingCheck
@@ -554,6 +671,7 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "The ramp must show the sign of a small deviation");
     end when;
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8));
+    annotation(Documentation(info = "<html><h4>Span colour grading check</h4><p>Evaluates the stress-colour ramp at nominal stress, deviations of plus and minus 2%, and values beyond both limits. Nominal and clamped colours must match their configured values, while the gamma-adjusted nearby colours must each differ by more than 60 RGB-distance units from nominal and from one another.</p></html>"));
   end SpanColorGradingCheck;
 
   model WebWorldStressBarCheck
@@ -563,7 +681,9 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       tension = 15000,
       stressLow = 4e6,
       stressHigh = 6e6)
-      "Line defaults with known stress limits, nominal stress 5e6 Pa";
+      "Line defaults with known stress limits, nominal stress 5e6 Pa"
+      annotation(Placement(visible = true, transformation(origin = {-80, 80},
+        extent = {{-10, -10}, {10, 10}})));
   equation
     when terminal() then
       assert(abs(world.stressBarMinimum - 4e6) < 1e-9
@@ -588,33 +708,52 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "The nominal ring must sit where the nominal stress falls on the scale");
     end when;
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-120, -100}, {100, 120}})));
+    annotation(Documentation(info = "<html><h4>Web world stress bar check</h4><p>Checks a stress scale configured from 4 to 6 MPa with a nominal stress of 5 MPa. Its limits, endpoint colours, cylindrical segments, end-cap positions and nominal-ring location must match the configured stress range and drawn scale.</p></html>"));
   end WebWorldStressBarCheck;
 
   model AnimationDisabledCheck
     "Turning the world animation off leaves a line that still runs"
     extends Modelica.Icons.Example;
     inner Roll2RollDynamics.WebWorld world(enableAnimation = false)
-      "Line defaults with every drawn shape switched off";
+      "Line defaults with every drawn shape switched off"
+      annotation(Placement(visible = true, transformation(origin = {-120, 160},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller driven(
       useFlange = true, fixedInitialAngle = true, rotationDirection = -1,
       fixedInitialWebState = true,
       traction = Roll2RollDynamics.Utilities.Types.TractionFrictionParameters(
         muAdhesion = 0.2, muSliding = 0.15))
-      "Roll carrying its own contact parameters rather than the line's";
+      "Roll carrying its own contact parameters rather than the line's"
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Sources.ConstantSpeed drive(
-      w_fixed = -world.lineSpeed/world.rollRadius) "Speed master";
+      w_fixed = -world.lineSpeed/world.rollRadius) "Speed master"
+      annotation(Placement(visible = true, transformation(origin = {-40, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce entryLoad(
       direction=1,
       force = {-150*cos(0.5), 0, 150*sin(0.5)})
-      "Nonzero incoming web tension with matching transport effort";
+      "Nonzero incoming web tension with matching transport effort"
+      annotation(Placement(visible = true, transformation(origin = {-40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce exitLoad(
       direction=-1,
       force = {150*cos(0.5), 0, 150*sin(0.5)})
-      "Nonzero outgoing web tension with matching transport effort";
+      "Nonzero outgoing web tension with matching transport effort"
+      annotation(Placement(visible = true, transformation(origin = {-40, -80},
+        extent = {{-10, -10}, {10, 10}})));
   equation
-    connect(drive.flange, driven.flange_a);
-    connect(entryLoad.frame_b, driven.frame_a);
-    connect(exitLoad.frame_b, driven.frame_b);
+    connect(drive.flange, driven.flange_a)
+      annotation(Line(visible = true, points = {{-30, 80}, {40, 0}},
+        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(entryLoad.frame_b, driven.frame_a)
+      annotation(Line(visible = true, points = {{-30, 0}, {30, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(exitLoad.frame_b, driven.frame_b)
+      annotation(Line(visible = true, points = {{-30, -80}, {50, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     when terminal() then
       assert(driven.webMass > 0,
         "A loaded wrap must carry its actual material mass");
@@ -627,20 +766,35 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "The roll's own adhesion coefficient must reach the contact law");
     end when;
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -120}, {100, 200}})));
+    annotation(Documentation(info = "<html><h4>Animation disabled check</h4><p>Runs a loaded driven roller with world animation disabled and locally overridden traction parameters. Wrapped-web mass and traction capacity must remain positive, and the capacity must use the roller's adhesion coefficient of 0.2 in the capstan formula.</p></html>"));
   end AnimationDisabledCheck;
 
   model DegenerateSpanWidthCheck
     "A cross-machine span retains a finite transverse width"
     extends Modelica.Icons.Example;
-    inner Roll2RollDynamics.WebWorld world "Shared line defaults";
+    inner Roll2RollDynamics.WebWorld world "Shared line defaults"
+      annotation(Placement(visible = true, transformation(origin = {-120, 120},
+        extent = {{-10, -10}, {10, 10}})));
     VisualSpanBoundary anchorA(directionGuess={0,1,0},widthReference={0,0,1})
-      "Upstream fixed anchor with a transverse width reference";
+      "Upstream fixed anchor with a transverse width reference"
+      annotation(Placement(visible = true, transformation(origin = {-40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     VisualSpanBoundary anchorB(position={0,1,0},directionGuess={0,1,0},
-      widthReference={0,0,1}) "Downstream fixed anchor across the machine";
-    VisualBeltProbe span "Span running along the world y-axis";
+      widthReference={0,0,1}) "Downstream fixed anchor across the machine"
+      annotation(Placement(visible = true, transformation(origin = {-40, -40},
+        extent = {{-10, -10}, {10, 10}})));
+    VisualBeltProbe span "Span running along the world y-axis"
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{-10, -10}, {10, 10}})));
   equation
-    connect(anchorA.port, span.frame_a);
-    connect(anchorB.port, span.frame_b);
+    connect(anchorA.port, span.frame_a)
+      annotation(Line(visible = true, points = {{-30, 40}, {30, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(anchorB.port, span.frame_b)
+      annotation(Line(visible = true, points = {{-30, -40}, {50, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     when terminal() then
       assert(Modelica.Math.Vectors.length(span.firstWidthDirection-{0,0,1}) < 1e-6
           and Modelica.Math.Vectors.length(span.lastWidthDirection-{0,0,1}) < 1e-6,
@@ -650,6 +804,9 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "A cross-machine span must still be drawn end to end");
     end when;
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -100}, {100, 160}})));
+    annotation(Documentation(info = "<html><h4>Degenerate span width check</h4><p>Places a span along the world cross-machine axis with a transverse width reference along the world z-axis. Both drawn end widths must preserve that reference and the ribbon must still cover the complete 1 m span within 1e-6 m.</p></html>"));
   end DegenerateSpanWidthCheck;
 
   model WrapColorGradingCheck
@@ -665,11 +822,17 @@ package VisualGeometryChecks "Animation geometry and component composition regre
     final parameter Real midColor[3] = {245, 210, 70} "Colour at nominal";
     final parameter Real highColor[3] = {205, 50, 35} "Colour at the high limit";
     inner Modelica.Mechanics.MultiBody.World world(g = 0, enableAnimation = false)
-      "Inertial reference";
+      "Inertial reference"
+      annotation(Placement(visible = true, transformation(origin = {-120, 120},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Forces.WorldForce inlet(animation = false)
-      "Entry tension boundary";
+      "Entry tension boundary"
+      annotation(Placement(visible = true, transformation(origin = {-40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Forces.WorldForce outlet(animation = false)
-      "Exit tension boundary";
+      "Exit tension boundary"
+      annotation(Placement(visible = true, transformation(origin = {-40, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Real entryLoad[3](each unit = "N") = {-200, 0, -15.707963267948966}
       "Applied entry force in roll coordinates";
     Real exitLoad[3](each unit = "N") = {100, 0, -15.707963267948966}
@@ -683,7 +846,9 @@ package VisualGeometryChecks "Animation geometry and component composition regre
       stressLow = stressLow, stressHigh = stressHigh, stressNominal = stressNominal,
       colorGamma = 1, animation = false,
       webColor = lowColor, nominalColor = midColor, stressColor = highColor)
-      "Wrap under test";
+      "Wrap under test"
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Real meanColor[3]
       "Single colour a mean-tension wrap would hold across the whole band";
   equation
@@ -696,9 +861,15 @@ package VisualGeometryChecks "Animation geometry and component composition regre
     meanColor = Roll2RollDynamics.Functions.stressColor(
       wrap.meanTension/(thickness*width), stressLow, stressHigh, stressNominal, 1,
       lowColor, midColor, highColor);
-    connect(world.frame_b, wrap.frame_center);
-    connect(inlet.frame_b, wrap.frame_a);
-    connect(outlet.frame_b, wrap.frame_b);
+    connect(world.frame_b, wrap.frame_center)
+      annotation(Line(visible = true, points = {{-110, 120}, {31, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(inlet.frame_b, wrap.frame_a)
+      annotation(Line(visible = true, points = {{-30, 40}, {30, 0}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(outlet.frame_b, wrap.frame_b)
+      annotation(Line(visible = true, points = {{-30, -40}, {50, 0}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     when terminal() then
       //With only the two ends compared, a flat mean colour sits close enough to
       //both to pass, so the midpoint segment is what actually pins the ramp.
@@ -710,6 +881,9 @@ package VisualGeometryChecks "Animation geometry and component composition regre
         "The wrap colour must differ between its two tangencies");
     end when;
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -100}, {100, 160}})));
+    annotation(Documentation(info = "<html><h4>Wrap colour grading check</h4><p>Applies unequal entry and exit tensions to a wrap with a linear stress-colour mapping. At termination, the first and last segment colours must differ, and a middle segment must differ from a flat mean-tension colour by more than two RGB-distance units.</p></html>"));
   end WrapColorGradingCheck;
 
   annotation(Documentation(info = "<html><h4>Visual geometry checks</h4>

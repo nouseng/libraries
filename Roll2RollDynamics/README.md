@@ -29,6 +29,12 @@ Library (MSL) components for drives, joints and controllers. The
 `Validation` page in the library lists what each effect has been checked
 against and what it has not.
 
+## Version 1.0.1
+
+Both packages are distributed together at version 1.0.1. This patch improves
+Test library diagrams, example icons and scenario documentation. See
+[CHANGELOG.md](CHANGELOG.md) for changes and validation.
+
 ## Requirements
 
 - OpenModelica 1.27.0, the version the library is checked with.
@@ -41,8 +47,8 @@ verified.
 
 1. Install OpenModelica and the Modelica Standard Library 4.1.0.
 2. Get the library, either way:
-   - Download `Roll2RollDynamics-1.0.0.zip` from the
-     [1.0.0 release](https://github.com/nouseng/libraries/releases/tag/Roll2RollDynamics-v1.0.0)
+   - Download `Roll2RollDynamics-1.0.1.zip` from the
+     [1.0.1 release](https://github.com/nouseng/libraries/releases/tag/Roll2RollDynamics-v1.0.1)
      and unzip it.
    - Or clone the repository and change into this folder:
 
@@ -100,12 +106,12 @@ Copyright (c) 2026 Vedat Senol. Released under the BSD 3-Clause Licence; see
 If you use the library in published work, please cite:
 
 > Senol, V. (2026). *Roll2RollDynamics: a Modelica library for roll-to-roll
-> web handling* (Version 1.0.0) [Computer software].
-> https://github.com/nouseng/libraries/tree/main/Roll2RollDynamics
+> web handling* (Version 1.0.1) [Computer software].
+> <https://github.com/nouseng/libraries/tree/main/Roll2RollDynamics>
 
 ## Consulting and contact
 
 Need a model of your own line, calibration against plant data or a
-controller study? Nous Engineering & Research builds and validates web-handling and
-machine-dynamics models. Contact Vedat Senol at
+controller study? Nous Engineering & Research builds and validates web-handling
+and machine-dynamics models. Contact Vedat Senol at
 [vedat@nouseng.co](mailto:vedat@nouseng.co).

@@ -81,23 +81,32 @@ public
     "Lower-right tangency, on the east roll";
 equation
   connect(drive.flange, west.flange_a)
-    annotation(Line(points = {{-15, 0}, {15, 0}}, origin = {-85, 0}));
+    annotation(Line(visible = true, points = {{-100, 0}, {-70, 0}},
+      color = {0, 0, 0}, smooth = Smooth.None));
   connect(west.frame_b, northWest.frame_a)
-    annotation(Line(points = {{-3.333, -26.667}, {-3.333, 13.333}, {6.667, 13.333}}, color = {0, 128, 180}, thickness = 0.5, origin = {-66.667, 36.667}));
+    annotation(Line(visible = true, points = {{-70, 10}, {-60, 50}},
+      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(northWest.frame_b, north.frame_a)
-    annotation(Line(points = {{-15, 0}, {15, 0}}, color = {0, 128, 180}, thickness = 0.5, origin = {-25, 50}));
+    annotation(Line(visible = true, points = {{-40, 50}, {-10, 50}},
+      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(north.frame_b, northEast.frame_a)
-    annotation(Line(points = {{-15, 0}, {15, 0}}, color = {0, 128, 180}, thickness = 0.5, origin = {25, 50}));
+    annotation(Line(visible = true, points = {{10, 50}, {40, 50}},
+      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(northEast.frame_b, east.frame_a)
-    annotation(Line(points = {{-6.667, 13.333}, {3.333, 13.333}, {3.333, -26.667}}, color = {0, 128, 180}, thickness = 0.5, origin = {66.667, 36.667}));
+    annotation(Line(visible = true, points = {{60, 50}, {70, 10}},
+      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(east.frame_b, southEast.frame_a)
-    annotation(Line(points = {{3.333, 26.667}, {3.333, -13.333}, {-6.667, -13.333}}, color = {0, 128, 180}, thickness = 0.5, origin = {66.667, -36.667}));
+    annotation(Line(visible = true, points = {{70, -10}, {60, -50}},
+      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(southEast.frame_b, south.frame_a)
-    annotation(Line(points = {{15, 0}, {-15, 0}}, color = {0, 128, 180}, thickness = 0.5, origin = {25, -50}));
+    annotation(Line(visible = true, points = {{40, -50}, {10, -50}},
+      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(south.frame_b, southWest.frame_a)
-    annotation(Line(points = {{15, 0}, {-15, 0}}, color = {0, 128, 180}, thickness = 0.5, origin = {-25, -50}));
+    annotation(Line(visible = true, points = {{-10, -50}, {-40, -50}},
+      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(southWest.frame_b, west.frame_a)
-    annotation(Line(points = {{6.667, -13.333}, {-3.333, -13.333}, {-3.333, 26.667}}, color = {0, 128, 180}, thickness = 0.5, origin = {-66.667, -36.667}));
+    annotation(Line(visible = true, points = {{-60, -50}, {-70, -10}},
+      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
 
   assert(quadrant1[1] > 0 and quadrant1[2] > 0, "Upper-right tangency left the first quadrant");
   assert(quadrant2[1] < 0 and quadrant2[2] > 0, "Upper-left tangency left the second quadrant");
@@ -119,7 +128,9 @@ equation
 <h4>Tangency in all four quadrants</h4>
 <p>Four unequal rolls on a diamond solve their common tangencies from
 position, radius and turning sense. <code>entryAngleStart</code> and
-<code>exitAngleStart</code> select the branch without prescribing the solution.</p>
+<code>exitAngleStart</code> select the branch without prescribing the solution.
+Assertions require the four reported tangency points to remain in their
+respective Cartesian quadrants throughout the run.</p>
 <p>Figure 1 shows the route and solved surface points: east entry/exit in
 quadrants I/IV, west exit/entry in II/III. The 0.15 and 0.18 m circles locate
 the roll surfaces; all points match the analytical common tangent to machine
@@ -149,4 +160,6 @@ geometry for unequal pulleys; Ex. 17&ndash;1, pp. 882&ndash;883, works it throug
 for a 6 in / 18 in drive. Accessed 2026-09-04.</li>
 </ul>
 </html>"));
+  annotation(
+    Diagram(coordinateSystem(extent = {{-150, -100}, {110, 110}})));
 end TangencyQuadrants;

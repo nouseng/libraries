@@ -1,8 +1,9 @@
 within Roll2RollDynamicsTest;
 package WebWrapChecks "Directed wrap geometry and load regression checks"
-  extends Modelica.Icons.Package;
+  extends Modelica.Icons.ExamplesPackage;
 
   model LoadedWrap "Prescribed spatial tensions on a fixed wrap centre"
+    extends Modelica.Icons.Example;
     //Parameters
     parameter Boolean axialEntry=false
       "Prescribe the otherwise undefined entry angle for an invalid axial load";
@@ -15,13 +16,19 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
       "Tangent direction, prescribed separately only for invalid-load diagnostics";
     //Components
     inner Modelica.Mechanics.MultiBody.World world(g=0, enableAnimation=false)
-      "Inertial reference";
+      "Inertial reference"
+      annotation(Placement(visible = true, transformation(origin = {-120, 120},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Forces.WorldForce inlet(
       animation=false)
-      "Entry tension boundary";
+      "Entry tension boundary"
+      annotation(Placement(visible = true, transformation(origin = {-40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Forces.WorldForce outlet(
       animation=false)
-      "Exit tension boundary";
+      "Exit tension boundary"
+      annotation(Placement(visible = true, transformation(origin = {-40, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Utilities.Parts.WebWrap wrap(
       spanDirectionA=-entryAlignment/sqrt(entryAlignment*entryAlignment),
       spanDirectionB=exitLoad/sqrt(exitLoad*exitLoad),
@@ -29,7 +36,9 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
       entryTension=sqrt(entryLoad*entryLoad),
       exitTension=sqrt(exitLoad*exitLoad),
       stressLow=0, stressHigh=100000, stressNominal=50000, colorGamma=1, animation=false)
-      "Wrap under test";
+      "Wrap under test"
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{-10, -10}, {10, 10}})));
   equation
     inlet.force = entryLoad;
     outlet.force = exitLoad;
@@ -39,11 +48,19 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
       0 = wrap.frame_a.R.T[3,:]*entryAlignment;
     end if;
     0 = wrap.frame_b.R.T[3,:]*exitLoad;
-    connect(world.frame_b, wrap.frame_center);
-    connect(inlet.frame_b, wrap.frame_a);
-    connect(outlet.frame_b, wrap.frame_b);
+    connect(world.frame_b, wrap.frame_center)
+      annotation(Line(visible = true, points = {{-110, 120}, {31, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(inlet.frame_b, wrap.frame_a)
+      annotation(Line(visible = true, points = {{-30, 40}, {30, 0}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(outlet.frame_b, wrap.frame_b)
+      annotation(Line(visible = true, points = {{-30, -40}, {50, 0}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     annotation(experiment(StopTime=0.01, Tolerance=1e-9),
-      Documentation(info="<html><p>Applies independently specified entry and exit loads to a grounded wrap.</p></html>"));
+      Documentation(info = "<html><h4>Loaded wrap fixture</h4><p>Helper fixture that applies independently specified spatial entry and exit loads to a grounded wrap and aligns the tangencies with their projected directions. Derived tests select the geometry, visual options or invalid inputs and provide the acceptance assertions.</p></html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -100}, {100, 160}})));
   end LoadedWrap;
 
   model SpatialResultant "Skewed loads retain their lateral resultant"
@@ -53,7 +70,7 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
       "The applied forces sum to {0,70,-120} N; normalForce must include the lateral load");
     assert(abs(wrap.arcAngle - 1.2870022175865687) < 1e-9,
       "Lateral tension must not change the projected tangency angles");
-    annotation(Documentation(info="<html><p>The two spatial loads have a 70 N lateral and a 120 N vertical resultant.</p></html>"));
+    annotation(Documentation(info = "<html><h4>Spatial resultant</h4><p>Applies spatial loads with resultant <code>{0,70,-120}</code> N. The reported resultant magnitude must be <code>sqrt(19300)</code> N and the projected wrap angle must remain 1.2870022175865687 rad, both within 1e-9.</p></html>"));
   end SpatialResultant;
 
   model CoarseReverseWrap "Coarse drawing of a reverse wrap remains outside the drum"
@@ -67,7 +84,7 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
       "The web boxes must clear the drum");
     assert(abs(wrap.arcAngle + 4.1887902047863905) < 1e-9,
       "A reverse wrap must have the opposite mechanical angle");
-    annotation(Documentation(info="<html><p>Requests one segment to check safe drawing resolution without changing the mechanical wrap.</p></html>"));
+    annotation(Documentation(info = "<html><h4>Coarse reverse wrap</h4><p>Requests one drawing segment for a reverse wrap to exercise safe drawing resolution without changing mechanical geometry. Drawn dimensions must remain positive, the web boxes must clear the drum, and the mechanical arc angle must be -4.1887902047863905 rad within 1e-9 rad.</p></html>"));
   end CoarseReverseWrap;
 
   model MovingTangency "Tangency speeds remain finite across the angle branch cut"
@@ -84,7 +101,7 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
       and abs(wrap.frame_a.r_0[3] - 0.1525*cos(4.6+0.2*time)) < 1e-9,
       "The entry point must stay on its prescribed continuous circular trajectory");
     annotation(experiment(StopTime=2, Tolerance=1e-9),
-      Documentation(info="<html><p>Rotates both force boundaries at 0.2 rad/s through the angle branch cut. Geometry and local angular rates must stay continuous.</p></html>"));
+      Documentation(info = "<html><h4>Moving tangency</h4><p>Rotates both load directions at 0.2 rad/s through the absolute-angle branch cut. The directed wrap must remain 1.2 rad, both tangency speeds must remain 0.0305 m/s, and the entry point must follow its continuous circular trajectory within 1e-9.</p></html>"));
   end MovingTangency;
 
   model ZeroResultant "Opposing forces can have a zero resultant at nonzero tension"
@@ -92,7 +109,7 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
   equation
     assert(abs(wrap.normalForce) < 1e-12 and abs(wrap.arcLength) < 1e-12,
       "A straight-through taut web must have zero wrap and zero resultant");
-    annotation(Documentation(info="<html><p>Zero wrap is valid geometry in isolation; the material contact model separately requires positive wrap length.</p></html>"));
+    annotation(Documentation(info = "<html><h4>Zero resultant</h4><p>Applies equal opposing nonzero tensions to a straight-through web. Both resultant force and wrap length must vanish within 1e-12; zero wrap is valid for this isolated geometry, although the material contact model requires positive wrap length.</p></html>"));
   end ZeroResultant;
 
   model SpanGradient "Wrap colour meets the adjacent span at both tangencies"
@@ -130,27 +147,27 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
       "A middle segment must take the colour of its own tension, so the band ramps instead of holding one mean colour");
     assert(max(abs(wrap.arcSegmentColor[wrap.drawingSegments,:] - expectedLast)) < 1e-9,
       "The last drawn segment must take the colour of its own tension so the wrap meets its exit span");
-    annotation(Documentation(info="<html><p>Drives unequal boundary tensions and checks that the drawn wrap ramps between their colours, which is what removes the seam against the neighbouring span.</p></html>"));
+    annotation(Documentation(info = "<html><h4>Span gradient</h4><p>Applies unequal boundary tensions and compares the first, middle and last drawn wrap colours with <code>stressColor</code> evaluated at their own segment tensions. Every RGB component must agree within 1e-9 so the wrap follows a tension-dependent ramp rather than one mean colour.</p></html>"));
   end SpanGradient;
 
   model InvalidDirection "An invalid winding direction must be diagnosed"
     extends LoadedWrap(wrap(rotationDirection=0));
-    annotation(Documentation(info="<html><p>Expected initialization failure for a direction other than -1 or +1.</p></html>"));
+    annotation(Documentation(info = "<html><h4>Invalid wrap direction</h4><p>Sets the wrap direction to zero. Initialization is expected to fail with the diagnostic that <code>rotationDirection</code> must be -1 or +1.</p></html>"));
   end InvalidDirection;
 
   model InvalidRadius "A zero mechanical radius must be diagnosed"
     extends LoadedWrap(wrap(radius=0));
-    annotation(Documentation(info="<html><p>Expected initialization failure for zero roll radius.</p></html>"));
+    annotation(Documentation(info = "<html><h4>Invalid wrap radius</h4><p>Sets the mechanical wrap radius to zero. Initialization is expected to fail with the positive-radius, web-width and thickness diagnostic.</p></html>"));
   end InvalidRadius;
 
   model ZeroTension "A slack boundary must be diagnosed"
     extends LoadedWrap(entryLoad={0,0,0},entryAlignment={-1,0,0});
-    annotation(Documentation(info="<html><p>Expected initialization failure because zero tension cannot define a contact direction.</p></html>"));
+    annotation(Documentation(info = "<html><h4>Zero tension</h4><p>Applies zero entry tension while retaining a separate finite alignment direction. Initialization is expected to fail because the entry and exit spans must be taut.</p></html>"));
   end ZeroTension;
 
   model AxialOnlyForce "Nonzero tension along the roll axis does not define tangency"
     extends LoadedWrap(entryLoad={0,100,0},axialEntry=true);
-    annotation(Documentation(info="<html><p>Expected initialization failure because the projected entry force is zero.</p></html>"));
+    annotation(Documentation(info = "<html><h4>Axial-only force</h4><p>Applies a nonzero entry force entirely along the roller axis and prescribes the otherwise undefined entry angle. Initialization is expected to fail because the entry tension has no projection into the roll plane.</p></html>"));
   end AxialOnlyForce;
   annotation(Documentation(info = "<html>
 <h4>Web wrap checks</h4>

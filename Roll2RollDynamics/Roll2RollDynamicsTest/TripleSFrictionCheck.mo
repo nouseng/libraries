@@ -1,17 +1,36 @@
 within Roll2RollDynamicsTest;
 model TripleSFrictionCheck
   "Validation harness for the analytic web-to-roll friction law"
-  inner Modelica.Mechanics.MultiBody.World world(enableAnimation = false);
+  extends Modelica.Icons.Example;
+  inner Modelica.Mechanics.MultiBody.World world(enableAnimation = false)
+    annotation(Placement(visible = true, transformation(origin = {-160, 240},
+      extent = {{-10, -10}, {10, 10}})));
   Modelica.Mechanics.MultiBody.Parts.Fixed surfaceMount(animation = false)
-    "Roll surface held still";
+    "Roll surface held still"
+    annotation(Placement(visible = true, transformation(origin = {-80, 160},
+      extent = {{-10, -10}, {10, 10}})));
   Modelica.Mechanics.MultiBody.Parts.Fixed vectorSurfaceMount(animation = false)
-    "Roll surface held still for the friction-circle case";
-  Modelica.Mechanics.Translational.Sources.Speed webSpeed(exact = true);
-  Modelica.Mechanics.Translational.Sources.Speed vectorWebSpeed(exact = true);
-  Modelica.Mechanics.Translational.Sources.Speed vectorLateralSpeed(exact = true);
-  Modelica.Blocks.Sources.Constant webVelocity(k = 0.05);
-  Modelica.Blocks.Sources.Constant vectorWebVelocity(k = 0.003);
-  Modelica.Blocks.Sources.Constant vectorLateralVelocity(k = 0.004);
+    "Roll surface held still for the friction-circle case"
+    annotation(Placement(visible = true, transformation(origin = {-80, 80},
+      extent = {{-10, -10}, {10, 10}})));
+  Modelica.Mechanics.Translational.Sources.Speed webSpeed(exact = true)
+    annotation(Placement(visible = true, transformation(origin = {0, 80},
+      extent = {{-10, -10}, {10, 10}})));
+  Modelica.Mechanics.Translational.Sources.Speed vectorWebSpeed(exact = true)
+    annotation(Placement(visible = true, transformation(origin = {0, 0},
+      extent = {{-10, -10}, {10, 10}})));
+  Modelica.Mechanics.Translational.Sources.Speed vectorLateralSpeed(exact = true)
+    annotation(Placement(visible = true, transformation(origin = {0, -80},
+      extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Sources.Constant webVelocity(k = 0.05)
+    annotation(Placement(visible = true, transformation(origin = {-80, 0},
+      extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Sources.Constant vectorWebVelocity(k = 0.003)
+    annotation(Placement(visible = true, transformation(origin = {-80, -80},
+      extent = {{-10, -10}, {10, 10}})));
+  Modelica.Blocks.Sources.Constant vectorLateralVelocity(k = 0.004)
+    annotation(Placement(visible = true, transformation(origin = {-80, -160},
+      extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Utilities.Parts.WebFriction friction(
     radius = 0.1,
     rotationDirection = 1,
@@ -22,7 +41,9 @@ model TripleSFrictionCheck
       muSliding = 0.22,
       vAdhesion = 0.001,
       vSlide = 0.05,
-      viscousSlope = 5));
+      viscousSlope = 5))
+    annotation(Placement(visible = true, transformation(origin = {80, 40},
+      extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Utilities.Parts.WebFriction vectorFriction(
     radius = 0.1,
     rotationDirection = 1,
@@ -34,7 +55,9 @@ model TripleSFrictionCheck
       muSliding = 0.22,
       vAdhesion = 0.001,
       vSlide = 0.003,
-      viscousSlope = 5));
+      viscousSlope = 5))
+    annotation(Placement(visible = true, transformation(origin = {80, -40},
+      extent = {{-10, -10}, {10, 10}})));
   output Modelica.Units.SI.Velocity slipVelocity = friction.slipVelocity
     "Descriptive contact slip output";
   output Modelica.Units.SI.Force tractionCapacity = friction.tractionCapacity
@@ -55,21 +78,29 @@ initial equation
   vectorFriction.contactFlange.s=0;
 equation
   connect(webVelocity.y, webSpeed.v_ref)
-    annotation(Line(points = {{-80, 40}, {-60, 40}, {-60, 20}}, color = {0, 0, 127}));
+    annotation(Line(visible = true, points = {{-69, 0}, {-12, 80}},
+      color = {0, 0, 127}, smooth = Smooth.None));
   connect(webSpeed.flange, friction.flange_a)
-    annotation(Line(points = {{-60, 0}, {-20, 0}, {-20, -10}}, color = {0, 127, 0}));
+    annotation(Line(visible = true, points = {{10, 80}, {73.5, 50}},
+      color = {0, 127, 0}, smooth = Smooth.None));
   connect(surfaceMount.frame_b, friction.frame_drum)
-    annotation(Line(points = {{40, 0}, {20, 0}, {20, -20}, {0, -20}}, color = {95, 95, 95}, thickness = 0.5));
+    annotation(Line(visible = true, points = {{-70, 160}, {80, 30}},
+      color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
   connect(vectorWebVelocity.y, vectorWebSpeed.v_ref)
-    annotation(Line(points = {{-80, -40}, {-60, -40}}, color = {0, 0, 127}));
+    annotation(Line(visible = true, points = {{-69, -80}, {-12, 0}},
+      color = {0, 0, 127}, smooth = Smooth.None));
   connect(vectorLateralVelocity.y, vectorLateralSpeed.v_ref)
-    annotation(Line(points = {{60, -40}, {80, -40}}, color = {0, 0, 127}));
+    annotation(Line(visible = true, points = {{-69, -160}, {-12, -80}},
+      color = {0, 0, 127}, smooth = Smooth.None));
   connect(vectorWebSpeed.flange, vectorFriction.flange_a)
-    annotation(Line(points = {{-60, -60}, {-20, -60}}, color = {0, 127, 0}));
+    annotation(Line(visible = true, points = {{10, 0}, {73.5, -30}},
+      color = {0, 127, 0}, smooth = Smooth.None));
   connect(vectorSurfaceMount.frame_b, vectorFriction.frame_drum)
-    annotation(Line(points = {{40, -60}, {0, -60}}, color = {95, 95, 95}, thickness = 0.5));
+    annotation(Line(visible = true, points = {{-70, 80}, {80, -50}},
+      color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
   connect(vectorLateralSpeed.flange, vectorFriction.lateralFlange)
-    annotation(Line(points = {{80, -60}, {20, -60}}, color = {0, 127, 0}));
+    annotation(Line(visible = true, points = {{10, -80}, {80, -30}},
+      color = {0, 127, 0}, smooth = Smooth.None));
   when terminal() then
     assert(abs(slipVelocity - 0.05) < 1e-12,
       "A stationary roll must see the prescribed web speed as slip");
@@ -91,6 +122,10 @@ equation
 <p>Prescribed web motion against stationary roll surfaces checks adhesion
 capacity, sliding friction and the viscous contribution. A second contact
 combines longitudinal and lateral slip to check the friction-circle magnitude
-and force directions.</p>
+and force directions. At termination, the scalar capacity and force must be
+35 N and 47 N, while the combined-slip force must have magnitude 24.5 N and
+components 14.7 N longitudinally and -19.6 N laterally.</p>
 </html>"));
+  annotation(
+    Diagram(coordinateSystem(extent = {{-200, -200}, {120, 280}})));
 end TripleSFrictionCheck;

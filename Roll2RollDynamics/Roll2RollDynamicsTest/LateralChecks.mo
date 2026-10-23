@@ -4,37 +4,64 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
 
   model SkewReachesWebCheck
     "Roll yaw reaches the web width while the tangent follows the imposed pull"
-    inner Roll2RollDynamics.WebWorld world;
+    extends Modelica.Icons.Example;
+    inner Roll2RollDynamics.WebWorld world
+      annotation(Placement(visible = true, transformation(origin = {-200, 240},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant squareEntryForce[3](k = {-100*cos(0.6),0,-100*sin(0.6)})
-      "Known force applied to the square roll's entry tangency frame";
+      "Known force applied to the square roll's entry tangency frame"
+      annotation(Placement(visible = true, transformation(origin = {-120, 160},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant squareExitForce[3](k = {100*cos(0.6),0,-100*sin(0.6)})
-      "Known force applied to the square roll's exit tangency frame";
+      "Known force applied to the square roll's exit tangency frame"
+      annotation(Placement(visible = true, transformation(origin = {-120, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant skewedEntryForce[3](k = {-100*cos(0.6),0,-100*sin(0.6)})
-      "Known force applied to the skewed roll's entry tangency frame";
+      "Known force applied to the skewed roll's entry tangency frame"
+      annotation(Placement(visible = true, transformation(origin = {-120, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant skewedExitForce[3](k = {100*cos(0.6),0,-100*sin(0.6)})
-      "Known force applied to the skewed roll's exit tangency frame";
+      "Known force applied to the skewed roll's exit tangency frame"
+      annotation(Placement(visible = true, transformation(origin = {-120, -80},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce squareEntryLoad(direction=1)
-      "External load on the square roll's entry frame";
+      "External load on the square roll's entry frame"
+      annotation(Placement(visible = true, transformation(origin = {40, 120},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce squareExitLoad(direction=-1)
-      "External load on the square roll's exit frame";
+      "External load on the square roll's exit frame"
+      annotation(Placement(visible = true, transformation(origin = {40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce skewedEntryLoad(direction=1)
-      "External load on the skewed roll's entry frame";
+      "External load on the skewed roll's entry frame"
+      annotation(Placement(visible = true, transformation(origin = {40, -40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce skewedExitLoad(direction=-1)
-      "External load on the skewed roll's exit frame";
+      "External load on the skewed roll's exit frame"
+      annotation(Placement(visible = true, transformation(origin = {40, -120},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Components.Fixed squareDrive
-      "Stationary shaft boundary for the square roll";
+      "Stationary shaft boundary for the square roll"
+      annotation(Placement(visible = true, transformation(origin = {-120, -160},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Components.Fixed skewedDrive
-      "Stationary shaft boundary for the skewed roll";
+      "Stationary shaft boundary for the skewed roll"
+      annotation(Placement(visible = true, transformation(origin = {-40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller square(
       yaw = 0,
       useSupport = true,
       useFlange = true,
-      fixedInitialWebState = true) "Roll with no yaw";
+      fixedInitialWebState = true) "Roll with no yaw"
+      annotation(Placement(visible = true, transformation(origin = {120, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller skewed(
       yaw = 0.4,
       useSupport = true,
       useFlange = true,
-      fixedInitialWebState = true) "Roll yawed by 0.4 rad";
+      fixedInitialWebState = true) "Roll yawed by 0.4 rad"
+      annotation(Placement(visible = true, transformation(origin = {120, -40},
+        extent = {{-10, -10}, {10, 10}})));
     // The local x-axis follows the imposed pull. The width is the roll axis
     // projected into the plane normal to that directed span.
     final parameter Real rollAxis[3]={-sin(0.4),cos(0.4),0}
@@ -52,18 +79,42 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
     Real skewedTiltResolved[3]
       "Skewed roll's exit-frame cross-machine axis resolved into world coordinates";
   equation
-    connect(world.frame_b, square.frame_support);
-    connect(world.frame_b, skewed.frame_support);
-    connect(squareEntryForce.y, squareEntryLoad.force);
-    connect(squareEntryLoad.frame_b, square.frame_a);
-    connect(squareExitForce.y, squareExitLoad.force);
-    connect(squareExitLoad.frame_b, square.frame_b);
-    connect(skewedEntryForce.y, skewedEntryLoad.force);
-    connect(skewedEntryLoad.frame_b, skewed.frame_a);
-    connect(skewedExitForce.y, skewedExitLoad.force);
-    connect(skewedExitLoad.frame_b, skewed.frame_b);
-    connect(squareDrive.flange, square.flange_a);
-    connect(skewedDrive.flange, skewed.flange_a);
+    connect(world.frame_b, square.frame_support)
+      annotation(Line(visible = true, points = {{-190, 240}, {120, 30}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(world.frame_b, skewed.frame_support)
+      annotation(Line(visible = true, points = {{-190, 240}, {120, -50}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(squareEntryForce.y, squareEntryLoad.force)
+      annotation(Line(visible = true, points = {{-109, 160}, {30, 120}},
+        color = {0, 0, 127}, smooth = Smooth.None));
+    connect(squareEntryLoad.frame_b, square.frame_a)
+      annotation(Line(visible = true, points = {{50, 120}, {110, 40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(squareExitForce.y, squareExitLoad.force)
+      annotation(Line(visible = true, points = {{-109, 80}, {30, 40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
+    connect(squareExitLoad.frame_b, square.frame_b)
+      annotation(Line(visible = true, points = {{50, 40}, {130, 40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(skewedEntryForce.y, skewedEntryLoad.force)
+      annotation(Line(visible = true, points = {{-109, 0}, {30, -40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
+    connect(skewedEntryLoad.frame_b, skewed.frame_a)
+      annotation(Line(visible = true, points = {{50, -40}, {110, -40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(skewedExitForce.y, skewedExitLoad.force)
+      annotation(Line(visible = true, points = {{-109, -80}, {30, -120}},
+        color = {0, 0, 127}, smooth = Smooth.None));
+    connect(skewedExitLoad.frame_b, skewed.frame_b)
+      annotation(Line(visible = true, points = {{50, -120}, {130, -40}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(squareDrive.flange, square.flange_a)
+      annotation(Line(visible = true, points = {{-120, -160}, {120, 40}},
+        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(skewedDrive.flange, skewed.flange_a)
+      annotation(Line(visible = true, points = {{-40, 0}, {120, -40}},
+        color = {0, 0, 0}, smooth = Smooth.None));
     squareTiltResolved = Modelica.Mechanics.MultiBody.Frames.resolve1(
       square.frame_b.frame.R, {0, 1, 0});
     skewedTiltResolved = Modelica.Mechanics.MultiBody.Frames.resolve1(
@@ -79,6 +130,9 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
       "The imposed in-plane web direction must have zero world cross-machine skew");
     assert(Modelica.Math.Vectors.length(skewedTiltResolved-expectedWidth)<1e-9,
       "Roll yaw must reach the transverse web width direction");
+    annotation(
+      Diagram(coordinateSystem(extent = {{-240, -200}, {160, 280}})));
+    annotation(Documentation(info = "<html><h4>Skew reaches the web</h4><p>Compares square and yawed stationary rolls under the same in-plane pulls. The tangency width must remain perpendicular to each pull, and the yawed width must equal the roller axis projected normal to the imposed span direction, within 1e-9.</p></html>"));
   end SkewReachesWebCheck;
 
   model SpanStringForceCheck
@@ -86,15 +140,23 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
     extends Modelica.Icons.Example;
 
     inner Roll2RollDynamics.WebWorld world(lateralDynamics = true)
-      "Line defaults, with out-of-plane dynamics on";
+      "Line defaults, with out-of-plane dynamics on"
+      annotation(Placement(visible = true, transformation(origin = {-120, 120},
+        extent = {{-10, -10}, {10, 10}})));
 
     SpanForceBoundary anchorA(position = {0, 0, 0})
-      "Upstream span end, on centre";
+      "Upstream span end, on centre"
+      annotation(Placement(visible = true, transformation(origin = {-40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     SpanForceBoundary anchorB(position = {1, 0.01, 0})
-      "Downstream span end, offset 0.01 m across the machine";
+      "Downstream span end, offset 0.01 m across the machine"
+      annotation(Placement(visible = true, transformation(origin = {-40, -40},
+        extent = {{-10, -10}, {10, 10}})));
 
     Roll2RollDynamics.Components.Belt span(tensionNominal = 150)
-      "Span under test";
+      "Span under test"
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{-10, -10}, {10, 10}})));
 
     final parameter Modelica.Units.SI.Length spanLength =
       sqrt(1^2 + 0.01^2 + Roll2RollDynamics.Utilities.Types.lengthTol^2)
@@ -106,8 +168,12 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
     Modelica.Units.SI.Force forceB[3] "Exit force resolved in world coordinates";
 
   equation
-    connect(anchorA.port, span.frame_a);
-    connect(anchorB.port, span.frame_b);
+    connect(anchorA.port, span.frame_a)
+      annotation(Line(visible = true, points = {{-30, 40}, {30, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(anchorB.port, span.frame_b)
+      annotation(Line(visible = true, points = {{-30, -40}, {50, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     forceA = Modelica.Mechanics.MultiBody.Frames.resolve1(
       span.frame_a.frame.R, span.frame_a.frame.f);
     forceB = Modelica.Mechanics.MultiBody.Frames.resolve1(
@@ -126,19 +192,20 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
     end when;
 
     annotation(experiment(StopTime = 0.01, Tolerance = 1e-8),
-      Documentation(info = "<html>
-  <p>Two anchors hold a span with one end offset across the machine. The string
-  force is not written anywhere: it is what the tension along the three
-  dimensional span direction already does.</p>
-  </html>"));
+      Documentation(info = "<html><h4>Span string force check</h4><p>Holds a span between stationary anchors with a 0.01 m lateral offset over a 1 m longitudinal separation. At termination, geometry must give the expected skew and the frame forces must form an equal-and-opposite lateral pull of tension times skew, without a prescribed lateral force.</p></html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -100}, {100, 160}})));
   end SpanStringForceCheck;
 
   model SpanForceBoundary
     "Closed stationary endpoint with free in-plane tangency"
+    extends Modelica.Icons.Example;
     parameter Modelica.Units.SI.Position position[3]=zeros(3) "Endpoint position";
     Modelica.Units.SI.Angle yaw(start=0) "Free tangent yaw";
     Modelica.Units.SI.Angle skew(start=0) "Free tangent skew";
-    Roll2RollDynamics.Utilities.Interfaces.RollPort port "Closed span endpoint";
+    Roll2RollDynamics.Utilities.Interfaces.RollPort port "Closed span endpoint"
+      annotation(Placement(visible = true, transformation(origin = {100, 0},
+        extent = {{-10, -10}, {10, 10}})));
   equation
     Connections.root(port.frame.R);
     port.frame.r_0=position;
@@ -147,12 +214,18 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
       cos(yaw)*port.spanDirection[1]-sin(yaw)*port.spanDirection[3]);
     port.frame.R=Modelica.Mechanics.MultiBody.Frames.axesRotations(
       {2,3,1},{yaw,skew,0},{der(yaw),der(skew),0});
+    annotation(
+      Diagram(coordinateSystem(extent = {{-100, -100}, {140, 100}})));
+    annotation(Documentation(info = "<html><h4>Span force boundary</h4><p>Helper boundary for the span string-force test that fixes endpoint position and material transport while allowing tangent alignment. It supplies the stationary endpoint; the parent test verifies the resulting span skew and forces.</p></html>"));
   end SpanForceBoundary;
 
   model RollLateralFrictionCheck
     "A yawed roll drags the web across the machine against a restraint"
+    extends Modelica.Icons.Example;
     inner Roll2RollDynamics.WebWorld world(lateralDynamics = true)
-      "Line defaults, with out-of-plane dynamics on";
+      "Line defaults, with out-of-plane dynamics on"
+      annotation(Placement(visible = true, transformation(origin = {-160, 160},
+        extent = {{-10, -10}, {10, 10}})));
     parameter Modelica.Units.SI.TranslationalSpringConstant spanStiffness = 2000
       "String stiffness of the span standing in for whatever holds the web";
     Roll2RollDynamics.Components.Roller roll(
@@ -160,27 +233,51 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
       useFlange = true,
       yaw = 0.02,
       fixedInitialWebState = true,
-      fixedInitialAngle = true) "Roll yawed by 0.02 rad";
+      fixedInitialAngle = true) "Roll yawed by 0.02 rad"
+      annotation(Placement(visible = true, transformation(origin = {80, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Sources.ConstantSpeed drive(
-      w_fixed = world.lineSpeed/world.rollRadius) "Surface speed master";
+      w_fixed = world.lineSpeed/world.rollRadius) "Surface speed master"
+      annotation(Placement(visible = true, transformation(origin = {-80, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.Constant entryLoad[3](
-      k = {-150*cos(0.6), 0, -150*sin(0.6)}) "Entry tension, angled below the roll";
+      k = {-150*cos(0.6), 0, -150*sin(0.6)}) "Entry tension, angled below the roll"
+      annotation(Placement(visible = true, transformation(origin = {-80, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Sources.RealExpression exitLoad[3](
       y = {150*cos(0.6), -spanStiffness*roll.rollerVariables.lateralPosition, -150*sin(0.6)})
-      "Exit tension, angled below the roll, pulling the web back the way a skewed span would";
+      "Exit tension, angled below the roll, pulling the web back the way a skewed span would"
+      annotation(Placement(visible = true, transformation(origin = {-80, -80},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce entryForce(direction=1)
-      "Applies the entry tension to the roll";
+      "Applies the entry tension to the roll"
+      annotation(Placement(visible = true, transformation(origin = {0, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.WebForce exitForce(direction=-1)
-      "Applies the exit tension to the roll";
+      "Applies the exit tension to the roll"
+      annotation(Placement(visible = true, transformation(origin = {0, -40},
+        extent = {{-10, -10}, {10, 10}})));
     output Modelica.Units.SI.Position settledLateral = roll.rollerVariables.lateralPosition
       "Lateral position, read from the script once settled";
   equation
-    connect(world.frame_b, roll.frame_support);
-    connect(drive.flange, roll.flange_a);
-    connect(entryLoad.y, entryForce.force);
-    connect(exitLoad.y, exitForce.force);
-    connect(entryForce.frame_b, roll.frame_a);
-    connect(exitForce.frame_b, roll.frame_b);
+    connect(world.frame_b, roll.frame_support)
+      annotation(Line(visible = true, points = {{-150, 160}, {80, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(drive.flange, roll.flange_a)
+      annotation(Line(visible = true, points = {{-70, 80}, {80, 0}},
+        color = {0, 0, 0}, smooth = Smooth.None));
+    connect(entryLoad.y, entryForce.force)
+      annotation(Line(visible = true, points = {{-69, 0}, {-10, 40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
+    connect(exitLoad.y, exitForce.force)
+      annotation(Line(visible = true, points = {{-69, -80}, {-10, -40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
+    connect(entryForce.frame_b, roll.frame_a)
+      annotation(Line(visible = true, points = {{10, 40}, {70, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+    connect(exitForce.frame_b, roll.frame_b)
+      annotation(Line(visible = true, points = {{10, -40}, {90, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     // The web is dragged toward the side the roll is yawed to and settles where
     // the exit load's lateral pull balances the friction. Read settledLateral
     // once settled; it cannot be asserted, because at t = 0 the web has not
@@ -199,9 +296,11 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
     annotation(
       experiment(StartTime = 0, StopTime = 10, Interval = 0.01),
       Documentation(info = "<html>
+  <h4>Roll lateral friction check</h4>
   <p>A yawed roll drags the web across the machine by lateral friction, and the
   exit load carries a lateral term standing in for the spans that would otherwise
-  hold it. The web settles where that pull balances the friction force.</p>
+  hold it. After the full 10 s run, the lateral position must exceed 0.005 m and
+  the support reaction must match lateral friction within 1%.</p>
   <p>The restraint is applied to <code>frame_b</code>, not to a lateral
   connector, because the roll has none. It therefore loads the cross-machine
   joint the way a span would, and the support reaction is whatever the joint
@@ -220,6 +319,8 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
   implementation to be settled and for a wrong sign to have diverged
   negative.</p>
   </html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-200, -120}, {120, 200}})));
   end RollLateralFrictionCheck;
 
   model WebFrictionCircleCheck
@@ -231,9 +332,13 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
       "Traction characteristic under test";
 
     inner Roll2RollDynamics.WebWorld world(enableAnimation = false)
-      "Shared defaults and multibody root";
+      "Shared defaults and multibody root"
+      annotation(Placement(visible = true, transformation(origin = {-120, 160},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Parts.Fixed surfaceMount(animation = false)
-      "Roll surface held still";
+      "Roll surface held still"
+      annotation(Placement(visible = true, transformation(origin = {-40, 80},
+        extent = {{-10, -10}, {10, 10}})));
 
     Roll2RollDynamics.Utilities.Parts.WebFriction contact(
       radius = 0.1,
@@ -243,21 +348,33 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
       lateral = true,
       referenceDensity=0.01, meanTension=150,
       lateralDrift = 0)
-      "Contact patch resolving both channels";
+      "Contact patch resolving both channels"
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{-10, -10}, {10, 10}})));
 
     Modelica.Mechanics.Translational.Sources.ConstantSpeed webDrive(v_fixed = 0.5)
-      "Web driven fast enough to saturate the machine direction";
+      "Web driven fast enough to saturate the machine direction"
+      annotation(Placement(visible = true, transformation(origin = {-40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Translational.Sources.ConstantSpeed lateralDrive(v_fixed = 0.5)
-      "Cross-machine web motion, at the same slip speed as the machine direction";
+      "Cross-machine web motion, at the same slip speed as the machine direction"
+      annotation(Placement(visible = true, transformation(origin = {-40, -80},
+        extent = {{-10, -10}, {10, 10}})));
 
     output Real muMachine = contact.mu "Signed machine-direction coefficient";
     output Modelica.Units.SI.Force lateralForce = -contact.lateralForce
       "Cross-machine friction force";
 
   equation
-    connect(webDrive.flange, contact.flange_a);
-    connect(surfaceMount.frame_b, contact.frame_drum);
-    connect(lateralDrive.flange, contact.lateralFlange);
+    connect(webDrive.flange, contact.flange_a)
+      annotation(Line(visible = true, points = {{-30, 0}, {33.5, 10}},
+        color = {0, 127, 0}, smooth = Smooth.None));
+    connect(surfaceMount.frame_b, contact.frame_drum)
+      annotation(Line(visible = true, points = {{-30, 80}, {40, -10}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(lateralDrive.flange, contact.lateralFlange)
+      annotation(Line(visible = true, points = {{-30, -80}, {40, 10}},
+        color = {0, 127, 0}, smooth = Smooth.None));
 
     // Both channels slip at 0.5 m/s, well past vSlide, so the sliding
     // coefficient 0.3 is shared between them at 45 degrees: each channel sees
@@ -271,11 +388,9 @@ package LateralChecks "Lateral motion and skewed-contact regressions"
     end when;
 
     annotation(experiment(StopTime = 2, Tolerance = 1e-8),
-      Documentation(info = "<html>
-  <p>Drives the machine direction and the cross-machine direction at equal slip
-  speeds, both well into sliding. A friction circle shares one saturated
-  coefficient between the two channels rather than giving each the full value.</p>
-  </html>"));
+      Documentation(info = "<html><h4>Web friction circle check</h4><p>Drives longitudinal and lateral slip equally at 0.5 m/s, beyond the sliding threshold. The shared sliding coefficient must resolve to <code>0.3/sqrt(2)</code> longitudinally and a lateral force of <code>100*0.3/sqrt(2)</code> N, within the terminal assertion tolerances.</p></html>"));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -120}, {100, 200}})));
   end WebFrictionCircleCheck;
 
   annotation(Documentation(info = "<html><h4>Lateral checks</h4>

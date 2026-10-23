@@ -4,6 +4,7 @@ package ExamplePhysicsChecks "Boundary physics and traction-capacity regressions
 
   model IdlerRegressionFixture
     "Viscous bearing drag makes an idler lag the web it carries"
+    extends Modelica.Icons.Example;
 
     inner Roll2RollDynamics.WebWorld world
       annotation(Placement(transformation(extent = {{-120, 60}, {-100, 80}})));
@@ -78,25 +79,35 @@ package ExamplePhysicsChecks "Boundary physics and traction-capacity regressions
       *(entryRoll.frame_a.stretch + entryRoll.frame_b.stretch)
       /(exitRoll.frame_a.stretch + exitRoll.frame_b.stretch);
     connect(drive.flange, exitRoll.flange_a)
-      annotation(Line(points = {{110, -40}, {60, -40}, {60, -10}}));
+      annotation(Line(visible = true, points = {{110, -40}, {60, 0}},
+        color = {0, 0, 0}, smooth = Smooth.None));
     connect(infeed.flange, entryRoll.flange_a)
-      annotation(Line(points = {{-90, -40}, {-60, -40}, {-60, -10}}));
+      annotation(Line(visible = true, points = {{-90, -40}, {-60, 0}},
+        color = {0, 0, 0}, smooth = Smooth.None));
     connect(upstreamTension.y, upstreamLoad.force)
-      annotation(Line(points = {{-119, 40}, {-112, 40}}, color = {0, 0, 127}));
+      annotation(Line(visible = true, points = {{-119, 40}, {-110, 40}},
+        color = {0, 0, 127}, smooth = Smooth.None));
     connect(upstreamLoad.frame_b, entryRoll.frame_a)
-      annotation(Line(points = {{-90, 40}, {-70, 40}, {-70, 0}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{-90, 40}, {-70, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(downstreamTension.y, downstreamLoad.force)
-      annotation(Line(points = {{3.25, 25}, {-2.75, 25}, {-2.75, -25}, {2.25, -25}}, color = {0, 0, 127}, origin = {75.75, 25}));
+      annotation(Line(visible = true, points = {{79, 50}, {80, 0}},
+        color = {0, 0, 127}, smooth = Smooth.None));
     connect(downstreamLoad.frame_b, exitRoll.frame_b)
-      annotation(Line(points = {{80, 0}, {70, 0}}, color = {95, 95, 95}, thickness = 0.5));
+      annotation(Line(visible = true, points = {{100, 0}, {70, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(entryRoll.frame_b, spanIn.frame_a)
-      annotation(Line(points = {{-50, 0}, {-40, 0}}, color = {0, 128, 180}, thickness = 2));
+      annotation(Line(visible = true, points = {{-50, 0}, {-40, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(spanIn.frame_b, idler.frame_a)
-      annotation(Line(points = {{-20, 0}, {-10, 0}}, color = {0, 128, 180}, thickness = 2));
+      annotation(Line(visible = true, points = {{-20, 0}, {-10, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(idler.frame_b, spanOut.frame_a)
-      annotation(Line(points = {{10, 0}, {20, 0}}, color = {0, 128, 180}, thickness = 2));
+      annotation(Line(visible = true, points = {{10, 0}, {20, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(spanOut.frame_b, exitRoll.frame_a)
-      annotation(Line(points = {{40, 0}, {50, 0}}, color = {0, 128, 180}, thickness = 2));
+      annotation(Line(visible = true, points = {{40, 0}, {50, 0}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
 
     // This regularized contact law develops traction at nonzero slip.
     when terminal() then
@@ -108,6 +119,9 @@ package ExamplePhysicsChecks "Boundary physics and traction-capacity regressions
         "The drag an idler takes must appear as a tension rise across it");
     end when;
 
+    annotation(
+      Diagram(coordinateSystem(extent = {{-170, -100}, {140, 110}})));
+    annotation(Documentation(info = "<html><h4>Idler regression fixture</h4><p>Helper fixture for the idler boundary test: two driven rolls accelerate a web around an undriven roll with viscous bearing drag. At the end of the run, positive slip must provide the bearing drag, and the tension rise must balance drag plus longitudinal momentum flux.</p></html>"));
   end IdlerRegressionFixture;
 
   model IdlerBoundaryPhysicsCheck
@@ -126,6 +140,7 @@ package ExamplePhysicsChecks "Boundary physics and traction-capacity regressions
       assert(abs(exitRoll.rollerVariables.Ft + exitRoll.massFlowOut*exitRoll.webVelocityOut - exitRoll.massFlowIn*exitRoll.webVelocityIn - (exitRoll.rollerVariables.tensionOut - exitRoll.rollerVariables.tensionIn)) < 0.01,
         "Exit boundary tension is missing from the transport balance");
     end when;
+    annotation(Documentation(info = "<html><h4>Idler boundary physics check</h4><p>Runs the idler fixture to steady transport and checks both loaded line boundaries. From 110 s onward, idler traction and tension rise must balance drag and momentum flux within 2%; the final entry and exit transport-force residuals must each be below 0.01 N.</p></html>"));
   end IdlerBoundaryPhysicsCheck;
 
   model SteeringBoundaryPhysicsCheck
@@ -144,6 +159,7 @@ package ExamplePhysicsChecks "Boundary physics and traction-capacity regressions
       "Steering entry boundary force must supply the web momentum change");
     assert(abs(exitImpulse - exitRoll.webMomentum) < 1e-5,
       "Steering exit boundary force must supply the web momentum change");
+    annotation(Documentation(info = "<html><h4>Steering boundary physics check</h4><p>Integrates the force and momentum-flux balances at both ends of the steering example. Each accumulated impulse must agree with the corresponding wrapped-web momentum within 1e-5 N s throughout the run.</p></html>"));
   end SteeringBoundaryPhysicsCheck;
 
   model CapstanCapacityPhysicsCheck
@@ -165,32 +181,50 @@ package ExamplePhysicsChecks "Boundary physics and traction-capacity regressions
       "Wrapped traction capacity does not recover the capstan limit");
     assert(abs(transmissibleForce - smallRoll.rollerVariables.Fcap) < 1e-8,
       "Initial-tension form of the capstan bound must match the roller capacity");
+    annotation(Documentation(info = "<html><h4>Capstan capacity physics check</h4><p>Checks the open-belt example against the Euler capstan tension ratio and the equivalent initial-tension capacity formula. Both capacity identities must agree within 1e-8, while integrated net force must reproduce contact-web momentum within 1e-5 N s.</p></html>"));
   end CapstanCapacityPhysicsCheck;
 
   model CapstanFrictionSweepCheck
     "Traction recovers Euler's ratio over wrap angle and reverses dissipatively"
-    inner Modelica.Mechanics.MultiBody.World world(enableAnimation = false);
+    extends Modelica.Icons.Example;
+    inner Modelica.Mechanics.MultiBody.World world(enableAnimation = false)
+      annotation(Placement(visible = true, transformation(origin = {-120, 240},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Parts.Fixed mount[3](each animation = false)
-      "Stationary drum frames";
+      "Stationary drum frames"
+      annotation(Placement(visible = true, transformation(origin = {-40, 160},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Translational.Sources.ConstantSpeed speed[3](
-      v_fixed = {-0.001, 0, 0.001}) "Reverse, locked and forward contact motion";
+      v_fixed = {-0.001, 0, 0.001}) "Reverse, locked and forward contact motion"
+      annotation(Placement(visible = true, transformation(origin = {-40, 80},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Utilities.Parts.WebFriction contact[3](
       each radius = 0.1,
       each meanTension = 150,
       each wrapAngle = 4*time,
       each traction(muAdhesion = 0.35, muSliding = 0.22,
         vAdhesion = 0.001, vSlide = 0.003))
-      "Contacts sweeping from zero to more than half a turn";
+      "Contacts sweeping from zero to more than half a turn"
+      annotation(Placement(visible = true, transformation(origin = {40, 40},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Parts.Fixed vectorMount(animation = false)
-      "Stationary drum for combined slip";
+      "Stationary drum for combined slip"
+      annotation(Placement(visible = true, transformation(origin = {-40, 0},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Translational.Sources.ConstantSpeed longitudinal(
-      v_fixed = 0.0006) "Longitudinal part of adhesion-peak slip";
+      v_fixed = 0.0006) "Longitudinal part of adhesion-peak slip"
+      annotation(Placement(visible = true, transformation(origin = {-40, -80},
+        extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Translational.Sources.ConstantSpeed lateral(
-      v_fixed = 0.0008) "Lateral part of adhesion-peak slip";
+      v_fixed = 0.0008) "Lateral part of adhesion-peak slip"
+      annotation(Placement(visible = true, transformation(origin = {-40, -160},
+        extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Utilities.Parts.WebFriction vectorContact(
       radius = 0.1, meanTension = 150, wrapAngle = 4*time, lateral = true,
       traction(muAdhesion = 0.35, muSliding = 0.22,
-        vAdhesion = 0.001, vSlide = 0.003)) "One shared vector traction budget";
+        vAdhesion = 0.001, vSlide = 0.003)) "One shared vector traction budget"
+      annotation(Placement(visible = true, transformation(origin = {40, -40},
+        extent = {{-10, -10}, {10, 10}})));
   initial equation
     for i in 1:3 loop
       contact[i].flange_a.s = 0;
@@ -203,14 +237,24 @@ package ExamplePhysicsChecks "Boundary physics and traction-capacity regressions
     vectorContact.lateralFlange.s = 0;
   equation
     for i in 1:3 loop
-      connect(mount[i].frame_b, contact[i].frame_drum);
-      connect(speed[i].flange, contact[i].flange_a);
+      connect(mount[i].frame_b, contact[i].frame_drum)
+      annotation(Line(visible = true, points = {{-30, 160}, {40, 30}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      connect(speed[i].flange, contact[i].flange_a)
+      annotation(Line(visible = true, points = {{-30, 80}, {33.5, 50}},
+        color = {0, 127, 0}, smooth = Smooth.None));
       assert(contact[i].longitudinalForce*contact[i].slipVelocity >= -1e-10,
         "Contact friction must dissipate power in both directions");
     end for;
-    connect(vectorMount.frame_b, vectorContact.frame_drum);
-    connect(longitudinal.flange, vectorContact.flange_a);
-    connect(lateral.flange, vectorContact.lateralFlange);
+    connect(vectorMount.frame_b, vectorContact.frame_drum)
+      annotation(Line(visible = true, points = {{-30, 0}, {40, -50}},
+        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(longitudinal.flange, vectorContact.flange_a)
+      annotation(Line(visible = true, points = {{-30, -80}, {33.5, -30}},
+        color = {0, 127, 0}, smooth = Smooth.None));
+    connect(lateral.flange, vectorContact.lateralFlange)
+      annotation(Line(visible = true, points = {{-30, -160}, {40, -30}},
+        color = {0, 127, 0}, smooth = Smooth.None));
     assert(abs((300 - 2*contact[3].centrifugalTension + contact[3].longitudinalForce)/
         (300 - 2*contact[3].centrifugalTension - contact[3].longitudinalForce) - exp(0.35*4*time)) < 1e-8,
       "Forward adhesion-peak force must recover Euler's ratio at every wrap angle");
@@ -225,6 +269,9 @@ package ExamplePhysicsChecks "Boundary physics and traction-capacity regressions
         + vectorContact.lateralForce*0.6) < 1e-7,
       "The vector force must oppose the slip direction");
     annotation(experiment(StopTime = 1, Interval = 0.005, Tolerance = 1e-8));
+    annotation(
+      Diagram(coordinateSystem(extent = {{-160, -200}, {100, 280}})));
+    annotation(Documentation(info = "<html><h4>Capstan friction sweep check</h4><p>Sweeps wrap angle from zero to 4 rad for forward, reverse, stationary and combined-slip contacts. The adhesion-peak force must recover the Euler ratio, reverse slip must reverse traction, zero slip must give zero force, and combined slip must share one dissipative capstan force budget.</p></html>"));
   end CapstanFrictionSweepCheck;
 
   annotation(Documentation(info = "<html><h4>Example physics checks</h4>
