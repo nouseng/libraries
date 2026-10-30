@@ -8,7 +8,7 @@ was trained in.
 
 Component details and the blog series are on
 [nouseng.co/libraries/atelier/microduck](https://www.nouseng.co/libraries/atelier/microduck/)
-and [Why Rebuild a Walking Robot Duck in Modelica?](https://www.nouseng.co/posts/microduck-why-modelica/).
+and [Why Rebuild a Walking Robot Duck in Modelica?](https://nouseng.co/libraries/atelier/microduck/why-modelica/).
 
 ## What it models
 
