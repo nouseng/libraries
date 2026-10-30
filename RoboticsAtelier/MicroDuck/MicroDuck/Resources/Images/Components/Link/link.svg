@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 290" font-family="Segoe UI, DejaVu Sans, sans-serif" font-size="15" fill="#333">
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#333"/>
+    </marker>
+    <marker id="arrowGray" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#888"/>
+    </marker>
+    <marker id="arrowBlue" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#0080b4"/>
+    </marker>
+  </defs>
+
+  <!-- parent frame and offset -->
+  <rect x="40" y="152" width="36" height="36" fill="#fff" stroke="#00007f" stroke-width="2"/>
+  <text x="34" y="212">frame_a</text>
+  <text x="34" y="231" fill="#777">parent link</text>
+  <line x1="76" y1="170" x2="206" y2="170" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="134" y="160">r</text>
+
+  <!-- joint frame axes nx, ny at phi = 0 -->
+  <line x1="230" y1="170" x2="372" y2="170" stroke="#888" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowGray)"/>
+  <text x="378" y="175" fill="#777">nx</text>
+  <line x1="230" y1="170" x2="230" y2="62" stroke="#888" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrowGray)"/>
+  <text x="238" y="66" fill="#777">ny</text>
+
+  <!-- body, rotated by phi about z -->
+  <g transform="rotate(-25 230 170)">
+    <rect x="230" y="157" width="232" height="26" rx="8" fill="#aca499" stroke="#404040" stroke-width="1.5"/>
+    <circle cx="410" cy="170" r="8" fill="#fff" stroke="#404040" stroke-width="1.5"/>
+    <line x1="404" y1="164" x2="416" y2="176" stroke="#404040" stroke-width="1.5"/>
+    <line x1="416" y1="164" x2="404" y2="176" stroke="#404040" stroke-width="1.5"/>
+    <line x1="230" y1="170" x2="360" y2="170" stroke="#0080b4" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+    <line x1="230" y1="170" x2="230" y2="96" stroke="#0080b4" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+  </g>
+  <text x="196" y="92" fill="#0080b4" text-anchor="end">frame_b</text>
+  <text x="482" y="62">body: m, rCM,</text>
+  <text x="482" y="81">i11 to i32</text>
+
+  <!-- joint angle -->
+  <path d="M340,170 A110,110 0 0 0 329.7,123.5" fill="none" stroke="#0080b4" stroke-width="2" marker-end="url(#arrowBlue)"/>
+  <text x="346" y="150" fill="#0080b4">phi</text>
+
+  <!-- servo at the joint -->
+  <rect x="198" y="186" width="64" height="44" rx="6" fill="#42474d" stroke="#404040" stroke-width="1.5"/>
+  <circle cx="230" cy="170" r="20" fill="#d8d8d4" stroke="#404040" stroke-width="1.5"/>
+  <circle cx="230" cy="170" r="4" fill="#404040"/>
+  <text x="230" y="214" fill="#fff" font-size="12" text-anchor="middle">XL330</text>
+  <line x1="120" y1="262" x2="190" y2="214" stroke="#00007f" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="34" y="268" fill="#00007f">phiRef</text>
+  <text x="276" y="214">PositionServo, joint axis z</text>
+  <text x="276" y="233" fill="#777">out of the page</text>
+  <text x="276" y="256">2&#176; gear play to the link;</text>
+  <text x="276" y="275">encoder reads phi</text>
+</svg>

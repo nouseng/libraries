@@ -1,0 +1,11 @@
+// Checks every model of the MicroDuck and MicroDuckTest libraries
+// usage: run omc from the Microduck directory:  omc tools/check_libraries.mos
+loadModel(Modelica, {"4.1.0"});
+loadFile("MicroDuck/package.mo");
+loadFile("MicroDuckTest/package.mo");
+getErrorString();
+print("=== checkAllModelsRecursive MicroDuck\n");
+checkAllModelsRecursive(MicroDuck, checkProtected = true);
+print("=== checkAllModelsRecursive MicroDuckTest\n");
+checkAllModelsRecursive(MicroDuckTest, checkProtected = true);
+getErrorString();

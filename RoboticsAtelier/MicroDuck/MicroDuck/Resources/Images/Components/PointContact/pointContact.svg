@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 270" font-family="Segoe UI, DejaVu Sans, sans-serif" font-size="15" fill="#333">
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#333"/>
+    </marker>
+    <marker id="arrowBlue" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+      <path d="M0,0 L12,5 L0,10 z" fill="#0080b4"/>
+    </marker>
+    <marker id="arrowRed" markerUnits="userSpaceOnUse" markerWidth="12" markerHeight="10" refX="11" refY="5" orient="auto">
+      <path d="M0,0 L12,5 L0,10 z" fill="#c0392b"/>
+    </marker>
+    <pattern id="hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#999" stroke-width="2"/>
+    </pattern>
+  </defs>
+
+  <!-- ground plane, frame_a -->
+  <rect x="30" y="200" width="540" height="26" fill="url(#hatch)" stroke="none"/>
+  <line x1="30" y1="200" x2="570" y2="200" stroke="#333" stroke-width="2"/>
+  <text x="400" y="192">ground plane, frame_a</text>
+
+  <!-- sole corner, penetrating by -h -->
+  <path d="M150,212 L330,212 Q350,212 352,196 L356,150 L190,140 Q150,140 150,170 z" fill="#ff661f" stroke="#404040" stroke-width="1.5"/>
+  <line x1="150" y1="200" x2="352" y2="200" stroke="#333" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <circle cx="300" cy="212" r="6" fill="#333"/>
+  <text x="40" y="256">contact point, frame_b</text>
+  <line x1="200" y1="246" x2="294" y2="216" stroke="#333" stroke-width="1"/>
+  <text x="372" y="256">penetration &#8722;<tspan font-style="italic">h</tspan></text>
+  <line x1="370" y1="248" x2="320" y2="207" stroke="#333" stroke-width="1"/>
+
+  <!-- forces on frame_b -->
+  <line x1="300" y1="212" x2="300" y2="60" stroke="#0080b4" stroke-width="3" marker-end="url(#arrowBlue)"/>
+  <text x="310" y="68" fill="#0080b4">normal force <tspan font-style="italic">F</tspan><tspan font-size="11" dy="3">n</tspan><tspan dy="-3"> along </tspan><tspan font-style="italic">n</tspan></text>
+  <line x1="300" y1="212" x2="190" y2="212" stroke="#c0392b" stroke-width="3" marker-end="url(#arrowRed)"/>
+  <text x="30" y="166" fill="#c0392b">friction <tspan font-style="italic">&#956; F</tspan><tspan font-size="11" dy="3">n</tspan></text>
+  <text x="30" y="185" fill="#c0392b">opposes <tspan font-style="italic">v</tspan><tspan font-size="11" dy="3">t</tspan></text>
+  <line x1="112" y1="190" x2="186" y2="208" stroke="#c0392b" stroke-width="1"/>
+  <line x1="380" y1="140" x2="480" y2="140" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="488" y="145">sliding <tspan font-style="italic">v</tspan><tspan font-size="11" dy="3">t</tspan></text>
+</svg>

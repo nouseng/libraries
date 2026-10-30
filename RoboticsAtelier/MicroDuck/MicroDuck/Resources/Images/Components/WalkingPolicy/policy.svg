@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 250" font-family="Segoe UI, DejaVu Sans, sans-serif" font-size="15" fill="#333">
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- observation -->
+  <rect x="8" y="30" width="178" height="150" fill="#fff" stroke="#0080b4" stroke-width="2" rx="4"/>
+  <text x="18" y="52" font-weight="bold">observation, 61</text>
+  <g font-size="14">
+    <text x="18" y="74">gyro 3, gravity 3</text>
+    <text x="18" y="93">q &#8722; q0, 14</text>
+    <text x="18" y="112">w one step late, 14</text>
+    <text x="18" y="131">previous action, 14</text>
+    <text x="18" y="150">twist 3</text>
+    <text x="18" y="169">head and body 10, zero</text>
+  </g>
+  <line x1="186" y1="105" x2="210" y2="105" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- network -->
+  <rect x="212" y="65" width="120" height="80" fill="#fff" stroke="#0080b4" stroke-width="2" rx="4"/>
+  <text x="272" y="88" text-anchor="middle">normalize,</text>
+  <text x="272" y="107" text-anchor="middle">512, 256, 128</text>
+  <text x="272" y="126" text-anchor="middle">ELU, 14 out</text>
+  <line x1="332" y1="105" x2="358" y2="105" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="345" y="56" text-anchor="middle" font-size="14">action</text>
+
+  <!-- targets -->
+  <rect x="360" y="65" width="116" height="80" fill="#fff" stroke="#0080b4" stroke-width="2" rx="4"/>
+  <text x="418" y="88" text-anchor="middle">q0 + 0.9 action,</text>
+  <text x="418" y="107" text-anchor="middle">low-pass 0.7</text>
+  <text x="418" y="126" text-anchor="middle">legs, 0.5 head</text>
+  <line x1="476" y1="105" x2="496" y2="105" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- command delay -->
+  <rect x="498" y="78" width="60" height="54" fill="#fff" stroke="#0080b4" stroke-width="2" rx="4"/>
+  <text x="528" y="101" text-anchor="middle">delay</text>
+  <text x="528" y="120" text-anchor="middle" font-size="13">22.5 ms</text>
+  <line x1="558" y1="105" x2="574" y2="105" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <rect x="576" y="78" width="56" height="54" fill="#42474d" stroke="#404040" stroke-width="1.5" rx="6"/>
+  <text x="604" y="101" text-anchor="middle" fill="#fff">qRef,</text>
+  <text x="604" y="120" text-anchor="middle" fill="#fff">14</text>
+
+  <!-- previous action, held between control steps -->
+  <path d="M345,107 L345,212 L97,212 L97,182" fill="none" stroke="#333" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <circle cx="345" cy="105" r="3" fill="#333"/>
+  <text x="221" y="234" text-anchor="middle" font-size="14">action held to the next 50 Hz step</text>
+</svg>

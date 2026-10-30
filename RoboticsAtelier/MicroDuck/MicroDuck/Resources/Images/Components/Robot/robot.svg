@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 430" font-family="Segoe UI, DejaVu Sans, sans-serif" font-size="16" fill="#333">
+  <line x1="20" y1="391.7" x2="290" y2="391.7" stroke="#333" stroke-width="2"/>
+  <text x="24" y="413.7">ground plane z = 0</text>
+  <polygon points="166.6,379.5 188.6,368.5 172.6,330.5 164.6,328.5 170.6,322.0 194.6,281.0 198.1,278.5 198.6,263.5 193.6,260.5 193.3,256.7 184.1,253.0 183.3,247.7 154.3,248.7 153.8,251.2 143.8,251.7 142.1,253.5 142.6,266.5 124.8,276.2 119.1,286.0 121.6,300.5 130.1,313.5 145.1,350.5 152.1,359.5 150.6,362.5 157.1,377.0" fill="rgb(140, 140, 140)" stroke="#404040" stroke-width="1"/>
+  <polygon points="147.1,391.5 204.3,391.7 213.6,385.5 214.1,375.0 211.8,372.7 191.3,368.2 184.1,355.5 179.8,352.7 170.3,352.7 166.3,349.2 158.8,348.2 152.1,352.5 142.6,368.0 137.6,372.0 137.6,384.5" fill="rgb(204, 82, 25)" stroke="#404040" stroke-width="1"/>
+  <polygon points="122.1,300.5 126.8,300.7 127.8,295.7 134.6,294.0 135.3,251.2 178.1,251.5 178.1,247.0 181.6,246.5 180.1,243.5 184.6,237.5 185.6,216.5 194.3,213.2 197.6,208.0 198.1,203.5 194.8,196.7 188.8,193.7 160.8,195.2 122.3,192.2 97.3,195.2 86.6,203.0 84.1,218.5 85.1,231.0 90.1,240.0 89.1,294.0 113.3,294.7" fill="rgb(216, 216, 212)" stroke="#404040" stroke-width="1"/>
+  <polygon points="168.1,220.0 177.8,220.2 200.1,211.5 178.1,147.5 178.6,129.5 176.8,126.2 171.6,126.0 174.1,124.5 174.1,120.5 170.6,119.5 183.1,117.5 186.1,109.0 186.1,99.5 183.1,91.5 177.8,87.2 135.3,87.2 132.1,98.5 132.1,110.0 135.8,118.2 150.1,119.5 146.1,120.5 146.1,124.5 148.6,126.0 143.1,126.5 142.1,138.0 140.1,139.5 143.6,152.5 151.1,158.5 153.1,165.0 149.6,167.0 151.6,176.0 158.6,192.5 161.8,192.7 164.6,198.5 162.6,205.0" fill="rgb(80, 85, 90)" stroke="#404040" stroke-width="1"/>
+  <polygon points="120.6,379.5 131.3,377.2 152.1,366.0 144.6,351.0 142.1,350.0 139.6,338.0 124.1,306.0 130.8,294.2 131.3,298.2 169.1,297.0 169.1,281.0 177.6,272.0 178.1,263.5 174.1,256.5 169.1,253.0 168.3,247.7 139.3,248.7 138.8,251.2 129.3,251.7 126.8,257.2 119.3,258.2 81.8,278.2 75.1,287.5 76.1,298.5 89.6,326.5 95.8,333.2 108.3,330.2 111.6,336.5 102.1,341.5" fill="rgb(172, 164, 153)" stroke="#404040" stroke-width="1"/>
+  <polygon points="111.6,391.5 167.3,391.7 177.6,385.0 177.6,371.5 173.8,368.2 156.8,366.2 147.1,352.5 140.3,348.2 135.8,348.2 128.8,352.7 119.3,352.7 114.6,356.5 106.6,371.5 101.6,374.5 102.1,386.0" fill="rgb(255, 102, 31)" stroke="#404040" stroke-width="1"/>
+  <polygon points="191.6,126.5 243.3,125.7 248.6,121.0 250.1,110.0 243.3,109.7 239.3,105.7 230.8,105.7 230.3,107.7 197.3,105.7 195.8,107.7 187.6,93.0 181.3,89.2 174.8,89.7 170.1,93.5 167.6,98.0 168.8,107.7 158.8,107.7 148.8,91.7 139.3,89.2 132.1,95.0 129.8,107.7 97.8,105.7 97.3,107.7 90.3,107.7 89.1,110.0 90.1,121.5 94.8,125.2" fill="rgb(255, 102, 31)" stroke="#404040" stroke-width="1"/>
+  <polygon points="204.6,111.0 250.1,110.0 251.1,66.0 247.6,57.0 238.8,51.7 157.3,57.7 118.8,64.7 106.3,71.7 97.6,81.5 89.1,106.0 89.3,110.2" fill="rgb(216, 216, 212)" stroke="#404040" stroke-width="1"/>
+  <polygon points="224.6,104.0 235.8,103.7 240.1,96.0 241.1,80.0 235.3,66.2 223.3,66.7 219.3,75.2 200.6,75.0 200.6,95.0 219.3,94.7" fill="rgb(66, 71, 77)" stroke="#404040" stroke-width="1"/>
+  <circle cx="164.5" cy="251.2" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="183.9" cy="266.9" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="172.8" cy="269.6" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="143.5" cy="313.4" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="174.8" cy="363.3" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="186.7" cy="204.5" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="166.7" cy="145.7" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="160.5" cy="122.4" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="139.4" cy="104.3" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="149.6" cy="251.2" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="168.9" cy="266.9" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="136.6" cy="269.6" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="113.3" cy="313.4" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="125.3" cy="363.3" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <circle cx="177.7" cy="100.5" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <polyline points="178.1,98.5 300,65 318,65" fill="none" stroke="#888" stroke-width="1.5"/>
+  <text x="326" y="70" font-weight="bold">Neck and head, 4 joints and the mouth</text>
+  <text x="326" y="92">neck pitch › head pitch › head yaw › head roll</text>
+  <text x="326" y="114">sites head_camera, tof, mouth_tip</text>
+  <polyline points="123.4,241.5 300,180 318,180" fill="none" stroke="#888" stroke-width="1.5"/>
+  <text x="326" y="185" font-weight="bold">Trunk, frame_a</text>
+  <text x="326" y="207">free body; site imu</text>
+  <polyline points="126.7,350.2 300,275 318,275" fill="none" stroke="#888" stroke-width="1.5"/>
+  <text x="326" y="280" font-weight="bold">Left and right leg, 5 joints each</text>
+  <text x="326" y="302">hip yaw › hip roll › hip pitch › knee › ankle</text>
+  <text x="326" y="324">8 contact points under each sole</text>
+  <text x="326" y="346">sites left_foot, right_foot</text>
+  <circle cx="332" cy="402" r="4" fill="#0080b4" stroke="#fff" stroke-width="1"/>
+  <text x="344" y="407" fill="#0080b4">joint: a Link driven by a PositionServo</text>
+</svg>

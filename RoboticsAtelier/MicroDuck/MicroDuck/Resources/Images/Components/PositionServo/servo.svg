@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 250" font-family="Segoe UI, DejaVu Sans, sans-serif" font-size="15" fill="#333">
+  <defs>
+    <marker id="arrow" markerUnits="userSpaceOnUse" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#333"/>
+    </marker>
+  </defs>
+
+  <!-- forward path -->
+  <text x="10" y="64">phiRef</text>
+  <line x1="10" y1="76" x2="54" y2="76" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <circle cx="68" cy="76" r="13" fill="#fff" stroke="#333" stroke-width="2"/>
+  <text x="68" y="81" text-anchor="middle">+</text>
+  <text x="50" y="108">&#8722;</text>
+  <line x1="81" y1="76" x2="118" y2="76" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <rect x="120" y="50" width="120" height="52" fill="#fff" stroke="#0080b4" stroke-width="2" rx="4"/>
+  <text x="180" y="72" text-anchor="middle">errorGain,</text>
+  <text x="180" y="91" text-anchor="middle">clip to &#177;1</text>
+  <line x1="240" y1="76" x2="278" y2="76" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="259" y="66" text-anchor="middle" font-style="italic">u</text>
+
+  <rect x="280" y="50" width="96" height="52" fill="#fff" stroke="#0080b4" stroke-width="2" rx="4"/>
+  <text x="328" y="72" text-anchor="middle">&#215; supply</text>
+  <text x="328" y="91" text-anchor="middle">voltage</text>
+  <line x1="376" y1="76" x2="414" y2="76" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="395" y="66" text-anchor="middle" font-style="italic">V</text>
+
+  <rect x="416" y="36" width="174" height="80" fill="#fff" stroke="#0080b4" stroke-width="2" rx="4"/>
+  <text x="440" y="58">DC motor</text>
+  <text x="440" y="79"><tspan font-style="italic">k</tspan><tspan font-size="11" dy="3">t</tspan><tspan dy="-3"> (</tspan><tspan font-style="italic">V</tspan> &#8722; <tspan font-style="italic">k</tspan><tspan font-size="11" dy="3">t</tspan><tspan dy="-3"> </tspan><tspan font-style="italic">&#969;</tspan>) / <tspan font-style="italic">R</tspan></text>
+  <text x="440" y="100">&#8722; friction</text>
+  <line x1="503" y1="116" x2="503" y2="150" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="511" y="138" font-style="italic">&#964;</text>
+
+  <!-- plant -->
+  <rect x="416" y="152" width="174" height="52" fill="#42474d" stroke="#404040" stroke-width="1.5" rx="6"/>
+  <text x="503" y="174" text-anchor="middle" fill="#fff">armature, flange</text>
+  <text x="503" y="193" text-anchor="middle" fill="#fff">and support</text>
+
+  <!-- feedback -->
+  <line x1="416" y1="178" x2="68" y2="178" stroke="#333" stroke-width="2"/>
+  <line x1="68" y1="178" x2="68" y2="91" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="100" y="170">phiEncoder (link side), speed <tspan font-style="italic">&#969;</tspan></text>
+  <text x="10" y="236" fill="#777">The back-EMF and friction use &#969;, and the drive saturates at <tspan font-style="italic">u</tspan> = &#177;1.</text>
+</svg>
