@@ -4,7 +4,7 @@ class Introduction "Introduction to the MicroDuck library"
 
   annotation(Documentation(info = "<html>
 <h4>Introduction</h4>
-<p>The MicroDuck library, developed by <a href=\"https://nouseng.co\">Nous Engineering &amp; Research</a>, models the Microduck, a 25 cm biped with 14 servo-driven joints, as a MultiBody plant. Joint angle targets go in; joint angles, sensor frames, motor currents, temperatures and contact forces come out. The deployed walking policy is included as <a href=\"modelica://MicroDuck.Components.WalkingPolicy\">WalkingPolicy</a>.</p>
+<p>The MicroDuck library, developed by <a href=\"https://www.linkedin.com/in/senolvedat\">Vedat Senol</a> and <a href=\"https://www.linkedin.com/in/ogulcanisitman\">Ogulcan Isitman</a> at <a href=\"https://nouseng.co\">Nous Engineering &amp; Research</a>, models the Microduck, a 25 cm biped with 14 servo-driven joints, as a MultiBody plant. Joint angle targets go in; joint angles, sensor frames, motor currents, temperatures and contact forces come out. The deployed walking policy is included as <a href=\"modelica://MicroDuck.Components.WalkingPolicy\">WalkingPolicy</a>.</p>
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
      src=\"modelica://MicroDuck/Resources/Images/Examples/Standing/standing.png\"
