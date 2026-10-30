@@ -4,7 +4,7 @@ A Modelica plant library of the Pollen Robotics MicroDuck, a 25 cm biped with
 14 servo-driven joints, verified against the MuJoCo model its walking policy
 was trained in.
 
-![Two MicroDuck robots walking the circular arc and diagonal chord of the Nous logo](MicroDuck/Resources/Images/Examples/NousLogo/nousLogo3D.gif)
+![The MicroDuck robot at the home pose with its 14 joint axes](MicroDuck/Resources/Images/Components/Robot/robot.svg)
 
 Component details and the blog series are on
 [nouseng.co/libraries/atelier/microduck](https://www.nouseng.co/libraries/atelier/microduck/)
@@ -34,14 +34,12 @@ and [Why Rebuild a Walking Robot Duck in Modelica?](https://nouseng.co/libraries
 
 ## Examples and verification tests
 
-`MicroDuck.Examples` contains three runnable robot models:
+`MicroDuck.Examples` contains two runnable robot models:
 
 - `Standing`: the robot dropped from 2.8 mm onto its soles with the servos
   holding the home pose at `positionGain = 800`, compared with MuJoCo.
 - `WalkingTest`: the robot walking forward for 6 s at a 0.3 m/s command under
   `WalkingPolicy`, compared with MuJoCo.
-- `NousLogo`: two MicroDuck robots walking simultaneously on the same floor to
-  trace the circular arc and diagonal chord of the Nous logo.
 
 `MicroDuckTest` contains four verification models with visible diagrams and
 end-of-run `assert` checks against MuJoCo:
@@ -105,7 +103,7 @@ From this folder, with OpenModelica on `PATH`:
 omc MicroDuckTest/Resources/Scripts/CheckLibrary.mos
 ```
 
-This checks all 16 classes in `MicroDuck` and all 5 classes in `MicroDuckTest`.
+This checks all 15 classes in `MicroDuck` and all 5 classes in `MicroDuckTest`.
 
 ## Limitations
 

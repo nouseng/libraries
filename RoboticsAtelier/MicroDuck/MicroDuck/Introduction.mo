@@ -17,7 +17,6 @@ class Introduction "Introduction to the MicroDuck library"
 <ul>
 <li><a href=\"modelica://MicroDuck.Examples.Standing\">Standing</a>: the robot on the ground, against MuJoCo.</li>
 <li><a href=\"modelica://MicroDuck.Examples.WalkingTest\">WalkingTest</a>: the robot walking under the policy, against MuJoCo.</li>
-<li><a href=\"modelica://MicroDuck.Examples.NousLogo\">NousLogo</a>: two robots walking the circular arc and diagonal chord of the Nous logo.</li>
 </ul>
 <p>The <a href=\"modelica://MicroDuckTest\">MicroDuckTest</a> library checks the kinematics, joint limits and sole contact:</p>
 <ul>
