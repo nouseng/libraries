@@ -116,17 +116,18 @@ supply voltage, are replaced by fixed nominal values or exposed as parameters.
 
 ## Licence
 
-Copyright (c) 2026 Vedat Senol. Released under the BSD 3-Clause Licence; see
-[LICENSE](LICENSE). The MicroDuck CAD meshes and ONNX policy weights originate
-from [Pollen Robotics](https://github.com/pollen-robotics/microduck_rl) under
+Copyright (c) 2026 Vedat Senol and Ogulcan Isitman. Released under the BSD
+3-Clause Licence; see [LICENSE](LICENSE). The MicroDuck CAD meshes and ONNX
+policy weights originate from
+[Pollen Robotics](https://github.com/pollen-robotics/microduck_rl) under
 Apache-2.0.
 
 ## Citing
 
 If you use the library in published work, please cite:
 
-> Senol, V. (2026). *MicroDuck: a Modelica plant library for the Pollen
-> Robotics MicroDuck biped* (Version 0.1.0) [Computer software].
+> Senol, V., & Isitman, O. (2026). *MicroDuck: a Modelica plant library for the
+> Pollen Robotics MicroDuck biped* (Version 0.1.0) [Computer software].
 > <https://github.com/nouseng/libraries/tree/main/RoboticsAtelier/MicroDuck>
 
 ## Consulting and contact
@@ -134,4 +135,5 @@ If you use the library in published work, please cite:
 Need a multidomain plant model of your own robot, actuator and battery
 calibration against hardware data or FMU integration into a training loop?
 Nous Engineering & Research builds and validates physical plant models. Contact
-Vedat Senol at [vedat@nouseng.co](mailto:vedat@nouseng.co).
+Vedat Senol at [vedat@nouseng.co](mailto:vedat@nouseng.co) or Ogulcan Isitman at
+[ogulcan@nouseng.co](mailto:ogulcan@nouseng.co).
