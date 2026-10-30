@@ -135,5 +135,4 @@ If you use the library in published work, please cite:
 Need a multidomain plant model of your own robot, actuator and battery
 calibration against hardware data or FMU integration into a training loop?
 Nous Engineering & Research builds and validates physical plant models. Contact
-Vedat Senol at [vedat@nouseng.co](mailto:vedat@nouseng.co) or Ogulcan Isitman at
-[ogulcan@nouseng.co](mailto:ogulcan@nouseng.co).
+us at [contact@nouseng.co](mailto:contact@nouseng.co).

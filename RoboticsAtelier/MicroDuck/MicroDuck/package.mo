@@ -26,6 +26,6 @@ See <a href=\"modelica://MicroDuck.Introduction\">Introduction</a>, <a href=\"mo
 <p>No training model has the mouth, so the optional mouth servo has its pivot and mass estimated from the meshes. Only the soles collide with the ground. The randomized parts of training, such as the varying delay, sensor noise and supply voltage, are replaced by fixed mean values or left out.</p>
 <h5>Licence</h5>
 <p>Copyright &copy; 2026 <a href=\"https://www.linkedin.com/in/senolvedat\">Vedat Senol</a> and <a href=\"https://www.linkedin.com/in/ogulcanisitman\">Ogulcan Isitman</a> (<a href=\"https://nouseng.co\">Nous Engineering &amp; Research</a>). Released under the BSD 3-Clause Licence.</p>
-<p>Contact: <a href=\"mailto:vedat@nouseng.co\">vedat@nouseng.co</a>, <a href=\"mailto:ogulcan@nouseng.co\">ogulcan@nouseng.co</a>.</p>
+<p>Contact: <a href=\"mailto:contact@nouseng.co\">contact@nouseng.co</a>.</p>
 </html>"));
 end MicroDuck;
