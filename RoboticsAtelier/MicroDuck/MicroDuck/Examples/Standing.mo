@@ -54,14 +54,13 @@ contactAcceleration = true", textColor = {0, 0, 127}, horizontalAlignment = Text
       info = "<html>
 <h4>Standing on the soles</h4>
 <p><a href=\"modelica://MicroDuck.Components.Robot\">Robot</a> starts at the home pose with the trunk 120 mm up, which leaves the soles 2.8 mm above the ground. <code>homePose</code> feeds <code>q0</code> to the servo targets <code>qRef</code>, held with <code>positionGain</code> = 800; at the walking gain of 200 the robot tips forward without a policy (set <code>positionGain = 200</code> and <code>checkResults = false</code> to see it).</p>
-<p>Figure 1 compares the MicroDuck library with MuJoCo running the same model, servo, gear play and gain [1]. On impact each sole peaks at 8.4 N against 10.5 N and the trunk dips to 115.3 mm against 114.9 mm, both at 0.05 s. The settled loads agree at half of the 7.2 N weight per sole, and the trunk stays within 0.1 mm after 0.2 s. The soles use the MuJoCo contact law of <a href=\"modelica://MicroDuck.Components.PointContact\">PointContact</a>, as in <a href=\"modelica://MicroDuck.Examples.WalkingTest\">WalkingTest</a>, but with <code>contactAcceleration = true</code> for the touchdown force.</p>
+<p>Figure 1 compares the MicroDuck library with MuJoCo running the same model, servo, gear play and gain [1]. On impact each sole peaks at 8.4 N against 10.5 N and the trunk dips to 115.3 mm against 114.9 mm, both at 0.05 s. The settled loads agree at half of the 7.2 N weight per sole, and the trunk stays within 0.2 mm after 0.2 s.</p>
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
      src=\"modelica://MicroDuck/Resources/Images/Examples/Standing/standing.png\"
      width=\"600\"
      alt=\"Sole loads and trunk height of the standing robot in the MicroDuck library and in MuJoCo\">
 <strong>Figure 1:</strong> Sole loads and trunk height compared with MuJoCo.</p>
-<p><code>robot.contactAcceleration = true</code> includes the inertial term of the contact law and requires an implicit solver such as CVODE.</p>
 <h4>References</h4>
 <p>[1] Todorov E., Erez T., Tassa Y., MuJoCo: A physics engine for model-based control, IROS 2012. MuJoCo 3.15 Python bindings.</p>
 </html>",

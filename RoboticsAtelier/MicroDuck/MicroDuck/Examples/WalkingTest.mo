@@ -56,14 +56,14 @@ equation
       info = "<html>
 <h4>Walking under the neural network policy</h4>
 <p><a href=\"modelica://MicroDuck.Components.WalkingPolicy\">WalkingPolicy</a> reads the IMU (inertial measurement unit) and the joint states of <a href=\"modelica://MicroDuck.Components.Robot\">Robot</a> at 50 Hz and drives <code>qRef</code> with a forward command <code>forwardSpeed</code> of 0.3 m/s. The robot starts at the home pose, 2.8 mm above the ground, at the walking servo gain of 200.</p>
-<p>Figure 1 compares the MicroDuck library with MuJoCo running the same policy, servo, gear play, command delay and speed lag. Over the last 4 s both step at 2.0 Hz at a mean trunk height of 118 mm and walk at 0.132 m/s against 0.131 m/s, covering 0.77 m against 0.79 m in 6 s. Speed follows stance-sole slip governed by <a href=\"modelica://MicroDuck.Components.PointContact\">PointContact</a>.</p>
+<p>Figure 1 compares the MicroDuck library with MuJoCo running the same policy, servo, gear play, command delay and speed lag. Over the last 4 s both step at 2.0 Hz at a mean trunk height of 118 mm and walk at 0.136 m/s against 0.131 m/s, covering 0.79 m in 6 s. Speed follows stance-sole slip governed by <a href=\"modelica://MicroDuck.Components.PointContact\">PointContact</a>.</p>
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
      src=\"modelica://MicroDuck/Resources/Images/Examples/WalkingTest/walking.png\"
      width=\"600\"
      alt=\"Forward position and trunk height of the walking robot in the MicroDuck library and in MuJoCo\">
 <strong>Figure 1:</strong> Forward position and trunk height compared with MuJoCo.</p>
-<p>Set <code>policy.commandDelay = 0</code>, <code>policy.delayedSpeed = false</code> and <code>robot.backlash = 0</code> to compare with the plant without delay and gear play, or set <code>robot.contactAcceleration = true</code> with an implicit solver such as CVODE to include the inertial touchdown term.</p>
+<p>Set <code>robot.useBattery = true</code> and <code>robot.useThermal = true</code> to include the two-cell battery pack and the servo thermal networks during the walk.</p>
 </html>",
       figures = {Figure(title = "Walking", identifier = "walking", preferred = true, plots = {Plot(title = "Forward position of the trunk", curves = {Curve(y = "distance", legend = "Distance")}, y = Axis(unit = "m")), Plot(title = "Height of the trunk frame", curves = {Curve(y = "trunkHeight", legend = "Trunk height")}, y = Axis(unit = "m"))})}));
 end WalkingTest;

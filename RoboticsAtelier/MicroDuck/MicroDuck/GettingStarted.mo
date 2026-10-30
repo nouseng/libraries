@@ -22,7 +22,7 @@ equation
   connect(homePose.y, robot.qRef);
 </pre>
 <h4>Settings</h4>
-<p><code>positionGain</code> is the servo firmware gain: the robot runs at 200, but without a policy it tips forward, so this model uses 800. <code>supplyVoltage</code> defaults to 7.4 V. Each servo turns its link through <code>backlash</code> = 2&deg; of gear play and reads the link angle. The soles use the MuJoCo contact law of <a href=\"modelica://MicroDuck.Components.PointContact\">PointContact</a>; <code>contactAcceleration = true</code> gives the right touchdown force and needs an implicit solver.</p>
+<p><code>positionGain</code> is the servo firmware gain: the robot runs at 200, but without a policy it tips forward, so this model uses 800. <code>supplyVoltage</code> defaults to 7.4 V. Each servo turns its link through <code>backlash</code> = 2&deg; of gear play and reads the link angle. The soles use the MuJoCo contact law of <a href=\"modelica://MicroDuck.Components.PointContact\">PointContact</a>.</p>
 <h4>Simulating</h4>
 <p>Simulate for 3 s with CVODE and a tolerance of 1e-6, as stored in the example. Useful results are <code>leftLoad</code>, <code>rightLoad</code>, <code>trunkHeight</code>, <code>trunkPitch</code> and <code>robot.q</code>. The robot settles with each sole carrying about half of the 7.2 N weight. In OMEdit use the animation button for the 3D view; <code>robot.animation = false</code> hides the meshes.</p>
 <h4>Targets and sensors</h4>
