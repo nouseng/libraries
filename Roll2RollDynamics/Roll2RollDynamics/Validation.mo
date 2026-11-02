@@ -48,6 +48,10 @@ effect is then kinematic or follows from validated parts, and its docs say so.</
 <td>capstan law; Triple-S friction curve</td>
 <td>capacity and slip onset follow the capstan limit; the friction curve reproduces its defining points</td>
 <td><a href=\"modelica://Roll2RollDynamics.Examples.SlipAndTractionCapacity\">SlipAndTractionCapacity</a> Fig. 1</td></tr>
+<tr><td>Belt-driven carriage span stiffness, tension split and slack cutoff</td>
+<td>Mehmood et al. (2026), Table 1, Eqs. (1), (5)&ndash;(7) and Sec. 4</td>
+<td>K<sub>1</sub>(0) = 1007.80 kN/m, K<sub>3</sub> = 439.37 kN/m, peak 2469.0 kN/m; three-span tensions and 0 N slack cutoff agree within 0.88&ndash;1.48 N RMS (&lt;0.05% of 3112 N peak)</td>
+<td><a href=\"modelica://Roll2RollDynamics.Examples.BeltDrivenCarriage\">BeltDrivenCarriage</a> Figs. 3, 4</td></tr>
 </table>
 <h4>Consistency only</h4>
 <table border=\"1\" cellspacing=\"0\" cellpadding=\"4\">

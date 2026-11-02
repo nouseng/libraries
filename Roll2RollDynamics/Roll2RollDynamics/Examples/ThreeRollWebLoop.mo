@@ -3,7 +3,7 @@ model ThreeRollWebLoop
   "Web circulating around three rolls of different sizes, with no winder"
   extends Modelica.Icons.Example;
 
-  inner Roll2RollDynamics.WebWorld world
+  inner Roll2RollDynamics.WebWorld world "Shared web and machine defaults"
     annotation(Placement(transformation(extent = {{-120, 60}, {-100, 80}})));
 
   Roll2RollDynamics.Components.Roller driveRoll(
@@ -21,7 +21,7 @@ model ThreeRollWebLoop
     radius = 0.12,
     fixedInitialAngle = true,
     fixedInitialWebState = true,
-    fixedInitialSpeed = true,
+    fixedInitialSpeed = not world.noSlip,
     xPosition = 0.5,
     zPosition = 0.8,
     rotationDirection = 1,
@@ -32,7 +32,7 @@ model ThreeRollWebLoop
     radius = 0.09,
     fixedInitialAngle = true,
     fixedInitialWebState = true,
-    fixedInitialSpeed = true,
+    fixedInitialSpeed = not world.noSlip,
     xPosition = 1.0,
     zPosition = 0,
     rotationDirection = 1,
@@ -40,11 +40,14 @@ model ThreeRollWebLoop
     exitAngleStart = 3.14) "Smallest idling roll"
     annotation(Placement(transformation(origin = {70, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
 
-  Roll2RollDynamics.Components.Belt risingSpan "Span from the driven roll up to the apex"
+  Roll2RollDynamics.Components.Belt risingSpan(
+    fixedInitialMomentum = not world.noSlip) "Span from the driven roll up to the apex"
     annotation(Placement(transformation(origin = {-50, 50}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.Belt fallingSpan "Span from the apex down to the small roll"
+  Roll2RollDynamics.Components.Belt fallingSpan(
+    fixedInitialMomentum = not world.noSlip) "Span from the apex down to the small roll"
     annotation(Placement(transformation(origin = {50, 50}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.Belt returnSpan "Span closing the loop along the base"
+  Roll2RollDynamics.Components.Belt returnSpan(
+    fixedInitialMomentum = not world.noSlip) "Span closing the loop along the base"
     annotation(Placement(transformation(origin = {0, -60}, extent = {{-10, -10}, {10, 10}})));
 
   Modelica.Mechanics.Rotational.Sources.ConstantSpeed drive(
@@ -62,9 +65,18 @@ model ThreeRollWebLoop
     + topRoll.rotationDirection*topRoll.rollerVariables.arcAngle
     + rightRoll.rotationDirection*rightRoll.rollerVariables.arcAngle
     "Total turning round the closed path";
-  output Real tractionUsed(unit = "1") = abs(driveRoll.rollerVariables.Ft)/
+  output Modelica.Units.SI.DimensionlessRatio tractionUsed = abs(driveRoll.rollerVariables.Ft)/
     max(driveRoll.rollerVariables.Fcap, Roll2RollDynamics.Utilities.Types.forceTol)
     "Fraction of the driven wrap's available traction the loop is drawing on";
+initial equation
+  // A locked web cannot absorb the step start of the drive, so begin in steady running.
+  if world.noSlip then
+    der(topRoll.rollerVariables.surfaceVelocity) = 0;
+    der(rightRoll.rollerVariables.surfaceVelocity) = 0;
+    der(risingSpan.momentum) = 0;
+    der(fallingSpan.momentum) = 0;
+    der(returnSpan.momentum) = 0;
+  end if;
 equation
   connect(drive.flange, driveRoll.flange_a)
     annotation(Line(points = {{-20, -0}, {20, 0}}, origin = {-90, -0}));
@@ -148,6 +160,10 @@ web-minus-idler contact slip, both in millimetres per second\">
 drag [2], with wrapped-web momentum also contributing. The late-run inset
 still contains transients, not a static drag balance. Increase
 <code>world.bearingDamping</code> to explore the tension distribution.</p>
+<p>Setting <code>world.noSlip = true</code> locks the web to all three rolls.
+A locked web cannot absorb the drive's step start, so the loop then begins in
+steady running and the startup transients of Figures 2 and 3 disappear; the
+remaining idler-minus-drive speed differences are elastic draw.</p>
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
      src=\"modelica://Roll2RollDynamics/Resources/Images/ThreeRollWebLoop/loop-tensions.png\"

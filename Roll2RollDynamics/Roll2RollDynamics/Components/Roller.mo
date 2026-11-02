@@ -69,6 +69,12 @@ model Roller
       world.innerTraction else world.outerTraction
     "Web-to-roll traction characteristic of the contacting face"
     annotation(Dialog(group = "Contact"));
+  parameter Boolean noSlip = world.noSlip
+    "= true, the web moves with the roll surface; friction becomes a constraint reaction"
+    annotation(Evaluate = true, Dialog(group = "Contact"));
+  parameter Boolean allowSlack = world.allowSlack
+    "= true, allow zero entry or exit tension from slack spans"
+    annotation(Evaluate = true, Dialog(group = "Contact"));
   parameter Boolean useDetachment = false
     "= true, the web releases when the roll leaves the free span line"
     annotation(Dialog(group = "Contact"));
@@ -146,7 +152,7 @@ model Roller
     Modelica.Units.SI.Angle arcAngle "Signed web wrap angle";
     Boolean webWrapped "= false, the roll has left the free span line";
     Modelica.Units.SI.Velocity slipVelocity "Web-to-roll slip velocity";
-    Real tractionCoefficient(unit = "1")
+    Modelica.Units.SI.DimensionlessRatio tractionCoefficient
       "Longitudinal component of the regularized friction coefficient";
     Modelica.Units.SI.Force Ft "Tangential friction force";
     Modelica.Units.SI.Force Fcap "Peak available traction force";
@@ -199,9 +205,9 @@ model Roller
   Modelica.Units.SI.Angle exitAngle
     "Exit tangency angle solved from the web geometry"
     annotation(HideResult = true);
-  output Real entrySkewSin(unit="1") "Entry span direction projected along the roll axis"
+  output Modelica.Units.SI.DimensionlessRatio entrySkewSin "Entry span direction projected along the roll axis"
     annotation(HideResult = true);
-  output Real exitSkewSin(unit="1") "Exit span direction projected along the roll axis"
+  output Modelica.Units.SI.DimensionlessRatio exitSkewSin "Exit span direction projected along the roll axis"
     annotation(HideResult = true);
   //Physical connectors
   Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame_support if useSupport "Support/housing connection"
@@ -231,7 +237,7 @@ protected
   Modelica.Units.SI.Angle arcAngle "Signed web wrap angle";
   Boolean webWrapped "= false, the roll has left the free span line";
   Modelica.Units.SI.Velocity slipVelocity "Web-to-roll slip velocity";
-  Real tractionCoefficient(unit = "1")
+  Modelica.Units.SI.DimensionlessRatio tractionCoefficient
     "Longitudinal component of the regularized friction coefficient";
   Modelica.Units.SI.Force Ft "Tangential friction force";
   Modelica.Units.SI.Force Fcap "Peak available traction force";
@@ -285,6 +291,7 @@ protected
     rotationDirection = rotationDirection,
     lateral = world.lateralDynamics,
     useDetachment = useDetachment,
+    allowSlack = allowSlack,
     initiallyEngaged = initiallyEngaged,
     arcSegments = arcSegments,
     entryAngleStart = entryAngleStart,
@@ -321,6 +328,8 @@ protected
     rotationDirection = rotationDirection,
     traction = traction,
     lateral = world.lateralDynamics,
+    noSlip = noSlip,
+    allowSlack = allowSlack,
     useDetachment = useDetachment,
     engaged = webWrap.engaged,
     spanDirectionA = frame_a.spanDirection,
@@ -462,6 +471,8 @@ Figure 1 shows friction for web faster than drum; arrows reverse with slip.</p>
 <code>-1</code> under it<br>
 <code>contactFace</code> = Selects <code>world.innerTraction</code> or
 <code>world.outerTraction</code>; <code>traction</code> may override it<br>
+<code>noSlip</code> = From <code>world.noSlip</code>, default <code>false</code><br>
+<code>allowSlack</code> = From <code>world.allowSlack</code>, default <code>false</code><br>
 <code>yaw</code>, <code>tram</code> = Fixed in-plane/out-of-plane alignment,
 zero by default<br>
 <code>runout</code>, <code>runoutPhase</code> = Radial eccentricity and phase,
@@ -529,10 +540,17 @@ stay pressed against the roll. With lateral dynamics enabled, longitudinal
 and lateral slip share one friction budget; wrapped mass supplies lateral
 inertia. Lateral slip uses crossing velocity and span direction relative to
 the axis, at entry for forward flow and exit for reverse.</p>
+<p>Setting <code>noSlip</code> to <code>true</code> replaces the longitudinal
+friction law with the constraint that the web moves with the roll surface.
+This is a good model for toothed (timing) belts, where teeth lock circumferential
+motion; tooth compliance, backlash and polygon effect are omitted. Traction
+capacity no longer limits <code>Ft</code>; for a friction-driven web, compare
+<code>Ft</code> with <code>Fcap</code>. Lateral slip keeps the regularized law.
+<code>noSlip</code> cannot be combined with <code>useDetachment</code>.</p>
 <p>Both <a href=\"modelica://Roll2RollDynamics.Utilities.Interfaces.RollPort\">RollPort</a>
 connectors are required: connect incoming/outgoing spans to
 <code>frame_a</code>/<code>frame_b</code>, each through a <code>Belt</code> or
-<a href=\"modelica://Roll2RollDynamics.Components.WebForce\">WebForce</a>.</p>
+<a href=\"modelica://Roll2RollDynamics.Components.WebBoundary\">WebBoundary</a>.</p>
 <p><code>useSupport = true</code> exposes <code>frame_support</code>; default
 false fixes the housing at <code>xPosition</code>/<code>zPosition</code>.
 Mount orientation must remain fixed, including yaw.
@@ -585,8 +603,9 @@ public but carry <code>HideResult = true</code>.</p>
 <h4>Limitations</h4>
 <p>The mean-strain wrap applies gravity at the support but omits distributed
 gravity moment and mount-acceleration coupling to an offset wrap centroid.
-Asymmetric wraps on accelerating mounts are therefore approximate. Spans
-must remain taut; slack and lateral bending are omitted.</p>
+Asymmetric wraps on accelerating mounts are therefore approximate; sag and lateral bending are omitted.
+With <code>allowSlack = true</code>, positive-tension assertions are relaxed so a connected span may go slack.</p>
+
 <p>See <a href=\"modelica://Roll2RollDynamics.Examples.WebLines.MisalignedIdlerLine\">MisalignedIdlerLine</a>
 for runout/yaw, <a href=\"modelica://Roll2RollDynamics.Examples.SlipAndTractionCapacity\">SlipAndTractionCapacity</a>
 for traction, <a href=\"modelica://Roll2RollDynamics.Examples.SheltonSteering\">SheltonSteering</a>

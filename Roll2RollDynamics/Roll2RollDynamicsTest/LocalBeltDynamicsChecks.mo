@@ -29,8 +29,7 @@ package LocalBeltDynamicsChecks
     port.frame.R = Modelica.Mechanics.MultiBody.Frames.axesRotations(
       {2,3,1}, {yaw,skew,0}, {der(yaw),der(skew),0});
     port.web.f = force;
-    annotation(Documentation(info="<html><h4>Force boundary</h4><p>Helper boundary that prescribes tangency position and transport force while the attached span determines the tangent angles. It leaves frame force and moment free so the span can deliver its complete support reaction; it is not a standalone test.</p></html>"));
-    annotation(
+    annotation(Documentation(info="<html><h4>Force boundary</h4><p>Helper boundary that prescribes tangency position and transport force while the attached span determines the tangent angles. It leaves frame force and moment free so the span can deliver its complete support reaction; it is not a standalone test.</p></html>"),
       Diagram(coordinateSystem(extent = {{-100, -100}, {140, 100}})));
   end ForceBoundary;
 
@@ -60,9 +59,9 @@ package LocalBeltDynamicsChecks
     Modelica.Units.SI.Force forceA[3] "Entry spatial force into the span";
     Modelica.Units.SI.Force forceB[3] "Exit spatial force into the span";
     Modelica.Units.SI.Force supportResultant[3] "Total spatial boundary force";
-    Real direction[3](each unit="1") "Span direction in world coordinates";
-    Real stretchA(unit="1") "Entry constitutive stretch";
-    Real stretchB(unit="1") "Exit constitutive stretch";
+    Modelica.Units.SI.DimensionlessRatio direction[3] "Span direction in world coordinates";
+    Modelica.Units.SI.DimensionlessRatio stretchA "Entry constitutive stretch";
+    Modelica.Units.SI.DimensionlessRatio stretchB "Exit constitutive stretch";
     Modelica.Units.SI.MassFlowRate massFlowA "Entry reference-material flux";
     Modelica.Units.SI.MassFlowRate massFlowB "Exit reference-material flux";
     Modelica.Units.SI.SpecificEnergy strainEnergyA "Entry specific elastic energy";
@@ -99,7 +98,7 @@ package LocalBeltDynamicsChecks
     ForceBoundary outlet(position=positionB, force=-exitTension)
       "Prescribed exit force and position"
       annotation(Placement(visible = true, transformation(origin = {80, 0},
-        extent = {{-10, -10}, {10, 10}})));
+        extent = {{10, -10}, {-10, 10}})));
   initial equation
     initialMass = belt.beltVariables.webMass;
     initialMomentum = belt.beltVariables.webMass*belt.physicalVelocity;
@@ -109,7 +108,7 @@ package LocalBeltDynamicsChecks
       annotation(Line(visible = true, points = {{-70, 0}, {-10, 0}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(belt.frame_b, outlet.port)
-      annotation(Line(visible = true, points = {{10, 0}, {90, 0}},
+      annotation(Line(visible = true, points = {{10, 0}, {70, 0}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     direction = (positionB-positionA)/Modelica.Math.Vectors.length(positionB-positionA);
     boundaryVelocityA = der(positionA);
@@ -167,8 +166,7 @@ package LocalBeltDynamicsChecks
     assert(dissipatedPower >= -1e-8
       and abs(belt.dampingPower - dissipatedPower) < 1e-7,
       "Dashpot loss must equal nonnegative viscous work at the material velocities");
-    annotation(Documentation(info="<html><h4>Span balance fixture</h4><p>Partial helper for independently integrating a span's external mass, spatial momentum and energy exchange from actual connector forces and boundary fluxes. Derived cases must satisfy these balances, including gravity work, the declared central-velocity kinetic defect and nonnegative viscous dissipation; this fixture is not a standalone test.</p></html>"));
-    annotation(
+    annotation(Documentation(info="<html><h4>Span balance fixture</h4><p>Partial helper for independently integrating a span's external mass, spatial momentum and energy exchange from actual connector forces and boundary fluxes. Derived cases must satisfy these balances, including gravity work, the declared central-velocity kinetic defect and nonnegative viscous dissipation; this fixture is not a standalone test.</p></html>"),
       Diagram(coordinateSystem(extent = {{-200, -100}, {120, 120}})));
   end Fixture;
 
@@ -247,10 +245,10 @@ package LocalBeltDynamicsChecks
       "Equal boundary tensions must preserve the initialized reverse material velocity");
     assert(belt.massFlowIn < 0 and belt.massFlowOut < 0,
       "Reverse material velocity must produce signed reverse boundary fluxes");
-    annotation(experiment(StopTime=0.5,Tolerance=1e-9));
-    annotation(Documentation(info="<html><h4>Reverse transport</h4><p>Initializes material velocity at -1.5 m/s between fixed boundaries with equal tensions. Velocity must remain constant, both boundary mass flows must be negative, and the independent mass, momentum and energy checks must pass.</p></html>"));
+    annotation(experiment(StopTime=0.5,Tolerance=1e-9),
+  Documentation(info="<html><h4>Reverse transport</h4><p>Initializes material velocity at -1.5 m/s between fixed boundaries with equal tensions. Velocity must remain constant, both boundary mass flows must be negative, and the independent mass, momentum and energy checks must pass.</p></html>"));
   end ReverseTransport;
-  annotation(uses(Modelica(version="4.1.0")),
-    Documentation(info="<html><p>Force-driven isolated span regressions for
-    material acceleration, support loads and open-system accounting.</p></html>"));
+  annotation(Documentation(info="<html><h4>Local belt dynamics checks</h4><p>Force-driven isolated span regressions for material acceleration, support loads and open-system accounting.</p></html>"));
+
+
 end LocalBeltDynamicsChecks;

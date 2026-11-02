@@ -11,7 +11,7 @@ package NipIntegrationChecks "Nip assembly and friction-ownership regressions"
     Modelica.Mechanics.MultiBody.Parts.FixedTranslation loadingBase(
       r = {0.5, 0, 1.026}, animation = false)
       "Base above the top roller with one millimetre initial clearance"
-      annotation(Placement(visible = true, transformation(origin = {120, 40},
+      annotation(Placement(transformation(origin = {-70, 100},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Joints.Prismatic loadingJoint(
       n = {0, 0, -1},
@@ -19,12 +19,12 @@ package NipIntegrationChecks "Nip assembly and friction-ownership regressions"
       animation = false,
       s(start = 0, fixed = false),
       v(start = 0, fixed = false)) "Prescribed nip loading motion"
-      annotation(Placement(visible = true, transformation(origin = {280, 0},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {50, 80},
+        extent = {{10, 10}, {-10, -10}})));
     Modelica.Mechanics.Translational.Sources.Position loadingMotion(
       exact = true) "Closes and releases the nip"
-      annotation(Placement(visible = true, transformation(origin = {200, 0},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {90, 70},
+        extent = {{10, -10}, {-10, 10}})));
     Modelica.Blocks.Sources.TimeTable loadingPosition(table = [
       0, 0;
       1, 0;
@@ -32,8 +32,8 @@ package NipIntegrationChecks "Nip assembly and friction-ownership regressions"
       5, 0.002;
       6, 0;
       8, 0]) "Two millimetre close-and-release stroke"
-      annotation(Placement(visible = true, transformation(origin = {120, -40},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {130, 70},
+        extent = {{10, -10}, {-10, 10}})));
     Roll2RollDynamics.Components.NipRoller nip(
       radius = 0.1,
       coverStiffness = 1e6,
@@ -42,8 +42,8 @@ package NipIntegrationChecks "Nip assembly and friction-ownership regressions"
       useSupport = true,
       fixedInitialAngle = true,
       fixedInitialSpeed = true) "Free nip drum driven only by web contact"
-      annotation(Placement(visible = true, transformation(origin = {360, 0},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {-0, 80},
+        extent = {{10, -10}, {-10, 10}}, rotation = 90)));
 
     output Modelica.Units.SI.Force capacityIncrement =
       topRoll.rollerVariables.Fcap - topRoll.wrapCapacity
@@ -54,29 +54,26 @@ package NipIntegrationChecks "Nip assembly and friction-ownership regressions"
 
   equation
     connect(world.frame_b, loadingBase.frame_a)
-      annotation(Line(visible = true, points = {{-100, 70}, {110, 40}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(visible = true, points = {{-7.5, -15}, {-2.5, -15}, {-2.5, 15}, {12.5, 15}},
+        color = {95, 95, 95}, thickness = 0.5, origin = {-92.5, 85}));
     connect(loadingBase.frame_b, loadingJoint.frame_a)
-      annotation(Line(visible = true, points = {{130, 40}, {270, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(visible = true, points = {{-92.5, 10}, {32.5, 10}, {32.5, -10}, {27.5, -10}},
+        color = {95, 95, 95}, thickness = 0.5, origin = {32.5, 90}));
     connect(loadingJoint.frame_b, nip.frame_support)
-      annotation(Line(visible = true, points = {{290, 0}, {360, -10}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{15, 0}, {-15, 0}}, color = {95, 95, 95}, thickness = 0.5, origin = {25, 80}));
     connect(loadingPosition.y, loadingMotion.s_ref)
-      annotation(Line(visible = true, points = {{131, -40}, {188, 0}},
-        color = {0, 0, 127}, smooth = Smooth.None));
+      annotation(Line(visible = true, points = {{8.5, 0}, {-8.5, 0}},
+        color = {0, 0, 127}, origin = {110.5, 70}));
     connect(loadingMotion.flange, loadingJoint.axis)
-      annotation(Line(visible = true, points = {{210, 0}, {288, 6}},
-        color = {0, 127, 0}, smooth = Smooth.None));
+      annotation(Line(points = {{26.333, 0.333}, {11.333, 0.333}, {11.333, -4.667}, {-18.667, -4.667}, {-18.667, 4.333}, {-11.667, 4.333}},
+        color = {0, 127, 0}, origin = {53.667, 69.667}));
     connect(topRoll.frame_nip, nip.nipLoading)
-      annotation(Line(visible = true, points = {{0, 60}, {370.567, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{0, -4.717}, {-0, 4.717}}, color = {95, 95, 95}, thickness = 0.5, origin = {-0, 64.717}));
 
     annotation(experiment(StartTime = 0, StopTime = 8, Interval = 0.005,
-      Tolerance = 1e-8));
-    annotation(
-      Diagram(coordinateSystem(extent = {{-160, -100}, {400, 110}})));
-    annotation(Documentation(info = "<html><h4>Nip integration check</h4>
+      Tolerance = 1e-8),
+      Diagram(coordinateSystem(extent = {{-180, -120}, {160, 120}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10})),
+  Documentation(info = "<html><h4>Nip integration check</h4>
 <p>Close a free nip drum onto the top roller of a running closed web loop, hold it and release it. The drum should spin up through contact, the sensed nip load should raise roller traction capacity by <code>expectedIncrement</code>, and release should remove contact traction while the drum coasts.</p></html>"));
   end NipIntegrationCheck;
 
@@ -98,18 +95,17 @@ package NipIntegrationChecks "Nip assembly and friction-ownership regressions"
         Roll2RollDynamics.Utilities.Types.WebFace.Outer else
         Roll2RollDynamics.Utilities.Types.WebFace.Inner)
       "Fixed nip pressing on the top roller"
-      annotation(Placement(visible = true, transformation(origin = {240, 0},
+      annotation(Placement(transformation(origin = {-27.098, 91.815},
         extent = {{-10, -10}, {10, 10}})));
   equation
     connect(topRoll.frame_nip, nip.nipLoading)
-      annotation(Line(visible = true, points = {{0, 60}, {250.567, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{5.511, -21.21}, {5.511, 10.605}, {-11.021, 10.605}}, color = {95, 95, 95}, thickness = 0.5, origin = {-5.511, 81.21}));
     assert(time < 0.5 or abs(topRoll.rollerVariables.nipLoad
       - nip.loadFraction*nip.maxNipLoad) < 1e-6,
       "A fixed nip must carry loadFraction*maxNipLoad");
     annotation(
-      Diagram(coordinateSystem(extent = {{-160, -100}, {280, 110}})));
-    annotation(Documentation(info = "<html><h4>Prescribed nip load check</h4>
+      Diagram(coordinateSystem(extent = {{-180, -120}, {120, 120}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10})),
+  Documentation(info = "<html><h4>Prescribed nip load check</h4>
 <p>Attach a nip without an exposed support to the top roller of the running loop with <code>loadFraction = 0.4</code>. After 0.5 s the roller must sense the prescribed 400 N normal load.</p></html>"));
   end PrescribedNipLoadCheck;
 
@@ -185,20 +181,19 @@ package NipIntegrationChecks "Nip assembly and friction-ownership regressions"
     Modelica.Mechanics.MultiBody.Parts.Fixed mounts[3](
       each animation=false, r={{0,0,0}, {0.5,0,0.8}, {1,0,0}})
       "Stationary roll mounts with exposed support reactions"
-      annotation(Placement(visible = true, transformation(origin = {480, 0},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {0, -30},
+        extent = {{-10, -10}, {10, 10}}, rotation = -270)));
   initial equation
     initialMomentumX = momentumX;
   equation
     connect(mounts[1].frame_b, driveRoll.frame_support)
-      annotation(Line(visible = true, points = {{490, 0}, {-60, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(visible = true, points = {{20, -13.333}, {20, 6.667}, {-40, 6.667}}, color = {95, 95, 95}, thickness = 0.5, origin = {-20, -6.667}));
     connect(mounts[2].frame_b, topRoll.frame_support)
-      annotation(Line(visible = true, points = {{490, 0}, {0, 40}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{0, -30}, {0, 30}},
+        color = {95, 95, 95}, thickness = 0.5, origin = {0, 10}));
     connect(mounts[3].frame_b, rightRoll.frame_support)
-      annotation(Line(visible = true, points = {{490, 0}, {60, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(visible = true, points = {{-20, -13.333}, {-20, 6.667}, {40, 6.667}},
+        color = {95, 95, 95}, thickness = 0.5, origin = {20, -6.667}));
     // The arc-average tangent is its endpoint displacement divided by arc length.
     // Shell centres are fixed and the nip moves only vertically, so their x momentum is zero.
     momentumX = risingSpan.beltVariables.webMass*risingSpan.physicalVelocity[1]
@@ -227,15 +222,18 @@ package NipIntegrationChecks "Nip assembly and friction-ownership regressions"
         "Momentum regression must exercise a loaded nip with nonzero traction");
     end when;
     annotation(Documentation(info = "<html><h4>Nip momentum check</h4>
-<p>Compare total horizontal momentum of free and wrapped web with the independent sum of all four mount reactions while the nip engages and releases. The drive supplies torque, gravity is vertical, the mounts remain fixed horizontally and no material crosses the closed-loop boundary, so assertions require internal contact forces to cancel, momentum change to equal external impulse and tangential traction to leave the sensed normal load unchanged.</p></html>"));
-    annotation(
-      Diagram(coordinateSystem(extent = {{-160, -100}, {520, 110}})));
+<p>Compare total horizontal momentum of free and wrapped web with the independent sum of all four mount reactions while the nip engages and releases. The drive supplies torque, gravity is vertical, the mounts remain fixed horizontally and no material crosses the closed-loop boundary, so assertions require internal contact forces to cancel, momentum change to equal external impulse and tangential traction to leave the sensed normal load unchanged.</p></html>"),
+      Diagram(coordinateSystem(extent = {{-180, -120}, {190, 120}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10})));
   end NipMomentumCheck;
 
   model ReverseNipMomentumCheck
     "Whole-loop nip momentum balance with reversed material travel"
     extends NipMomentumCheck(world(lineSpeed=-2));
-    annotation(Documentation(info = "<html><h4>Reverse nip momentum check</h4>
+    annotation(
+      Diagram(
+        coordinateSystem(extent = {{-180, -120}, {160, 120}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10})
+      ),
+      Documentation(info = "<html><h4>Reverse nip momentum check</h4>
 <p>Repeat the whole-loop horizontal momentum check with <code>world.lineSpeed = -2</code> m/s. Nip traction should reverse while the normal load remains the same, and the inherited force and impulse balances must still hold.</p></html>"));
   end ReverseNipMomentumCheck;
 

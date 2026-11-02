@@ -25,7 +25,7 @@ package BeltDampingChecks "Kelvin-Voigt span response and conservation checks"
     MassConservationChecks.MovingBoundary outlet(position={1,0,0})
       "Closed outlet"
       annotation(Placement(visible = true, transformation(origin = {80, 0},
-        extent = {{-10, -10}, {10, 10}})));
+        extent = {{10, -10}, {-10, 10}})));
   initial equation
     belt.momentum = 0.01*belt.beltVariables.webMass;
   equation
@@ -33,7 +33,7 @@ package BeltDampingChecks "Kelvin-Voigt span response and conservation checks"
       annotation(Line(visible = true, points = {{-70, 0}, {-10, 0}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(belt.frame_b, outlet.frame_b)
-      annotation(Line(visible = true, points = {{10, 0}, {90, 0}},
+      annotation(Line(visible = true, points = {{10, 0}, {70, 0}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     der(lateTensionIntegral) = if time > 0.3
       then (belt.beltVariables.tensionOut - belt.beltVariables.tensionIn)^2 else 0;
@@ -44,8 +44,7 @@ package BeltDampingChecks "Kelvin-Voigt span response and conservation checks"
         "Disabling damping must preserve the purely elastic oscillation");
     end when;
     annotation(experiment(StopTime=0.5, Tolerance=1e-9),
-      Documentation(info="<html><h4>Ring down</h4><p>A small initial axial velocity excites the two elastic cells between fixed, closed boundaries. Material damping must settle the late tension oscillation; with damping disabled, that oscillation must persist.</p></html>"));
-    annotation(
+      Documentation(info="<html><h4>Ring down</h4><p>A small initial axial velocity excites the two elastic cells between fixed, closed boundaries. Material damping must settle the late tension oscillation; with damping disabled, that oscillation must persist.</p></html>"),
       Diagram(coordinateSystem(extent = {{-200, -100}, {120, 120}})));
   end RingDown;
 
@@ -78,7 +77,7 @@ package BeltDampingChecks "Kelvin-Voigt span response and conservation checks"
     MassConservationChecks.MovingBoundary outlet(position={1 + 0.001*time,0,0})
       "Outlet moving at one millimetre per second"
       annotation(Placement(visible = true, transformation(origin = {80, 0},
-        extent = {{-10, -10}, {10, 10}})));
+        extent = {{10, -10}, {-10, 10}})));
   initial equation
     belt.momentum = 0.0005*belt.beltVariables.webMass;
   equation
@@ -86,15 +85,14 @@ package BeltDampingChecks "Kelvin-Voigt span response and conservation checks"
       annotation(Line(visible = true, points = {{-70, 0}, {-10, 0}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(belt.frame_b, outlet.frame_b)
-      annotation(Line(visible = true, points = {{10, 0}, {90, 0}},
+      annotation(Line(visible = true, points = {{10, 0}, {70, 0}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     assert(abs(belt.tension - (100 + 10.1*time + 0.101)) < 1e-5,
       "Uniform extension must add 0.101 N of viscous force to the elastic force");
     assert(abs(belt.beltVariables.webMass - 2.7/1.01) < 1e-8,
       "Damping must not alter the material inventory of a closed span");
     annotation(experiment(StopTime=1, Tolerance=1e-9),
-      Documentation(info="<html><h4>Uniform extension</h4><p>Extends a closed span at 1 mm/s and checks its analytic Kelvin-Voigt tension while material inventory stays fixed. The reference length is 1/1.01 m, so the strain rate of 0.00101/s adds 0.101 N of viscous force to the elastic response.</p></html>"));
-    annotation(
+      Documentation(info="<html><h4>Uniform extension</h4><p>Extends a closed span at 1 mm/s and checks its analytic Kelvin-Voigt tension while material inventory stays fixed. The reference length is 1/1.01 m, so the strain rate of 0.00101/s adds 0.101 N of viscous force to the elastic response.</p></html>"),
       Diagram(coordinateSystem(extent = {{-200, -100}, {120, 120}})));
   end UniformExtension;
 
@@ -115,19 +113,18 @@ package BeltDampingChecks "Kelvin-Voigt span response and conservation checks"
     LocalBeltDynamicsChecks.ForceBoundary outlet(position={1,0,0}, force=-300)
       "Exit pull"
       annotation(Placement(visible = true, transformation(origin = {80, 0},
-        extent = {{-10, -10}, {10, 10}})));
+        extent = {{10, -10}, {-10, 10}})));
   equation
     connect(inlet.port, belt.frame_a)
       annotation(Line(visible = true, points = {{-70, 0}, {-10, 0}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(belt.frame_b, outlet.port)
-      annotation(Line(visible = true, points = {{10, 0}, {90, 0}},
+      annotation(Line(visible = true, points = {{10, 0}, {70, 0}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     assert(abs(belt.beltVariables.stretch - (1.03 - 0.02*exp(-time/0.01))) < 1e-7,
       "Kelvin-Voigt creep must approach 3 percent strain with the damping time constant");
     annotation(experiment(StopTime=0.1, Tolerance=1e-9),
-      Documentation(info="<html><h4>Creep</h4><p>Applies equal 300 N end pulls to material initially carrying 100 N elastically. Stretch must approach 1.03 exponentially with a 0.01 s time constant as the initial 200 N dashpot force decays.</p></html>"));
-    annotation(
+      Documentation(info="<html><h4>Creep</h4><p>Applies equal 300 N end pulls to material initially carrying 100 N elastically. Stretch must approach 1.03 exponentially with a 0.01 s time constant as the initial 200 N dashpot force decays.</p></html>"),
       Diagram(coordinateSystem(extent = {{-200, -100}, {120, 120}})));
   end Creep;
 
@@ -146,7 +143,7 @@ package BeltDampingChecks "Kelvin-Voigt span response and conservation checks"
     annotation(Documentation(info="<html><h4>Reverse transport</h4><p>Carries material backward at constant speed with equal end tensions and internal damping enabled. The inherited signed-flow and conservation checks must pass, and rigid transport must produce zero dashpot power.</p></html>"));
   end ReverseTransport;
 
-  annotation(uses(Modelica(version="4.1.0")),
-    Documentation(info="<html><p>Independent response checks for damping
-    implemented inside the free-span Belt component.</p></html>"));
+  annotation(Documentation(info="<html><h4>Belt damping checks</h4><p>Independent response checks for damping implemented inside the free-span <code>Belt</code> component.</p></html>"));
+
+
 end BeltDampingChecks;

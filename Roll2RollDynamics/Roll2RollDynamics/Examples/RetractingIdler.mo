@@ -3,10 +3,11 @@ model RetractingIdler
   "An idler withdrawn from an open web line and returned to it"
   extends Modelica.Icons.Example;
 
-  inner Roll2RollDynamics.WebWorld world
+  inner Roll2RollDynamics.WebWorld world "Shared web and machine defaults"
     annotation(Placement(transformation(origin = {20, 20}, extent = {{-120, 60}, {-100, 80}})));
 
   Roll2RollDynamics.Components.Roller entryRoll(
+    noSlip = false,
     radius = 0.15,
     useFlange = true,
     fixedInitialAngle = true,
@@ -18,6 +19,7 @@ model RetractingIdler
     exitAngleStart = -1.01) "Driven roll at the upstream corner"
     annotation(Placement(transformation(origin = {-70, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -270)));
   Roll2RollDynamics.Components.Roller idler(
+    noSlip = false,
     radius = 0.12,
     useSupport = true,
     useDetachment = true,
@@ -29,6 +31,7 @@ model RetractingIdler
     exitAngleStart = 1.01) "Retractable idler at the apex"
     annotation(Placement(transformation(origin = {0, 50}, extent = {{-10, 10}, {10, -10}})));
   Roll2RollDynamics.Components.Roller exitRoll(
+    noSlip = false,
     radius = 0.09,
     fixedInitialAngle = true,
     fixedInitialWebState = true,
@@ -44,10 +47,10 @@ model RetractingIdler
     annotation(Placement(transformation(origin = {-50, 50}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Belt fallingSpan "Span from the apex down to the downstream roll"
     annotation(Placement(transformation(origin = {50, 50}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.WebForce upstreamLoad(direction = 1)
+  Roll2RollDynamics.Components.WebBoundary upstreamLoad(direction = 1, force = {world.tension, 0, 0})
     "Incoming web held at the nominal line tension"
     annotation(Placement(transformation(origin = {-90, -50}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.WebForce downstreamLoad(direction = -1)
+  Roll2RollDynamics.Components.WebBoundary downstreamLoad(direction = -1, force = {-world.tension, 0, 0})
     "Outgoing web held at the nominal line tension"
     annotation(Placement(transformation(origin = {90, -50}, extent = {{10, -10}, {-10, 10}})));
 
@@ -85,8 +88,8 @@ model RetractingIdler
   output Modelica.Units.SI.Angle wrap = idler.rotationDirection*idler.rollerVariables.arcAngle
     "Wrap the idler still holds; zero while detached";
 equation
-  upstreamLoad.force = {world.tension, 0, 0};
-  downstreamLoad.force = {-world.tension, 0, 0};
+
+
   connect(drive.flange, entryRoll.flange_a)
     annotation(Line(points = {{-20, 0}, {20, 0}}, origin = {-90, 0}));
   connect(world.frame_b, mount.frame_a)
@@ -138,7 +141,9 @@ equation
 <h4>Idler release and return</h4>
 <p>A prismatic slide lowers the apex roll of a taut three-roll line.
 With <code>idler.useDetachment = true</code>, the roll releases when it
-clears the neighbouring spans' common tangent.</p>
+clears the neighbouring spans' common tangent. A no-slip contact cannot
+detach, so all three rollers keep <code>noSlip = false</code> whatever
+<code>world.noSlip</code> says.</p>
 <p>Figure 1 shows wrap falling to zero before clearance increases;
 reversing the slide restores contact. See
 <a href=\"modelica://Roll2RollDynamics.Components.Roller\">Roller</a>
@@ -166,7 +171,7 @@ pick-up. The larger swings where the slide starts and stops come from its
 prescribed acceleration. Set <code>sweep.amplitude</code> below 0.8 m to retain
 contact; full retraction at 0.9 m gives about 0.0998 m clearance.</p>
 <h4>Limitations</h4>
-<p><a href=\"modelica://Roll2RollDynamics.Components.WebForce\">WebForce</a>
+<p><a href=\"modelica://Roll2RollDynamics.Components.WebBoundary\">WebBoundary</a>
 boundaries maintain tension as material leaves the shortening path.
 Closing this line into a fixed-inventory loop would exhaust its elastic
 stretch before release. Detachment requires a taut web; slack is unresolved.

@@ -5,16 +5,16 @@ model WebFriction
   //Parameters
   parameter Boolean fixedInitialWebState = false
     "Initialize transport coordinates and physical web speed at zero";
-  parameter Real referenceDensity(unit = "kg/m") = 1 "Unstrained web mass per length";
-  parameter Real axialStiffness(unit = "N") = 8000 "Web axial stiffness";
+  parameter Modelica.Units.SI.LinearDensity referenceDensity = 1 "Unstrained web mass per length";
+  parameter Modelica.Units.SI.Force axialStiffness = 8000 "Web axial stiffness";
   parameter Modelica.Units.SI.Length contactLengthMin = 0
     "Minimum wrapped length retained for inventory; 0 disables the floor";
   input Modelica.Units.SI.Length wrapLength = 1 "Current mechanical wrap length";
   input Modelica.Units.SI.Force tensionIn = meanTension "Entry tension";
   input Modelica.Units.SI.Force tensionOut = meanTension "Exit tension";
-  input Real stretchIn(unit="1") = 1 + tensionIn/axialStiffness
+  input Modelica.Units.SI.DimensionlessRatio stretchIn = 1 + tensionIn/axialStiffness
     "Actual entry stretch; elastic default for standalone use";
-  input Real stretchOut(unit="1") = 1 + tensionOut/axialStiffness
+  input Modelica.Units.SI.DimensionlessRatio stretchOut = 1 + tensionOut/axialStiffness
     "Actual exit stretch; elastic default for standalone use";
   input Modelica.Units.SI.Velocity boundaryVelocityA = 0 "Entry tangency speed along wrap";
   input Modelica.Units.SI.Velocity boundaryVelocityB = 0 "Exit tangency speed along wrap";
@@ -37,23 +37,32 @@ model WebFriction
   parameter Boolean useDetachment = false
     "= true, the engaged input can toggle at run time; = false, the lateral contact equation is fixed at compile time with no conditional"
     annotation(Evaluate = true, HideResult = true);
+  parameter Boolean noSlip = false
+    "= true, the web moves with the roll surface and longitudinal friction is a constraint reaction"
+    annotation(Evaluate = true);
+
+
+  parameter Boolean allowSlack = false
+    "= true, allow zero tension at slack wrap boundaries without asserting";
+
+
   input Boolean engaged = true
     "= false, the web has left the roll surface and carries no contact";
-  input Real spanDirectionA[3](each unit="1") = entryTangent
+  input Modelica.Units.SI.DimensionlessRatio spanDirectionA[3] = entryTangent
     "Directed entry span unit vector in world coordinates";
-  input Real spanDirectionB[3](each unit="1") = exitTangent
+  input Modelica.Units.SI.DimensionlessRatio spanDirectionB[3] = exitTangent
     "Directed exit span unit vector in world coordinates";
   input Modelica.Units.SI.Velocity lateralDrift =
     -(if massFlowIn + massFlowOut >= 0 then der(flange_a.s)*entrySkewSin
       else der(flange_b.s)*exitSkewSin)
     "Roll-relative contact-line speed that gives zero axial slip";
-  output Real entrySkewSin(unit="1") "Entry span direction projected along the roll axis";
-  output Real exitSkewSin(unit="1") "Exit span direction projected along the roll axis";
-  input Real entryTangent[3](each unit="1") = {1, 0, 0}
+  output Modelica.Units.SI.DimensionlessRatio entrySkewSin "Entry span direction projected along the roll axis";
+  output Modelica.Units.SI.DimensionlessRatio exitSkewSin "Exit span direction projected along the roll axis";
+  input Modelica.Units.SI.DimensionlessRatio entryTangent[3] = {1, 0, 0}
     "Directed entry tangent in world coordinates";
-  input Real exitTangent[3](each unit="1") = {1, 0, 0}
+  input Modelica.Units.SI.DimensionlessRatio exitTangent[3] = {1, 0, 0}
     "Directed exit tangent in world coordinates";
-  input Real meanTangent[3](each unit="1") = {1, 0, 0}
+  input Modelica.Units.SI.DimensionlessRatio meanTangent[3] = {1, 0, 0}
     "Arc average of the directed tangent in world coordinates";
   output Modelica.Units.SI.Force wrapCapacity "Peak dry traction supplied by the wrap alone";
 
@@ -75,7 +84,7 @@ model WebFriction
   Modelica.Mechanics.Translational.Interfaces.Flange_a lateralFlange
     "Cross-machine web position in the contact patch"
     annotation(Placement(transformation(origin = {0, 100}, extent = {{-10, -10}, {10, 10}}), iconTransformation(origin = {0, 100}, extent = {{-10, -10}, {10, 10}})));
-  Real drumAxis[3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio drumAxis[3]
     "Roll rotation axis resolved in world coordinates";
   Modelica.Units.SI.AngularVelocity spinRate
     "Roll angular velocity about its own axis";
@@ -85,7 +94,7 @@ model WebFriction
     stateSelect = StateSelect.default)
     "Web velocity through the contact patch";
   Modelica.Units.SI.Momentum momentum(start=0, fixed=false,
-    stateSelect=StateSelect.prefer)
+    stateSelect=if noSlip then StateSelect.default else StateSelect.prefer)
     "Stored longitudinal momentum of the wrapped web";
   Modelica.Units.SI.Velocity velocityIn "Physical entry velocity relative to roll centre";
   Modelica.Units.SI.Velocity velocityOut "Physical exit velocity relative to roll centre";
@@ -97,7 +106,8 @@ model WebFriction
   output Modelica.Units.SI.MassFlowRate massFlowOut "Signed exit material flux";
   Modelica.Units.SI.Acceleration aWeb
     "Web acceleration through the contact patch";
-  Real mu(unit = "1") "Signed regularized friction coefficient";
+  Modelica.Units.SI.DimensionlessRatio mu
+    "Signed regularized friction coefficient; with noSlip, muAdhesion times the traction utilization";
   Modelica.Units.SI.Force centrifugalTension
     "Mean line density times squared contact speed";
   Modelica.Units.SI.Force contactTension
@@ -107,7 +117,7 @@ model WebFriction
   Modelica.Units.SI.Acceleration aLatWeb
     "Cross-machine web acceleration in the contact patch";
   Modelica.Units.SI.Velocity vMag "Slip magnitude the friction law is evaluated on";
-  Real muMag(unit = "1") "Regularized friction coefficient at the slip magnitude";
+  Modelica.Units.SI.DimensionlessRatio muMag "Regularized friction coefficient at the slip magnitude";
   Modelica.Units.SI.Force frictionMagnitude
     "Combined wrap and concentrated-contact traction at the slip magnitude";
   output Modelica.Units.SI.Velocity slipVelocity
@@ -135,7 +145,10 @@ initial equation
     flange_a.s = 0;
     flange_b.s = 0;
     contactFlange.s = 0;
-    vWeb = 0;
+    // With noSlip the roll's own speed initialization already sets vWeb.
+    if not noSlip then
+      vWeb = 0;
+    end if;
   end if;
 
 equation
@@ -143,6 +156,8 @@ equation
     "WebFriction requires vSlide > vAdhesion");
   assert(traction.muAdhesion >= traction.muSliding,
     "WebFriction requires muAdhesion >= muSliding");
+  assert(not (noSlip and useDetachment),
+    "WebFriction with noSlip cannot detach: set noSlip = false on detachable rolls");
   velocityIn = der(flange_a.s) + boundaryVelocityA;
   velocityOut = der(flange_b.s) + boundaryVelocityB;
   vWeb = (velocityIn + velocityOut)/2;
@@ -167,11 +182,18 @@ equation
   if useDetachment then
     // Zero wrap is valid during the contact event. Allow only root-finding
     // roundoff in its length, while keeping the taut-span check an error.
-    assert(tensionIn > 0 and tensionOut > 0
+    assert(
+      (if allowSlack then tensionIn >= -Roll2RollDynamics.Utilities.Types.forceTol
+        and tensionOut >= -Roll2RollDynamics.Utilities.Types.forceTol
+        else tensionIn > 0 and tensionOut > 0)
       and wrapLength >= -Roll2RollDynamics.Utilities.Types.lengthTol,
       "Detachable WebFriction requires nonnegative wrap length and taut spans");
   else
-    assert(tensionIn > 0 and tensionOut > 0 and (wrapLength > 0 or not engaged),
+    assert(
+      (if allowSlack then tensionIn >= -Roll2RollDynamics.Utilities.Types.forceTol
+        and tensionOut >= -Roll2RollDynamics.Utilities.Types.forceTol
+        else tensionIn > 0 and tensionOut > 0)
+      and (wrapLength > 0 or not engaged),
       "Conservative WebFriction requires positive wrap length and taut entry/exit spans");
   end if;
   momentum = webMass*vWeb;
@@ -191,7 +213,7 @@ equation
   centrifugalTension = 2*referenceDensity/(stretchIn + stretchOut)*vWeb^2;
   contactTension = max(0, meanTension - centrifugalTension);
   wrapCapacity = 2*contactTension*tanh(traction.muAdhesion*wrapAngle/2);
-  assert(min(tensionIn,tensionOut) > centrifugalTension,
+  assert(allowSlack or min(tensionIn,tensionOut) > centrifugalTension,
     "Wrapped web lost contact: tension must exceed the centrifugal tension");
   vLatWeb = der(lateralFlange.s);
   aLatWeb = der(vLatWeb);
@@ -206,10 +228,18 @@ equation
       traction.vAdhesion, traction.vSlide,
       traction.muAdhesion, traction.muSliding, vMag,
       traction.viscousSlope);
-    mu = muMag*slipVelocity/vMag;
     frictionMagnitude = 2*contactTension*tanh(muMag*wrapAngle/2)
       + max(0, normalForce)*muMag;
-    longitudinalForce = frictionMagnitude*slipVelocity/vMag;
+    // With noSlip the circumferential constraint carries longitudinalForce,
+    // and the axial direction keeps the regularized law at the slip magnitude.
+    if noSlip then
+      slipVelocity = 0;
+      mu = traction.muAdhesion*longitudinalForce
+        /max(tractionCapacity, Roll2RollDynamics.Utilities.Types.forceTol);
+    else
+      mu = muMag*slipVelocity/vMag;
+      longitudinalForce = frictionMagnitude*slipVelocity/vMag;
+    end if;
     lateralForce = -frictionMagnitude*lateralSlip/vMag;
     // Retain lateral momentum through release. Zero wrap removes contact
     // friction; freezing the velocity instead would impose an impulse and
@@ -223,12 +253,18 @@ equation
     frictionMagnitude = 0;
     lateralForce = 0;
     lateralFlange.s = 0;
-    mu = Roll2RollDynamics.Functions.tripleS(
-      traction.vAdhesion, traction.vSlide,
-      traction.muAdhesion, traction.muSliding, slipVelocity,
-      traction.viscousSlope);
-    longitudinalForce = 2*contactTension*tanh(mu*wrapAngle/2)
-      + max(0, normalForce)*mu;
+    if noSlip then
+      slipVelocity = 0;
+      mu = traction.muAdhesion*longitudinalForce
+        /max(tractionCapacity, Roll2RollDynamics.Utilities.Types.forceTol);
+    else
+      mu = Roll2RollDynamics.Functions.tripleS(
+        traction.vAdhesion, traction.vSlide,
+        traction.muAdhesion, traction.muSliding, slipVelocity,
+        traction.viscousSlope);
+      longitudinalForce = 2*contactTension*tanh(mu*wrapAngle/2)
+        + max(0, normalForce)*mu;
+    end if;
   end if;
   // Wrapped material support load, resolved from world into the rotating frame.
   // The weight-and-acceleration term uses wrappedMass (the true, unfloored
@@ -323,6 +359,15 @@ drum frame. Optional tangential nip force enters through <code>contactFlange</co
 supplies the regularized coefficient; <code>normalForce</code> adds concentrated
 nip loading. When lateral motion is enabled, both slip directions share one
 friction budget and the wrapped mass supplies lateral inertia.</p>
+<p>Setting <code>noSlip</code> to <code>true</code> (default <code>false</code>)
+replaces the longitudinal law with <code>slipVelocity = 0</code>;
+<code>longitudinalForce</code> becomes the constraint reaction and is not
+limited by <code>tractionCapacity</code>. This is a good model for toothed
+(timing) belts, whose teeth lock circumferential motion. <code>mu</code> then
+reports <code>muAdhesion</code> scaled by <code>longitudinalForce</code> over
+<code>tractionCapacity</code>; magnitudes above <code>muAdhesion</code> mean a
+friction-driven web would slip. Lateral slip keeps the regularized law at the
+axial slip magnitude. Detachment is not supported with <code>noSlip</code>.</p>
 <p>Axial slip is contact-line speed relative to the mount plus signed boundary
 crossing speed projected on the roller axis. Supply unit
 <code>spanDirectionA</code> and <code>spanDirectionB</code> from the spans;
@@ -337,7 +382,7 @@ the friction and inertia closure is specific to this component.</p>
 <p>The single control volume uses mean strain and speed. It omits distributed
 strain, lateral momentum flux, a full energy balance, gravity moments and
 accelerating-offset-centroid coupling. Support orientation must be fixed.
-Both end tensions must exceed centrifugal tension; air lubrication is omitted
+Both end tensions must exceed centrifugal tension unless <code>allowSlack = true</code>; air lubrication is omitted
 and traction requires finite slip. Simultaneous inflow or outflow at both ends
 makes mean-flux boundary selection approximate and potentially discontinuous.
 Finite-skew longitudinal speed and torque remain approximations.</p>

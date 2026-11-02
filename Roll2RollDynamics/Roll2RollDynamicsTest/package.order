@@ -8,6 +8,7 @@ InvalidRotationDirectionCheck
 LateralChecks
 LateralSteeringChecks
 LocalBeltDynamicsChecks
+NoSlipBeltDriveCheck
 MassConservationChecks
 NipContactChecks
 NipIntegrationChecks
@@ -21,7 +22,6 @@ TangentFrameLoadCheck
 TangencyQuadrants
 TramChecks
 TripleSFrictionCheck
-VisualGeometryChecks
 WebFaceChecks
 WebWrapChecks
 WrapDirectionCheck

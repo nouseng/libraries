@@ -13,6 +13,9 @@ model WebWrap
   parameter Boolean useDetachment = false
     "= true, the web releases when the roll leaves the free span line"
     annotation(Evaluate = true, HideResult = true);
+  parameter Boolean allowSlack = false
+    "= true, allow zero entry or exit tension from slack spans"
+    annotation(Evaluate = true, HideResult = true);
   parameter Boolean initiallyEngaged = true
     "= true, the model starts with the web wrapped on the roll";
   parameter Boolean animation = true "= true, draw the wrapped web";
@@ -37,8 +40,8 @@ model WebWrap
   parameter Real nominalColor[3] = {245, 210, 70} "Nominal colour";
   parameter Real stressColor[3] = {205, 50, 35} "High-stress colour";
   //Inputs and Outputs
-  input Real spanDirectionA[3](each unit="1") "Entry material-travel direction in world coordinates";
-  input Real spanDirectionB[3](each unit="1") "Exit material-travel direction in world coordinates";
+  input Modelica.Units.SI.DimensionlessRatio spanDirectionA[3] "Entry material-travel direction in world coordinates";
+  input Modelica.Units.SI.DimensionlessRatio spanDirectionB[3] "Exit material-travel direction in world coordinates";
   input Modelica.Units.SI.Force entryTension "Entry transport tension";
   input Modelica.Units.SI.Force exitTension "Exit transport tension";
   output Modelica.Units.SI.Force meanTension "Mean entry and exit transport tension";
@@ -47,9 +50,9 @@ model WebWrap
     "Entry tangency speed along the directed wrap";
   output Modelica.Units.SI.Velocity boundaryVelocityB
     "Exit tangency speed along the directed wrap";
-  output Real entryTangent[3](each unit="1") "Directed entry tangent in world coordinates";
-  output Real exitTangent[3](each unit="1") "Directed exit tangent in world coordinates";
-  output Real meanTangent[3](each unit="1") "Arc average of the directed tangent in world coordinates";
+  output Modelica.Units.SI.DimensionlessRatio entryTangent[3] "Directed entry tangent in world coordinates";
+  output Modelica.Units.SI.DimensionlessRatio exitTangent[3] "Directed exit tangent in world coordinates";
+  output Modelica.Units.SI.DimensionlessRatio meanTangent[3] "Arc average of the directed tangent in world coordinates";
   output Modelica.Units.SI.Force normalForce "Resultant spatial load at the two tangencies";
   output Modelica.Units.SI.Angle entryAngle(start = entryAngleStart)
     "Solved entry tangency angle";
@@ -174,9 +177,11 @@ initial equation
 
 equation
   //Tangency and mechanical geometry
-  assert(entryTension > 0 and exitTension > 0,
-    "WebWrap requires taut entry and exit spans; zero tension does not define tangency");
-  assert(noEvent(entryTension*cos(tangentA.skew) > Roll2RollDynamics.Utilities.Types.forceTol
+  assert(if allowSlack then (entryTension >= -Roll2RollDynamics.Utilities.Types.forceTol
+    and exitTension >= -Roll2RollDynamics.Utilities.Types.forceTol)
+    else (entryTension > 0 and exitTension > 0),
+    "WebWrap requires taut entry and exit spans; enable allowSlack for zero-tension slack spans");
+  assert(allowSlack or noEvent(entryTension*cos(tangentA.skew) > Roll2RollDynamics.Utilities.Types.forceTol
     and exitTension*cos(tangentB.skew) > Roll2RollDynamics.Utilities.Types.forceTol),
     "WebWrap requires nonzero entry and exit tension projected into the roll plane");
   connect(tangentA.frame_b, frame_a)
@@ -336,9 +341,11 @@ calculations and must match the connected local x force components.</p>
 <p>Animation uses at least four segments and small tangency overhangs without
 changing mechanics. Thick webs may need more segments for visible drum clearance.</p>
 <h4>Limitations</h4>
-<p>The web must remain taut with nonzero roll-plane tangent projections.
-Angle start values select the route; full-turn branch-cut crossings and
-slack web are excluded. An almost complete turn produces a warning.</p>
+<p>With <code>allowSlack = false</code> (default), the web must remain taut;
+<code>allowSlack = true</code> relaxes positive-tension assertions for slack
+spans. Nonzero roll-plane tangent projections are required, angle start values
+select the route, and full-turn branch-cut crossings are excluded. An almost
+complete turn produces a warning.</p>
 <p>With <code>useDetachment = true</code>, leaving the free-span line releases
 the web: wrap angle becomes exactly zero and <code>tangencyRadius</code> grows
 past <code>centrelineRadius</code>. Rigid engagement keeps <code>gap</code> zero;

@@ -29,7 +29,7 @@ try {
         if ($compilerExit -ne 0 -or $log -match 'Error:|Warning:|LOG_ASSERT|\| warning \|') {
             throw "Belt dynamics checks failed; see $logPath"
         }
-        $expectedRuns = if ($suite -eq "BeltDampingChecks") { 7 } else { 6 }
+        $expectedRuns = if ($suite -eq "LocalBeltDynamicsChecks" -or $suite -eq "BeltDampingChecks") { 7 } else { 6 }
         if ([regex]::Matches($log, 'The simulation finished successfully\.').Count -ne $expectedRuns) {
             throw "Expected $expectedRuns successful $suite simulations; see $logPath"
         }
@@ -37,4 +37,4 @@ try {
 } finally {
     Pop-Location
 }
-Write-Output "Nineteen belt damping, acceleration, conservation and support-load checks passed without warnings."
+Write-Output "Twenty belt damping, acceleration, conservation and support-load checks passed without warnings."

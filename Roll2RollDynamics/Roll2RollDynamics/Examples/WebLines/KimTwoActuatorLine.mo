@@ -68,7 +68,7 @@ protected
   final parameter Modelica.Units.SI.Length zDeflected =
     zW + (idlerRadius - sin(WebWorldAngle)*(dx - xW))/cos(WebWorldAngle)
     "Centre height of the deflected rollers";
-  final parameter Real referenceDensity(unit = "kg/m") =
+  final parameter Modelica.Units.SI.LinearDensity referenceDensity =
     webDensity*webThickness*webWidth "Unstrained mass per unit length";
 
 public
@@ -94,7 +94,7 @@ public
   output Modelica.Units.SI.Velocity encoderWebSpeed =
     idler8.rollerVariables.surfaceVelocity
     "Web speed at the idler carrying the incremental rotary encoder";
-  output Real webSpeedError(unit = "1") = encoderWebSpeed/webSpeed - 1
+  output Modelica.Units.SI.DimensionlessRatio webSpeedError = encoderWebSpeed/webSpeed - 1
     "Fractional web speed error, against the paper's 1.6 percent at 0.1 m/s";
   output Modelica.Units.SI.Force unwinderLoadCell = span1.beltVariables.tension
     "Unwinder-module load cell, the tension fed back to the controller";
@@ -133,7 +133,7 @@ public
     zPosition = zDeflected,
     rotationDirection = 1,
     fixedInitialWebState = true,
-    fixedInitialAngle = true)
+    fixedInitialAngle = false)
     "Unwinder, which carries the tension loop"
     annotation(Placement(transformation(origin = {-200, 0}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Winder rewindDrum(
@@ -143,7 +143,7 @@ public
     zPosition = 0,
     rotationDirection = 1,
     fixedInitialWebState = true,
-    fixedInitialAngle = true)
+    fixedInitialAngle = false)
     "Rewinder, which carries the velocity loop"
     annotation(Placement(transformation(origin = {210, 0}, extent = {{10, -10}, {-10, 10}})));
 

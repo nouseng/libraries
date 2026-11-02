@@ -11,67 +11,64 @@ package SkewNipChecks "Skewed, wedged and eccentric nip regressions"
       contact.coverStiffness*(contact.penetration - contact.edgeLift/3)
       "Closed-form integral of the crossed-axis gap over the full face";
     inner Roll2RollDynamics.WebWorld world(enableAnimation = false)
-      annotation(Placement(visible = true, transformation(origin = {-160, 240},
+      annotation(Placement(visible = true, transformation(origin = {-100, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Components.Fixed shaft "Wrapped roller shaft boundary"
-      annotation(Placement(visible = true, transformation(origin = {-80, 160},
+      annotation(Placement(transformation(origin = {0, -30},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Translational.Components.Fixed webLateral
       "Stationary cross-machine web boundary"
-      annotation(Placement(visible = true, transformation(origin = {-80, 80},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {-20, 30},
+        extent = {{-10, -10}, {10, 10}}, rotation = -180)));
     Modelica.Mechanics.MultiBody.Parts.FixedRotation roller(
       n = {0, 0, 1}, angle = 3, animation = false)
-      annotation(Placement(visible = true, transformation(origin = {-80, 0},
+      annotation(Placement(visible = true, transformation(origin = {-50, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Parts.FixedRotation nip(
       r = {0, 0, 0.204}, n = {0, 0, 1}, angle = -3, animation = false)
-      annotation(Placement(visible = true, transformation(origin = {-80, -80},
+      annotation(Placement(transformation(origin = {-44.658, 24.716},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Translational.Components.Fixed web
-      annotation(Placement(visible = true, transformation(origin = {-80, -160},
+      annotation(Placement(transformation(origin = {-20, -50},
         extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Utilities.Parts.NipContact contact(
       nipRadius = 0.1, nipWidth = 0.3, webThickness = 0.005,
       coverStiffness = 1e5, coverDamping = 0, maxNipLoad = 1000,
       traction = world.innerTraction)
-      annotation(Placement(visible = true, transformation(origin = {80, 0},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Utilities.Parts.NipGeometrySource geometry(
+      useNipPort = true,
       radius = 0.1, rotationDirection = 1) "Wrapped roller geometry boundary"
-      annotation(Placement(visible = true, transformation(origin = {0, 0},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {30, -10},
+        extent = {{10, -10}, {-10, 10}})));
   equation
-    connect(shaft.flange, contact.nipPort.shaft)
-      annotation(Line(visible = true, points = {{-80, 160}, {70, 0}},
-        color = {0, 0, 0}, smooth = Smooth.None));
-    connect(geometry.port, contact.nipPort.geometry)
-      annotation(Line(visible = true, points = {{10, 0}, {70, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+    connect(shaft.flange, geometry.shaft)
+      annotation(Line(points = {{8, -18}, {8, -3}, {-7, -3}, {-7, 12}, {-2, 12}}, origin = {-8, -12}));
+    connect(geometry.nipPort, contact.nipPort)
+      annotation(Line(visible = true, points = {{18.333, -1.667}, {13.333, -1.667}, {13.333, -6.667}, {-16.667, -6.667}, {-16.667, 8.333}, {-11.667, 8.333}},
+        color = {95, 95, 95}, thickness = 0.5, origin = {1.667, -8.333}));
     connect(world.frame_b, roller.frame_a)
-      annotation(Line(visible = true, points = {{-150, 240}, {-90, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(visible = true, points = {{-15, 0}, {15, 0}},
+        color = {95, 95, 95}, thickness = 0.5, origin = {-75, 0}));
     connect(world.frame_b, nip.frame_a)
-      annotation(Line(visible = true, points = {{-150, 240}, {-90, -80}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
-    connect(roller.frame_b, contact.nipPort.frame)
-      annotation(Line(visible = true, points = {{-70, 0}, {70, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(visible = true, points = {{-11.335, -12.358}, {-6.335, -12.358}, {-6.335, 12.358}, {24.006, 12.358}}, color = {95, 95, 95}, thickness = 0.5, origin = {-78.665, 12.358}));
+    connect(roller.frame_b, geometry.frame)
+      annotation(Line(visible = true, points = {{-15, 0}, {15, 0}},
+        color = {95, 95, 95}, thickness = 0.5, origin = {-25, 0}));
     connect(nip.frame_b, contact.frameNip)
-      annotation(Line(visible = true, points = {{-70, -80}, {90, 0}},
-        color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
-    connect(web.flange, contact.nipPort.web)
-      annotation(Line(visible = true, points = {{-80, -160}, {70, 0}},
-        color = {0, 127, 0}, smooth = Smooth.None));
-    connect(webLateral.flange, contact.nipPort.lateral)
-      annotation(Line(visible = true, points = {{-80, 80}, {70, 0}},
-        color = {0, 127, 0}, smooth = Smooth.None));
+      annotation(Line(visible = true, points = {{-35.994, 12.358}, {13.665, 12.358}, {13.665, -12.358}, {8.665, -12.358}},
+        color = {95, 95, 95}, thickness = 0.5, origin = {1.335, 12.358}));
+    connect(web.flange, geometry.web)
+      annotation(Line(points = {{-3.333, -33.333}, {-3.333, 16.667}, {6.667, 16.667}}, color = {0, 127, 0}, origin = {-16.667, -16.667}));
+    connect(webLateral.flange, geometry.lateral)
+      annotation(Line(points = {{-3.333, 20}, {-3.333, -10}, {6.667, -10}},
+        color = {0, 127, 0}, origin = {-16.667, 10}));
     assert(not checkFootprint or
       abs(contact.elasticFootprint - expectedFootprint) < 1e-9,
       "The cover law must integrate the crossed-axis gap over the face");
     annotation(
-      Diagram(coordinateSystem(extent = {{-200, -200}, {120, 280}})));
-    annotation(Documentation(info = "<html><h4>Skew nip geometry check</h4>
+      Diagram(coordinateSystem(extent = {{-160, -120}, {120, 120}})),
+  Documentation(info = "<html><h4>Skew nip geometry check</h4>
 <p>Provide a fixed-centre contact fixture with roller yaw of +3 degrees and nip yaw of -3 degrees. The six-degree crossed-axis contact must give an elastic load equal to the closed-form full-face gap integral when <code>checkFootprint</code> is enabled; the static composite case supplies further comparisons.</p></html>"));
   end SkewNipGeometryCheck;
 
@@ -148,8 +145,8 @@ package SkewNipChecks "Skewed, wedged and eccentric nip regressions"
         - largeWedge.contact.normalForce*abs(largeWedge.contact.loadCentre)) < 1e-6,
       "Both housings must receive the moment of the off-centre normal load");
     annotation(
-      Diagram(coordinateSystem(extent = {{-100, -200}, {100, 200}})));
-    annotation(Documentation(info = "<html><h4>Skew nip static checks</h4>
+      Diagram(coordinateSystem(extent = {{-100, -200}, {100, 200}})),
+  Documentation(info = "<html><h4>Skew nip static checks</h4>
 <p>Compare crossed, parallel, released and purely wedged contacts against closed-form gap integrals. Assertions require crossed axes to lower a centred load, release to remove both forces, and wedge tilt to shift load toward the closed end, reduce contact width when an end lifts and apply the resulting moments to both housings.</p></html>"));
   end SkewNipStaticChecks;
 
@@ -161,8 +158,12 @@ package SkewNipChecks "Skewed, wedged and eccentric nip regressions"
     assert(abs(nip.nipContact.edgeLift
       - (0.5*nip.width*tan(0.06))^2/(2*(topRoll.radius + nip.radius))) < 1e-9,
       "The default nip must report the crossed-axis edge lift");
+    assert(abs(nip.nipContact.wedgeAngle) < 1e-9,
+      "In-plane yaw above the roller must give no wedge");
+    assert(abs(nip.nipContact.endOpening) < 1e-9,
+      "In-plane yaw above the roller must open neither end");
     annotation(Documentation(info = "<html><h4>Skew nip integration check</h4>
-<p>Close a nip yawed by -0.06 rad onto the top roller of the running loop. The assembled contact must report crossed-axis edge lift equal to the analytical expression based on both radii and half the nip width.</p></html>"));
+<p>Close a nip yawed by -0.06 rad onto the top roller of the running loop. The assembled contact must report crossed-axis edge lift equal to the analytical expression based on both radii and half the nip width, with zero wedge angle and zero end opening, distinguishing crossed-axis contact from a tram-induced wedge.</p></html>"));
   end SkewNipIntegrationCheck;
 
   model WedgedNipIntegrationCheck
@@ -172,14 +173,6 @@ package SkewNipChecks "Skewed, wedged and eccentric nip regressions"
     annotation(Documentation(info = "<html><h4>Wedged nip integration check</h4>
 <p>Close a nip tilted out of plane by <code>tram = 0.003</code> rad onto the running top roller. The resulting wedge should move the normal-load centre toward the closed end and alter the contact width and load during the stroke.</p></html>"));
   end WedgedNipIntegrationCheck;
-
-  model NipRunoutCheck
-    "An eccentric nip drum on the loaded roller, for the NipLoading figure"
-    extends Roll2RollDynamics.Examples.NipLoading(
-      nip(runout = 0.3e-3), world(enableAnimation = false));
-    annotation(Documentation(info = "<html><h4>Nip runout check</h4>
-<p>Run the nip loading stroke with 0.3 mm radial eccentricity in the nip drum. Its orbit should modulate penetration and the held normal load once per nip revolution.</p></html>"));
-  end NipRunoutCheck;
 
   model NipSteerCheck
     "A crossed nip drags the tracking web sideways, for the NipLoading figure"
@@ -201,8 +194,12 @@ package SkewNipChecks "Skewed, wedged and eccentric nip regressions"
     extends Roll2RollDynamics.Examples.NipLoading(
       world(enableAnimation = false, lateralDynamics = true),
       loadingPosition(table = [0, 0; 0.5, 0; 1, 0.002; 3, 0.002; 3.5, 0; 4, 0]));
+  equation
+    assert(abs(topRoll.rollerVariables.lateralPosition) < 1e-9
+      and abs(nip.nipContact.lateralForce) < 1e-6,
+      "A parallel nip must neither push nor move the tracking web sideways");
     annotation(Documentation(info = "<html><h4>Nip straight steer check</h4>
-<p>Engage a parallel nip using the same loading stroke and lateral web dynamics as the crossed-nip case. With no yaw disturbance, the tracking web should remain at its initial lateral position.</p></html>"));
+<p>Engage a parallel nip using the same loading stroke and lateral web dynamics as the crossed-nip case. With no yaw disturbance, the assertion requires the tracking web to stay at its initial lateral position with no nip lateral force.</p></html>"));
   end NipStraightSteerCheck;
 
   model YawedRollerDriftCheck

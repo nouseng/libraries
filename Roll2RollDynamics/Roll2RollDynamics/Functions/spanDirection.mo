@@ -5,7 +5,7 @@ function spanDirection "Span direction with regular forward derivatives"
   input Modelica.Units.SI.Position y "Cross-machine displacement";
   input Modelica.Units.SI.Position z "Vertical displacement";
   input Integer axis "Direction component";
-  output Real direction(unit="1") "Span direction component";
+  output Modelica.Units.SI.DimensionlessRatio direction "Span direction component";
 protected
   Modelica.Units.SI.Length length "Regularized span length";
   Modelica.Units.SI.Position displacement[3] "End-to-end displacement";

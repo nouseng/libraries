@@ -34,7 +34,7 @@ touches the other one.</p>
     parameter Modelica.Units.SI.Length thickness = 0.005 "Web thickness";
     parameter Modelica.Units.SI.Length width = 0.6 "Web width (cross-machine)";
     parameter Modelica.Units.SI.Density density = 900 "Web material density";
-    parameter Real EA(unit = "N") = 8000 "Axial stiffness E*A";
+    parameter Modelica.Units.SI.Force EA = 8000 "Axial stiffness E*A";
     annotation(
       Documentation(
         info = "<html>
@@ -57,9 +57,9 @@ Roll face width is a property of the roll and is given separately.</p>
   record TractionFrictionParameters
     "Triple-S web-to-roll traction parameters"
     extends Modelica.Icons.Record;
-    parameter Real muAdhesion(unit = "1", min = 0) = 0.35
+    parameter Modelica.Units.SI.CoefficientOfFriction muAdhesion(min = 0) = 0.35
       "Peak friction coefficient in the adhesion region";
-    parameter Real muSliding(unit = "1", min = 0) = 0.22
+    parameter Modelica.Units.SI.CoefficientOfFriction muSliding(min = 0) = 0.22
       "Friction coefficient after the sliding transition";
     parameter Modelica.Units.SI.Velocity vAdhesion(min = Modelica.Constants.small) = 1e-3
       "Relative velocity at the adhesion peak";

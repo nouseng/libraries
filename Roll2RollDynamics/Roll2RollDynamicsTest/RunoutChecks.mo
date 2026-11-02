@@ -23,9 +23,9 @@ package RunoutChecks "Roller drum runout regressions"
     // the adjacent span by the same amount, once per turn.
     final parameter Modelica.Units.SI.Length expectedSpanSwing = 2*runoutMagnitude
       "Peak-to-peak free-span swing a first-order tangency geometry predicts";
-    Real orbitCosine(unit = "1") = Modelica.Math.cos(idler.rollerVariables.angle)
+    Modelica.Units.SI.DimensionlessRatio orbitCosine = Modelica.Math.cos(idler.rollerVariables.angle)
       "Once-per-turn reference aligned with the runout high point";
-    Real orbitSine(unit = "1") = Modelica.Math.sin(idler.rollerVariables.angle)
+    Modelica.Units.SI.DimensionlessRatio orbitSine = Modelica.Math.sin(idler.rollerVariables.angle)
       "Once-per-turn reference a quarter turn behind the high point";
     discrete Modelica.Units.SI.Force tensionMax(start = -1e9, fixed = true)
       "Highest entry-span tension after the line has settled";
@@ -46,9 +46,9 @@ package RunoutChecks "Roller drum runout regressions"
     // clean orbit harmonic from a ripple carrying other content.
     discrete Modelica.Units.SI.Length lengthSum(start = 0, fixed = true)
       "Sum of sampled span lengths in the settled window";
-    discrete Real cosineSum(unit = "1", start = 0, fixed = true)
+    discrete Modelica.Units.SI.DimensionlessRatio cosineSum(start = 0, fixed = true)
       "Sum of sampled in-phase orbit references";
-    discrete Real sineSum(unit = "1", start = 0, fixed = true)
+    discrete Modelica.Units.SI.DimensionlessRatio sineSum(start = 0, fixed = true)
       "Sum of sampled quadrature orbit references";
     discrete Modelica.Units.SI.Length lengthCosineSum(start = 0, fixed = true)
       "Sum of sampled span lengths weighted by the in-phase orbit reference";
@@ -230,7 +230,7 @@ package RunoutChecks "Roller drum runout regressions"
     "The eccentric roll is the driven one, held at speed by a PI loop, as on Branca's S-wrap"
     extends Modelica.Icons.Example;
     inner Roll2RollDynamics.WebWorld world(enableAnimation = false)
-      annotation(Placement(visible = true, transformation(origin = {-280, 240},
+      annotation(Placement(visible = true, transformation(origin = {-230, 60},
         extent = {{-10, -10}, {10, 10}})));
     parameter Modelica.Units.SI.Length runoutMagnitude = 0.3e-3
       "Radial runout of the driven roll";
@@ -242,87 +242,87 @@ package RunoutChecks "Roller drum runout regressions"
       xPosition = 0, zPosition = 0, rotationDirection = 1,
       entryAngleStart = -3.14, exitAngleStart = -1.01, runout = runoutMagnitude)
       "Largest roll, driven and eccentric"
-      annotation(Placement(visible = true, transformation(origin = {200, 0},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(visible = true, transformation(origin = {-70, 0},
+        extent = {{-10, -10}, {10, 10}}, rotation = -270)));
     Roll2RollDynamics.Components.Roller topRoll(radius = 0.12, fixedInitialAngle = true,
       fixedInitialWebState = true, fixedInitialSpeed = true, xPosition = 0.5, zPosition = 0.8,
       rotationDirection = 1, entryAngleStart = -1.01, exitAngleStart = 1.01)
-      annotation(Placement(visible = true, transformation(origin = {-200, 160},
+      annotation(Placement(visible = true, transformation(origin = {0, 50},
         extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Roller rightRoll(radius = 0.09, fixedInitialAngle = true,
       fixedInitialWebState = true, fixedInitialSpeed = true, xPosition = 1.0, zPosition = 0,
       rotationDirection = 1, entryAngleStart = 1.01, exitAngleStart = 3.14)
-      annotation(Placement(visible = true, transformation(origin = {-200, 80},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(visible = true, transformation(origin = {70, 0},
+        extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     Roll2RollDynamics.Components.Belt risingSpan
-      annotation(Placement(visible = true, transformation(origin = {-200, 0},
+      annotation(Placement(visible = true, transformation(origin = {-50, 50},
         extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Belt fallingSpan
-      annotation(Placement(visible = true, transformation(origin = {-200, -80},
+      annotation(Placement(visible = true, transformation(origin = {50, 50},
         extent = {{-10, -10}, {10, 10}})));
     Roll2RollDynamics.Components.Belt returnSpan
-      annotation(Placement(visible = true, transformation(origin = {-200, -160},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(visible = true, transformation(origin = {0, -60},
+        extent = {{10, -10}, {-10, 10}})));
     // Speed loop: the shaft keeps its degree of freedom, so the orbit's
     // torque and the span tensions feed back into the roll speed.
     Modelica.Mechanics.Rotational.Sources.Torque drive
-      annotation(Placement(visible = true, transformation(origin = {120, 0},
+      annotation(Placement(visible = true, transformation(origin = {-110, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.Rotational.Sensors.SpeedSensor speedSensor
-      annotation(Placement(visible = true, transformation(origin = {-120, 40},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(visible = true, transformation(origin = {-190, -40},
+        extent = {{-10, -10}, {10, 10}}, rotation = 90)));
     Modelica.Blocks.Sources.Constant setpoint(k = speedSetpoint)
-      annotation(Placement(visible = true, transformation(origin = {-120, -40},
+      annotation(Placement(visible = true, transformation(origin = {-230, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Math.Feedback speedError
-      annotation(Placement(visible = true, transformation(origin = {-40, 0},
+      annotation(Placement(visible = true, transformation(origin = {-190, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Blocks.Continuous.PI speedController(k = 20, T = 0.1, initType = Modelica.Blocks.Types.Init.InitialOutput, y_start = 0)
-      annotation(Placement(visible = true, transformation(origin = {40, 0},
+      annotation(Placement(visible = true, transformation(origin = {-150, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Units.SI.Angle driveAngle = driveRoll.rollerVariables.angle
       "Shaft angle of the eccentric driven roll";
     Modelica.Units.SI.Torque driveTorque = drive.tau "Torque the speed loop applies";
   equation
     connect(setpoint.y, speedError.u1)
-      annotation(Line(visible = true, points = {{-109, -40}, {-48, 0}},
+      annotation(Line(visible = true, points = {{-219, 0}, {-198, 0}},
         color = {0, 0, 127}, smooth = Smooth.None));
     connect(speedSensor.w, speedError.u2)
-      annotation(Line(visible = true, points = {{-109, 40}, {-40, -8}},
+      annotation(Line(visible = true, points = {{-190, -29}, {-190, -8}},
         color = {0, 0, 127}, smooth = Smooth.None));
     connect(speedError.y, speedController.u)
-      annotation(Line(visible = true, points = {{-31, 0}, {28, 0}},
+      annotation(Line(visible = true, points = {{-181, 0}, {-162, 0}},
         color = {0, 0, 127}, smooth = Smooth.None));
     connect(speedController.y, drive.tau)
-      annotation(Line(visible = true, points = {{51, 0}, {108, 0}},
+      annotation(Line(visible = true, points = {{-139, 0}, {-122, 0}},
         color = {0, 0, 127}, smooth = Smooth.None));
     connect(drive.flange, driveRoll.flange_a)
-      annotation(Line(visible = true, points = {{130, 0}, {200, 0}},
+      annotation(Line(visible = true, points = {{-100, 0}, {-70, 0}},
         color = {0, 0, 0}, smooth = Smooth.None));
     connect(speedSensor.flange, driveRoll.flange_a)
-      annotation(Line(visible = true, points = {{-130, 40}, {200, 0}},
+      annotation(Line(visible = true, points = {{-190, -50}, {-190, -60}, {-90, -60}, {-90, 0}, {-70, 0}},
         color = {0, 0, 0}, smooth = Smooth.None));
     connect(driveRoll.frame_b, risingSpan.frame_a)
-      annotation(Line(visible = true, points = {{210, 0}, {-210, 0}},
+      annotation(Line(visible = true, points = {{-70, 10}, {-70, 50}, {-60, 50}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(risingSpan.frame_b, topRoll.frame_a)
-      annotation(Line(visible = true, points = {{-190, 0}, {-210, 160}},
+      annotation(Line(visible = true, points = {{-40, 50}, {-10, 50}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(topRoll.frame_b, fallingSpan.frame_a)
-      annotation(Line(visible = true, points = {{-190, 160}, {-210, -80}},
+      annotation(Line(visible = true, points = {{10, 50}, {40, 50}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(fallingSpan.frame_b, rightRoll.frame_a)
-      annotation(Line(visible = true, points = {{-190, -80}, {-210, 80}},
+      annotation(Line(visible = true, points = {{60, 50}, {70, 50}, {70, 10}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(rightRoll.frame_b, returnSpan.frame_a)
-      annotation(Line(visible = true, points = {{-190, 80}, {-210, -160}},
+      annotation(Line(visible = true, points = {{70, -10}, {70, -60}, {10, -60}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     connect(returnSpan.frame_b, driveRoll.frame_a)
-      annotation(Line(visible = true, points = {{-190, -160}, {190, 0}},
+      annotation(Line(visible = true, points = {{-10, -60}, {-70, -60}, {-70, -10}},
         color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
     annotation(
-      Diagram(coordinateSystem(extent = {{-320, -200}, {240, 280}})));
-    annotation(Documentation(info = "<html><h4>Driven runout</h4>
+      Diagram(coordinateSystem(extent = {{-320, -200}, {240, 280}})),
+  Documentation(info = "<html><h4>Driven runout</h4>
 <p>Drive the eccentric 0.3 mm roll with a PI shaft-speed controller in a closed three-roll web loop. Its free shaft dynamics should transmit a once-per-turn disturbance into all three span tensions and the control torque; the spectral check requires a fundamental tension amplitude above 0.5 N in each span.</p></html>"));
   end DrivenRunout;
 
@@ -377,7 +377,7 @@ package RunoutChecks "Roller drum runout regressions"
 <p>Provide the partial held-contact harness for a nip drum with radial runout; instantiate a derived case for the terminal amplitude checks. During the 3 to 5 s hold, samples record penetration, load and load-centre extrema, and the normal force must remain within 2% of the linear elastic cover law.</p></html>"));
   end NipRunoutBase;
 
-  model NipRunoutLoad "An eccentric nip drum swings the held load with its penetration"
+  model NipRunoutLoad "An eccentric nip drum swings the held load with its penetration, for the NipLoading figure"
     extends NipRunoutBase;
   equation
     when terminal() then

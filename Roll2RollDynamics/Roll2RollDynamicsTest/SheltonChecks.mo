@@ -32,7 +32,7 @@ package SheltonChecks "Normal-entry benchmark checks against idealized steering"
     annotation(Documentation(info = "<html><h4>Half speed</h4><p>Runs the normal-entry benchmark at <code>lineSpeed=1</code> m/s to exercise the longer span-length/transport-speed response time. The inherited analytical tracking, material-balance, final offset, entry skew and web-speed checks must still pass over the 8 s run.</p></html>"));
   end HalfSpeed;
 
-  annotation(uses(Modelica(version="4.1.0")),
-    Documentation(info="<html><p>Analytical verification of idealized
-    normal-entry steering; not experimental friction validation.</p></html>"));
+  annotation(Documentation(info="<html><h4>Shelton checks</h4><p>Analytical verification of idealized normal-entry steering; not experimental friction validation.</p></html>"));
+
+
 end SheltonChecks;

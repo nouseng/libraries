@@ -45,8 +45,8 @@ carries wrapped web; <a href=\"modelica://Roll2RollDynamics.Components.Winder\">
 stores wound web; <a href=\"modelica://Roll2RollDynamics.Components.Belt\">Belt</a>
 connects tangencies; <a href=\"modelica://Roll2RollDynamics.Components.NipRoller\">NipRoller</a>
 loads a nip-enabled roller; and
-<a href=\"modelica://Roll2RollDynamics.Components.WebForce\">WebForce</a>
-sets an open-end tension.</p>
+<a href=\"modelica://Roll2RollDynamics.Components.WebBoundary\">WebBoundary</a>
+sets an open-end tension or clamps a belt to a body.</p>
 <p>Standard MSL support frames and drive flanges connect mounts and drives.
 Dancers and guides use <code>Roller</code> on external joints. Internal parts
 are in <a href=\"modelica://Roll2RollDynamics.Utilities.Parts\">Utilities.Parts</a>.</p>

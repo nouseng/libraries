@@ -288,7 +288,7 @@ independent of <code>winding</code><br>
 <code>tangencyAngleStart</code> = Initial route guess<br>
 <code>bearingDamping</code> = Viscous shaft drag</p>
 <h4>Connections and initialization</h4>
-<p>Connect <code>frame_t</code> to <code>Belt</code> or <code>WebForce</code>
+<p>Connect <code>frame_t</code> to <code>Belt</code> or <code>WebBoundary</code>
 and <code>flange_a</code> to the drive/brake. <code>useSupport = true</code>
 exposes <code>frame_support</code>; default false fixes the housing at
 <code>xPosition</code>/<code>zPosition</code>.</p>

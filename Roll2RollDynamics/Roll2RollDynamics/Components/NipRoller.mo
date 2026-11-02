@@ -69,7 +69,7 @@ model NipRoller   "Undriven rotating nip roller with an optional external housin
   parameter Modelica.Units.SI.Force maxNipLoad = 1000
     "Maximum actuator force"
     annotation(Dialog(group = "Contact"));
-  parameter Real loadFraction(unit = "1", min = 0, max = 1) = 0.5
+  parameter Modelica.Units.SI.DimensionlessRatio loadFraction(min = 0, max = 1) = 0.5
     "Nominal preload as a fraction of maximum actuator force"
     annotation(Dialog(group = "Contact", enable = not useSupport));
 

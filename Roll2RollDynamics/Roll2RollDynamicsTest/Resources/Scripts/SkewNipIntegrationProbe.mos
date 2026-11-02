@@ -7,8 +7,9 @@ cd("build/skew-nip-checks");
 simulate(Roll2RollDynamicsTest.SkewNipChecks.SkewNipIntegrationCheck, stopTime = 8,
   numberOfIntervals = 4000, tolerance = 1e-8, fileNamePrefix = "SkewNipLoading");
 getErrorString();
-simulate(Roll2RollDynamicsTest.SkewNipChecks.NipRunoutCheck, stopTime = 8,
-  numberOfIntervals = 4000, tolerance = 1e-8, fileNamePrefix = "NipRunout");
+simulate(Roll2RollDynamicsTest.RunoutChecks.NipRunoutLoad, stopTime = 8,
+  numberOfIntervals = 4000, tolerance = 1e-8, fileNamePrefix = "NipRunout",
+  variableFilter = "time|nip[.]nipVariables[.]nipLoad");
 getErrorString();
 val(nip.nipContact.relativeMisalignment, 3, "SkewNipLoading_res.mat");
 max({val(nip.nipVariables.nipLoad, 2.5 + i*0.005, "SkewNipLoading_res.mat") for i in 0:400});

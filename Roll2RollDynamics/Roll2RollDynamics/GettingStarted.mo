@@ -50,8 +50,10 @@ inner Roll2RollDynamics.WebWorld world(
 <p>Components inherit these values unless overridden locally.
 <code>innerTraction</code> and <code>outerTraction</code> describe the two web
 faces; <code>contactFace</code> selects the roller's default friction record.
-Coordinates use <code>x</code> along the machine and <code>z</code> upward,
-with gravity along <code>-z</code>.</p>
+Set <code>noSlip = true</code> for toothed timing belts and
+<code>allowSlack = true</code> if a span may go slack. Coordinates use
+<code>x</code> along the machine and <code>z</code> upward, with gravity along
+<code>-z</code>.</p>
 <h4>General settings</h4>
 <h5>Web route</h5>
 <p>Set <code>rotationDirection</code> in the Geometry dialog group:
@@ -190,8 +192,12 @@ This is independent of the geometric <code>rotationDirection</code>.
 its lower limit. Here <code>unwindRadius</code> is a layout constant in the
 complete model.</p>
 <p>For an open end with prescribed tension, use
-<a href=\"modelica://Roll2RollDynamics.Components.WebForce\">WebForce</a>, as in
-<a href=\"modelica://Roll2RollDynamics.Examples.SheltonSteering\">SheltonSteering</a>.</p>
+<a href=\"modelica://Roll2RollDynamics.Components.WebBoundary\">WebBoundary</a>
+(<code>useSupport = false</code>), as in
+<a href=\"modelica://Roll2RollDynamics.Examples.SheltonSteering\">SheltonSteering</a>.
+To clamp a belt end to a MultiBody frame or moving carriage, set
+<code>useSupport = true</code> and connect <code>frame_support</code>, as in
+<a href=\"modelica://Roll2RollDynamics.Examples.BeltDrivenCarriage\">BeltDrivenCarriage</a>.</p>
 <h4>Drives and tension control</h4>
 <p>The outfeed and both winders use MSL rotational <code>Speed</code> sources
 with <code>exact = true</code>. Divide the shared <code>startup.y</code>

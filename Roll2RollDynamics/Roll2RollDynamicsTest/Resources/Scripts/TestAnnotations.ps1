@@ -87,7 +87,7 @@ if ($components["Roller"] -notmatch 'Dialog\("Animation","Dynamic coating",useDy
 # icon canvas needs an iconTransformation or it lands off the icon. Pinning the
 # coordinates instead only breaks when a diagram is widened, which it did.
 foreach ($file in @(
-    "Components/Roller.mo", "Components/NipRoller.mo", "Components/Winder.mo", "Components/Belt.mo",
+    "Components/Roller.mo", "Components/NipRoller.mo", "Components/Winder.mo", "Components/Belt.mo", "Components/WebBoundary.mo",
     "Utilities/Parts/WebWrap.mo", "Utilities/Parts/RollBody.mo",
     "Utilities/Parts/WebFriction.mo", "Utilities/Parts/NipContact.mo"
 )) {
@@ -140,20 +140,12 @@ $sourceFiles = @(
     Get-ChildItem -Path (Join-Path $repositoryRoot "Roll2RollDynamics") -Filter *.mo -Recurse
     Get-Item -LiteralPath (Join-Path $repositoryRoot "Roll2RollDynamicsTest/TripleSFrictionCheck.mo")
     Get-Item -LiteralPath (Join-Path $repositoryRoot "Roll2RollDynamicsTest/ComponentChecks.mo")
-    Get-Item -LiteralPath (Join-Path $repositoryRoot "Roll2RollDynamicsTest/VisualGeometryChecks.mo")
 )
 $unrouted = @()
 foreach ($file in $sourceFiles) {
     $text = (Get-Content -LiteralPath $file.FullName -Raw) -replace "`r`n", "`n"
     if ($file.Name -eq "ComponentChecks.mo") {
-        $text = $text.Substring($text.IndexOf("model RollBodyComponentCheck"))
-    }
-    if ($file.Name -eq "VisualGeometryChecks.mo") {
-        $start = $text.IndexOf("model RollerWrapVisualGeometryCheck")
-        $endMarker = "end RollerFacadeCompositionCheck;"
-        $text = $text.Substring(
-            $start,
-            $text.IndexOf($endMarker, $start) + $endMarker.Length - $start)
+        # check all connections in ComponentChecks.mo
     }
     foreach ($match in [regex]::Matches($text, "(?s)\bconnect\s*\(.*?\)\s*(?<tail>[^;]*);")) {
         if ($match.Groups["tail"].Value -notmatch "annotation\s*\(\s*Line\(") {

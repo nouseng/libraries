@@ -3,10 +3,11 @@ class Introduction
   "Overview of the library contents"
   extends Modelica.Icons.Information;
   annotation(Documentation(info = "<html>
-<p>Roll to Roll Dynamics simulates the transport of a continuous web between
-rolls in converting lines, printing presses, coaters, calenders and belt
-drives, including tension control, traction, winding and lateral tracking.
-Figure 1 shows a film line with a translating dancer and a yawed idler.</p>
+<p>Roll to Roll Dynamics simulates the transport of a continuous web or belt
+between rolls in converting lines, printing presses, coaters, calenders, belt
+drives and belt-driven carriages, including tension control, traction, winding
+and lateral tracking. Figure 1 shows a film line with a translating dancer and
+a yawed idler.</p>
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
      src=\"modelica://Roll2RollDynamics/Resources/Images/MisalignedIdlerLine/MisalignmentGif3D.gif\"
@@ -33,8 +34,9 @@ override these locally. Coordinates use <code>x</code> along the machine and
 <strong>Figure 2:</strong> The <code>WebWorld</code> icon.</p>
 <h5>Roller</h5>
 <p><a href=\"modelica://Roll2RollDynamics.Components.Roller\">Roller</a>
-is an idler, driven roll or translating dancer, with optional nip loading,
-drum runout and lateral tracking under fixed yaw.</p>
+is an idler, driven roll, timing pulley (<code>noSlip</code>) or translating
+dancer, with optional nip loading, drum runout and lateral tracking under
+fixed yaw.</p>
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
      src=\"modelica://Roll2RollDynamics/Resources/Images/Icons/roller-over.png\"
@@ -52,7 +54,9 @@ is an unwind or rewind whose radius and inertia change as material transfers.</p
 <strong>Figure 4:</strong> The <code>Winder</code> icon.</p>
 <h5>Belt</h5>
 <p><a href=\"modelica://Roll2RollDynamics.Components.Belt\">Belt</a>
-is a free span with elasticity, Kelvin-Voigt damping and longitudinal inertia.</p>
+is a free span with length-dependent stiffness, Kelvin-Voigt damping,
+longitudinal inertia and optional zero-tension slack cutoff
+(<code>allowSlack</code>).</p>
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
      src=\"modelica://Roll2RollDynamics/Resources/Images/Icons/belt.png\"
@@ -64,15 +68,16 @@ is a free span with elasticity, Kelvin-Voigt damping and longitudinal inertia.</
 is an undriven drum pressed against a roller to increase traction capacity.
 Its misalignment and runout shape the load, and a crossed nip steers the
 tracking web.</p>
-<h5>WebForce</h5>
-<p><a href=\"modelica://Roll2RollDynamics.Components.WebForce\">WebForce</a>
-is a prescribed tensile load at an open web boundary.</p>
+<h5>WebBoundary</h5>
+<p><a href=\"modelica://Roll2RollDynamics.Components.WebBoundary\">WebBoundary</a>
+is a prescribed tensile load at an open web boundary or a MultiBody clamp
+anchoring a belt end to a frame or moving carriage.</p>
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
      src=\"modelica://Roll2RollDynamics/Resources/Images/Icons/web-force.png\"
      width=\"140\"
-     alt=\"WebForce icon: a force arrow acting on a web connection\">
-<strong>Figure 6:</strong> The <code>WebForce</code> icon.</p>
+     alt=\"WebBoundary icon: a force arrow acting on a web connection\">
+<strong>Figure 6:</strong> The <code>WebBoundary</code> icon.</p>
 <h4>Functions, utilities and resources</h4>
 <p><a href=\"modelica://Roll2RollDynamics.Functions\">Functions</a> provides
 geometry, friction and animation helpers.
@@ -81,12 +86,12 @@ material records, connectors and internal parts.
 <a href=\"modelica://Roll2RollDynamics.Resources\">Resources</a> holds bundled
 images and data.</p>
 <h4>How it works</h4>
-<p>Roll positions, radii and <code>rotationDirection</code> define the web route;
-the connected geometry determines tangency points, span lengths and wraps.
-Each span and wrap conserves its own material inventory. Elastic stretch,
-damping and longitudinal inertia determine tension, while friction transfers
-force between the web and rolls. A translating dancer changes both geometry
-and stored material.</p>
+<p>Roll and clamp positions, radii and <code>rotationDirection</code> define the
+path; the connected geometry determines tangency points, span lengths and
+wraps. Each span and wrap conserves its own material inventory. Elastic
+stretch, damping and longitudinal inertia determine tension, while friction or
+synchronous contact transfers force between the web and rolls. Moving dancers
+and belt-driven carriages change both span geometry and stored material.</p>
 <h4>Examples</h4>
 <p>The <a href=\"modelica://Roll2RollDynamics.Examples\">Examples</a> package
 starts with assembled lines in
@@ -101,6 +106,9 @@ winding-line speed, tension and radius compared with published measurements.</li
 unequal pulleys, common-tangent geometry and the capstan tension limit.</li>
 <li><a href=\"modelica://Roll2RollDynamics.Examples.ThreeRollWebLoop\">ThreeRollWebLoop</a>:
 a closed path whose wrap angles sum to a full turn.</li>
+<li><a href=\"modelica://Roll2RollDynamics.Examples.BeltDrivenCarriage\">BeltDrivenCarriage</a>:
+a bi-directional belt-driven carriage with pre-tension, variable-length span
+stiffness and zero-tension slack cutoff.</li>
 <li><a href=\"modelica://Roll2RollDynamics.Examples.SlipAndTractionCapacity\">SlipAndTractionCapacity</a>:
 signed slip and traction capacity with and without nip loading.</li>
 <li><a href=\"modelica://Roll2RollDynamics.Examples.NipLoading\">NipLoading</a>:
@@ -112,10 +120,12 @@ fixed-yaw tracking compared with Shelton's first-order response.</li>
 loss and recovery of wrap as an idler withdraws and returns.</li>
 </ul>
 <h4>Limitations</h4>
-<p>The web must remain taut and roller mount orientations fixed. Spans remain
-straight: bending, wrinkling, buckling and distributed wave propagation are
-outside the model. Lateral motion has one degree of freedom per roll, with
-the same offset at entry and exit; the span's lateral shape is not resolved.</p>
+<p>Spans remain straight: bending, wrinkling, buckling and distributed wave
+propagation are outside the model, though optional slack cutoff
+(<code>allowSlack</code>) clamps compressive spans at zero tension. Roller
+mount orientations must remain fixed. Lateral motion has one degree of freedom
+per roll, with the same offset at entry and exit; the span's lateral shape is
+not resolved.</p>
 </html>"
     ));
 end Introduction;

@@ -7,7 +7,7 @@ model OpenBeltDrive
   final parameter Modelica.Units.SI.Angle fullTurn = 2*Modelica.Constants.pi
     "One complete turn for the wrap-angle reference";
 
-  inner Roll2RollDynamics.WebWorld world
+  inner Roll2RollDynamics.WebWorld world "Shared web and machine defaults"
     annotation(Placement(transformation(extent = {{-120, 60}, {-100, 80}})));
 
   Roll2RollDynamics.Components.Roller bigRoll(
@@ -25,7 +25,7 @@ model OpenBeltDrive
     radius = 0.09,
     fixedInitialAngle = true,
     fixedInitialWebState = true,
-    fixedInitialSpeed = true,
+    fixedInitialSpeed = not world.noSlip,
     xPosition = 1.0,
     zPosition = 0.3,
     rotationDirection = 1,
@@ -33,9 +33,11 @@ model OpenBeltDrive
     exitAngleStart = 2.85) "Idling pulley, wrapped by less than half a turn"
     annotation(Placement(transformation(origin = {50, 0}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
 
-  Roll2RollDynamics.Components.Belt upperSpan "Span above the line of centres"
+  Roll2RollDynamics.Components.Belt upperSpan(
+    fixedInitialMomentum = not world.noSlip) "Span above the line of centres"
     annotation(Placement(transformation(origin = {0, 40}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.Belt lowerSpan "Span below the line of centres"
+  Roll2RollDynamics.Components.Belt lowerSpan(
+    fixedInitialMomentum = not world.noSlip) "Span below the line of centres"
     annotation(Placement(transformation(origin = {0, -40}, extent = {{10, -10}, {-10, 10}})));
 
   Modelica.Mechanics.Rotational.Sources.ConstantSpeed drive(
@@ -48,11 +50,11 @@ model OpenBeltDrive
     "Wrap angle on the small pulley";
   output Modelica.Units.SI.Angle wrapSum = bigRoll.rotationDirection*bigRoll.rollerVariables.arcAngle
     + smallRoll.rotationDirection*smallRoll.rollerVariables.arcAngle "Total turning round the loop";
-  output Real tensionRatio(unit = "1") =
+  output Modelica.Units.SI.DimensionlessRatio tensionRatio =
     (max(smallRoll.rollerVariables.tensionIn, smallRoll.rollerVariables.tensionOut) - smallRoll.centrifugalTension)/
     max(min(smallRoll.rollerVariables.tensionIn, smallRoll.rollerVariables.tensionOut) - smallRoll.centrifugalTension, Roll2RollDynamics.Utilities.Types.forceTol)
     "Ratio of tight/slack tensions after centrifugal correction";
-  output Real capstanLimit(unit = "1") =
+  output Modelica.Units.SI.DimensionlessRatio capstanLimit =
     exp(smallRoll.traction.muAdhesion*abs(smallRoll.rollerVariables.arcAngle))
     "Largest ratio the smaller wrap can hold, from the capstan equation";
   output Modelica.Units.SI.Force initialTension =
@@ -64,6 +66,13 @@ model OpenBeltDrive
   output Modelica.Units.SI.Force transmissibleForce =
     2*initialTension*tanh(smallRoll.traction.muAdhesion*abs(smallRoll.rollerVariables.arcAngle)/2)
     "Largest force the smaller wrap can transmit at the present initial tension";
+initial equation
+  // A locked belt cannot absorb the step start of the drive, so begin in steady running.
+  if world.noSlip then
+    der(smallRoll.rollerVariables.surfaceVelocity) = 0;
+    der(upperSpan.momentum) = 0;
+    der(lowerSpan.momentum) = 0;
+  end if;
 equation
   connect(drive.flange, bigRoll.flange_a)
     annotation(Line(points = {{-20, 0}, {20, 0}}, origin = {-70, 0}));
@@ -183,6 +192,13 @@ of 0.2 and 23 N at 21.6 rad/s; the steady ratio rises from 1.00 to 1.18.</p>
      width=\"600\"
      alt=\"Tight and slack side tensions at the small pulley for two bearing drags\">
 <strong>Figure 6:</strong> Tight and slack side tensions for two bearing drags.</p>
+<p>Setting <code>world.noSlip = true</code> turns the drive into a toothed
+(timing) belt. A locked belt cannot absorb the drive's step start, so the
+example then begins in steady running: the smaller pulley and both spans start
+at equilibrium speed rather than at rest. Contact slip is zero, and the
+smaller pulley runs about 0.1% fast purely from elastic draw: its wrap carries
+higher mean tension, hence more stretch, than the driven one. The capstan bound
+of Figure 2 no longer limits a toothed belt.</p>
 <h4>References</h4>
 <ul>
 <li>[<a href=\"https://dl.icdst.org/pdfs/files3/ad7608c18e740b0e402c025fa3187de8.pdf\">1</a>]

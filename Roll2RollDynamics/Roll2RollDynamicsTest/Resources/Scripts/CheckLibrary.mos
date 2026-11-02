@@ -15,7 +15,8 @@ checkModel(Roll2RollDynamicsTest.ComponentChecks.FixedNipRollerComponentCheck);
 checkModel(Roll2RollDynamicsTest.ComponentChecks.RollBodyComponentCheck);
 checkModel(Roll2RollDynamicsTest.ComponentChecks.WebWrapComponentCheck);
 checkModel(Roll2RollDynamicsTest.NipContactChecks.NipContactComponentCheck);
-checkModel(Roll2RollDynamicsTest.ComponentChecks.WebForceComponentCheck);
+checkModel(Roll2RollDynamicsTest.ComponentChecks.WebBoundaryComponentCheck);
+checkModel(Roll2RollDynamicsTest.ComponentChecks.SemiClosedSlackBeltCheck);
 checkModel(Roll2RollDynamics.Utilities.Parts.VariableGearR2T);
 checkModel(Roll2RollDynamics.Utilities.Parts.DrumRunout);
 checkModel(Roll2RollDynamics.Utilities.Parts.VariableTranslation);
@@ -23,6 +24,7 @@ checkModel(Roll2RollDynamics.Utilities.Parts.VariableTranslation);
 // Every remaining public example and the assembled line.
 checkModel(Roll2RollDynamics.Examples.OpenBeltDrive);
 checkModel(Roll2RollDynamics.Examples.ThreeRollWebLoop);
+checkModel(Roll2RollDynamics.Examples.BeltDrivenCarriage);
 checkModel(Roll2RollDynamics.Examples.NipLoading);
 checkModel(Roll2RollDynamics.Examples.SlipAndTractionCapacity);
 checkModel(Roll2RollDynamicsTest.TangencyQuadrants);

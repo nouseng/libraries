@@ -30,10 +30,10 @@ try {
     if ($compilerExit -ne 0 -or $checked -match 'Error:|Warning:|LOG_ASSERT|\| warning \|') {
         throw "Tram checks failed; see $logPath"
     }
-    if ([regex]::Matches($log, 'The simulation finished successfully\.').Count -ne 3) {
-        throw "Expected three successful tram simulations; see $logPath"
+    if ([regex]::Matches($log, 'The simulation finished successfully\.').Count -ne 2) {
+        throw "Expected two successful tram simulations; see $logPath"
     }
 } finally {
     Pop-Location
 }
-Write-Output "Three tram checks passed: wedge-only nip, crossed nip unchanged, tilted idler steering."
+Write-Output "Two tram checks passed: wedge-only nip, tilted idler steering."

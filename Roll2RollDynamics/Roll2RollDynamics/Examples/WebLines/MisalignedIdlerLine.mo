@@ -6,7 +6,7 @@ model MisalignedIdlerLine
   parameter Modelica.Units.SI.Time startupDuration(min=Modelica.Constants.small) = 2
     "Time for the driven surfaces to reach the line speed"
     annotation(Dialog(group = "Operating conditions"));
-  final parameter Real normalEntry(unit = "1") = 0
+  final parameter Modelica.Units.SI.DimensionlessRatio normalEntry = 0
     "Zero roll-relative entry skew for normal entry";
 protected
   // Parameters
@@ -43,11 +43,11 @@ public
   output Modelica.Units.SI.Stress idlerSpanStress =
     belt3.tension/(world.web.thickness*world.web.width)
     "Mean machine-direction stress in that span";
-  output Real idlerSpanAspect(unit = "1") = belt3.beltVariables.freeLength/world.web.width
+  output Modelica.Units.SI.DimensionlessRatio idlerSpanAspect = belt3.beltVariables.freeLength/world.web.width
     "Span length over web width, which sets the buckling mode the span can take";
-  output Real idlerSpanSkewSin(unit = "1") = belt3.beltVariables.spanSkewSin
+  output Modelica.Units.SI.DimensionlessRatio idlerSpanSkewSin = belt3.beltVariables.spanSkewSin
     "Sine of the angle that span makes across the machine";
-  output Real idlerSpanAxisSkew(unit = "1") = idler.entrySkewSin
+  output Modelica.Units.SI.DimensionlessRatio idlerSpanAxisSkew = idler.entrySkewSin
     "Entering span direction along the idler axis, zero at normal entry";
   output Modelica.Units.SI.Position idlerLateralOffset = idler.rollerVariables.lateralPosition
     "Cross-machine offset the web has walked to at the misaligned roller";
@@ -73,6 +73,7 @@ public
     xPosition = xStart,
     zPosition = zUnwindCenter,
     rotationDirection = 1, fixedInitialWebState=true)
+    "Upstream unwinding roll"
     annotation(Placement(transformation(origin = {-240, 65}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Winder rewindDrum(
     winding = +1,
@@ -80,6 +81,7 @@ public
     xPosition = xEnd,
     zPosition = zRewindCenter,
     rotationDirection = 1, fixedInitialWebState=true)
+    "Downstream rewinding roll"
     annotation(Placement(transformation(origin = {240, 65}, extent = {{10, -10}, {-10, 10}})));
 
   // Rollers / idlers / dancer / guide
@@ -90,6 +92,7 @@ public
     fixedInitialSpeed = true,
     xPosition = 0,
     zPosition = 0)
+    "Torque-trimmed infeed roller"
     annotation(Placement(transformation(origin = {-160, 65}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Roller dancer(
     useSupport = true,
@@ -98,6 +101,7 @@ public
     fixedInitialWebState = true,
     fixedInitialSpeed = true,
     rollColor = {0, 128, 255})
+    "Vertically suspended dancer roller"
     annotation(Placement(transformation(origin = {-80, 65}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Roller idler(
     fixedInitialAngle = true,
@@ -109,12 +113,14 @@ public
     useDynamicColor = true,
     FnThreshold = 440,
     FnSharpness = 30)
+    "Cocked idler roller with 4 mrad yaw misalignment"
     annotation(Placement(transformation(origin = {0, 65}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Roller guide(fixedInitialAngle = true,
     fixedInitialWebState = true,
     fixedInitialSpeed = true,
     xPosition = xMid2,
     zPosition = zDeflected, rotationDirection = -1)
+    "Deflected downstream guide roller"
     annotation(Placement(transformation(origin = {80, 65}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Roller outfeed(
     useFlange = true,
@@ -122,6 +128,7 @@ public
     fixedInitialSpeed = false,
     xPosition = 2*world.spanLength,
     zPosition = 0)
+    "Speed-controlled outfeed master roller"
     annotation(Placement(transformation(origin = {160, 65}, extent = {{-10, -10}, {10, 10}})));
   // The speed source initializes the shaft angle and prescribes its speed.
   // External dancer support
@@ -147,13 +154,13 @@ public
     annotation(Placement(transformation(origin = {-50, 10}, extent = {{10, -10}, {-10, 10}}, rotation = -270)));
 
   // Web spans
-  Roll2RollDynamics.Components.Belt belt1 annotation(
+  Roll2RollDynamics.Components.Belt belt1 "Web span from unwindDrum to infeed" annotation(
 Placement(transformation(origin = {-200, 65}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.Belt belt2 annotation(Placement(transformation(origin = {-120, 65}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.Belt belt3 annotation(Placement(transformation(origin = {-40, 65}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.Belt belt4 annotation(Placement(transformation(origin = {40, 65}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.Belt belt5 annotation(Placement(transformation(origin = {120, 65}, extent = {{-10, -10}, {10, 10}})));
-  Roll2RollDynamics.Components.Belt belt6 annotation(Placement(transformation(origin = {200, 65}, extent = {{-10, -10}, {10, 10}})));
+  Roll2RollDynamics.Components.Belt belt2 "Web span from infeed to dancer" annotation(Placement(transformation(origin = {-120, 65}, extent = {{-10, -10}, {10, 10}})));
+  Roll2RollDynamics.Components.Belt belt3 "Web span from dancer to idler" annotation(Placement(transformation(origin = {-40, 65}, extent = {{-10, -10}, {10, 10}})));
+  Roll2RollDynamics.Components.Belt belt4 "Web span from idler to guide" annotation(Placement(transformation(origin = {40, 65}, extent = {{-10, -10}, {10, 10}})));
+  Roll2RollDynamics.Components.Belt belt5 "Web span from guide to outfeed" annotation(Placement(transformation(origin = {120, 65}, extent = {{-10, -10}, {10, 10}})));
+  Roll2RollDynamics.Components.Belt belt6 "Web span from outfeed to rewindDrum" annotation(Placement(transformation(origin = {200, 65}, extent = {{-10, -10}, {10, 10}})));
 
   // PI tension controller for this speed-constrained line. Increasing infeed
   // torque raises the slow downstream tension response, requiring positive gain.
@@ -175,18 +182,25 @@ Placement(transformation(origin = {-200, 65}, extent = {{-10, -10}, {10, 10}})))
     annotation(Placement(transformation(origin={-310,-50},extent={{-10,-10},{10,10}})));
   // Drives
   Modelica.Mechanics.Rotational.Sources.Torque infeedTorqueSource
+    "Torque actuator on the infeed roller"
     annotation(Placement(transformation(origin = {-300, 275}, extent = {{170, -135}, {150, -115}})));
   Modelica.Mechanics.Rotational.Sources.Speed outfeedSpeedSource(exact=true)
+    "Speed actuator on the outfeed roller"
     annotation(Placement(transformation(origin = {-65, 115}, extent = {{145, -135}, {165, -115}})));
   Modelica.Mechanics.Rotational.Sources.Speed unwindSpeedSource(exact=true)
+    "Speed actuator on the unwind drum"
     annotation(Placement(transformation(origin = {-67.719, 125}, extent = {{-210, -135}, {-190, -115}})));
   Modelica.Mechanics.Rotational.Sources.Speed rewindSpeedSource(exact=true)
+    "Speed actuator on the rewind drum"
     annotation(Placement(transformation(origin = {-10, 85}, extent = {{220, -135}, {240, -115}})));
   Modelica.Blocks.Sources.RealExpression unwindSpeedRef(y = startup.y/max(unwindDrum.radius, Roll2RollDynamics.Utilities.Types.lengthTol))
+    "Radius-compensated angular speed reference for unwindDrum"
     annotation(Placement(transformation(origin = {-67.719, 125}, extent = {{-250, -135}, {-230, -115}})));
   Modelica.Blocks.Sources.RealExpression rewindSpeedRef(y = startup.y/max(rewindDrum.radius, Roll2RollDynamics.Utilities.Types.lengthTol))
+    "Radius-compensated angular speed reference for rewindDrum"
     annotation(Placement(transformation(origin = {-10, 85}, extent = {{180, -135}, {200, -115}})));
   Modelica.Blocks.Sources.RealExpression outfeedSpeedRef(y = startup.y/(world.rollRadius + world.web.thickness/2))
+    "Angular speed reference for outfeed"
     annotation(Placement(transformation(origin = {-65, 115}, extent = {{105, -135}, {125, -115}})));
 
 initial equation

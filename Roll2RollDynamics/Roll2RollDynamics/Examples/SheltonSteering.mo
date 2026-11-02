@@ -16,9 +16,9 @@ model SheltonSteering "Normal-entry steering compared with Shelton's idealized t
   final parameter Modelica.Units.SI.Mass initialWebMass(fixed=false)
     "Initial inventory in the span and both wraps";
 
-  final parameter Real positiveMassTolerance(unit = "kg") = 1e-6
+  final parameter Modelica.Units.SI.Mass positiveMassTolerance = 1e-6
     "Upper one-milligram material balance reference";
-  final parameter Real negativeMassTolerance(unit = "kg") = -1e-6
+  final parameter Modelica.Units.SI.Mass negativeMassTolerance = -1e-6
     "Lower one-milligram material balance reference";
   final parameter Modelica.Units.SI.Position zeroTrackingError = 0
     "Zero lateral tracking error reference";
@@ -26,7 +26,7 @@ model SheltonSteering "Normal-entry steering compared with Shelton's idealized t
   // Variables
   output Modelica.Units.SI.Position referencePosition(start=0, fixed=true)
     "Independent first-order prediction driven by upstream position and speed command";
-  output Real netBoundaryMass(unit="kg", start=0, fixed=true)
+  output Modelica.Units.SI.Mass netBoundaryMass(start=0, fixed=true)
     "Accumulated external inlet mass minus outlet mass";
 
   // Variables with Binding Equations
@@ -45,9 +45,9 @@ model SheltonSteering "Normal-entry steering compared with Shelton's idealized t
   output Modelica.Units.SI.Mass totalWebMass =
     span.beltVariables.webMass + entryRoll.webMass + exitRoll.webMass
     "Material inventory in the free span and both wraps";
-  output Real massChange(unit="kg") = totalWebMass - initialWebMass
+  output Modelica.Units.SI.Mass massChange = totalWebMass - initialWebMass
     "Change in span and wrap inventory since initialization";
-  output Real massBalanceError(unit="kg") =
+  output Modelica.Units.SI.Mass massBalanceError =
     massChange - netBoundaryMass
     "Inventory change minus accumulated boundary flow";
 
@@ -59,14 +59,14 @@ model SheltonSteering "Normal-entry steering compared with Shelton's idealized t
     "Chosen thin-web transport settings for the kinematic benchmark"
     annotation(Placement(transformation(extent={{-110,60},{-90,80}})));
   Roll2RollDynamics.Components.Roller entryRoll(
-    useFlange=true, fixedInitialAngle=true, fixedInitialWebState=true,
+    useFlange=true, fixedInitialWebState=true,
     fixedInitialSpeed=false, xPosition=0, zPosition=0,
     rotationDirection=1, entryAngleStart=-Modelica.Constants.pi/2,
     exitAngleStart=0)
     "Aligned driven roller with a quarter wrap"
     annotation(Placement(transformation(origin={-60,0}, extent={{-10,-10},{10,10}})));
   Roll2RollDynamics.Components.Roller exitRoll(
-    useFlange=true, fixedInitialAngle=true, fixedInitialWebState=true,
+    useFlange=true, fixedInitialWebState=true,
     fixedInitialSpeed=false, xPosition=spanLength, zPosition=0,
     rotationDirection=1, yaw=yaw,
     entryAngleStart=0, exitAngleStart=Modelica.Constants.pi/2)
@@ -75,10 +75,12 @@ model SheltonSteering "Normal-entry steering compared with Shelton's idealized t
   Roll2RollDynamics.Components.Belt span
     "Existing axial belt with its default Kelvin-Voigt damping"
     annotation(Placement(transformation(extent={{-10,-10},{10,10}})));
-  Roll2RollDynamics.Components.WebForce upstreamLoad(direction=1)
+  Roll2RollDynamics.Components.WebBoundary upstreamLoad(
+    direction=1, force={0, 0, -world.tension})
     "Incoming vertical web under constant tension"
     annotation(Placement(transformation(origin={-100,30}, extent={{-10,-10},{10,10}})));
-  Roll2RollDynamics.Components.WebForce downstreamLoad(direction=-1)
+  Roll2RollDynamics.Components.WebBoundary downstreamLoad(
+    direction=-1, force={0, 0, -world.tension})
     "Outgoing vertical web under constant tension"
     annotation(Placement(transformation(origin={100,30}, extent={{10,-10},{-10,10}})));
   Modelica.Mechanics.Rotational.Sources.Speed entryDrive(exact=true)
@@ -100,8 +102,6 @@ initial equation
 
 equation
   // Driven transport with equal end loads.
-  upstreamLoad.force = {0, 0, -world.tension};
-  downstreamLoad.force = {0, 0, -world.tension};
   entryDrive.w_ref = startup.y/(world.rollRadius + world.web.thickness/2);
   exitDrive.w_ref = startup.y/(world.rollRadius + world.web.thickness/2);
 

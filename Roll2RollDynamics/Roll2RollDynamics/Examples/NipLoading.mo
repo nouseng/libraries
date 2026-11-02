@@ -11,9 +11,9 @@ model NipLoading
   final parameter Modelica.Units.SI.Mass initialWrappedWebMass(fixed=false)
     "Roller-wrap web inventory at initialization";
 
-  final parameter Real upperMassBalanceLimit(unit = "kg") = 1e-6
+  final parameter Modelica.Units.SI.Mass upperMassBalanceLimit = 1e-6
     "Upper conservation reference of one milligram";
-  final parameter Real lowerMassBalanceLimit(unit = "kg") = -1e-6
+  final parameter Modelica.Units.SI.Mass lowerMassBalanceLimit = -1e-6
     "Lower conservation reference of minus one milligram";
 
   // Variables with Binding Equations
@@ -25,13 +25,13 @@ model NipLoading
     "Web material in the three roller wraps";
   output Modelica.Units.SI.Mass totalWebMass = spanWebMass + wrappedWebMass
     "Complete closed-loop web inventory";
-  output Real massChange(unit="kg") = totalWebMass - initialWebMass
+  output Modelica.Units.SI.Mass massChange = totalWebMass - initialWebMass
     "Change in web inventory since initialization";
-  output Real massBalanceError(unit="kg") = massChange
+  output Modelica.Units.SI.Mass massBalanceError = massChange
     "Closed-loop conservation residual, expected to remain zero";
-  output Real spanMassChange(unit = "kg") = spanWebMass - initialSpanWebMass
+  output Modelica.Units.SI.Mass spanMassChange = spanWebMass - initialSpanWebMass
     "Change in free-span web inventory since initialization";
-  output Real wrappedMassChange(unit = "kg") = wrappedWebMass - initialWrappedWebMass
+  output Modelica.Units.SI.Mass wrappedMassChange = wrappedWebMass - initialWrappedWebMass
     "Change in roller-wrap web inventory since initialization";
   output Modelica.Units.SI.Force wrapTractionCapacity = topRoll.wrapCapacity
     "Dry traction capacity of the loaded roller's wrap acting alone";

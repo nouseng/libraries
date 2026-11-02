@@ -1,4 +1,4 @@
-within ;
+within;
 package Roll2RollDynamics
   "Library for roll-to-roll web handling systems: tension, traction, winding, nips and lateral tracking"
   annotation(
@@ -412,15 +412,16 @@ package Roll2RollDynamics
         Polygon(lineColor = {193, 206, 215}, fillColor = {193, 206, 215}, pattern = LinePattern.None, fillPattern = FillPattern.Solid, points = {{33.99, -28.69}, {73.28, 1.27}, {71.4, 2.18}, {32.11, -27.78}}),
         Polygon(lineColor = {190, 203, 212}, fillColor = {190, 203, 212}, pattern = LinePattern.None, fillPattern = FillPattern.Solid, points = {{35.95, -30.01}, {75.24, -0.05}, {73.28, 1.27}, {33.99, -28.69}}),
         Polygon(lineColor = {184, 196, 205}, fillColor = {184, 196, 205}, pattern = LinePattern.None, fillPattern = FillPattern.Solid, points = {{37.91, -31.68}, {77.2, -1.72}, {75.24, -0.05}, {35.95, -30.01}})}),
-    version = "1.0.1",
-    conversion(noneFromVersion = "1.0.0"),
-    versionDate = "2026-10-23",
+    version = "1.1.0",
+    versionDate = "2026-11-02",
     Documentation(info = "<html>
 <h4>What is the Roll to Roll Dynamics library?</h4>
 <p>Roll to Roll Dynamics models tension, traction and lateral tracking in
-converting lines, printing presses, coaters, calenders and belt drives. It
-provides rollers, wound rolls, free web spans and pressure nips, parameterized
-by material properties, roll geometry, bearing drag and friction.</p>
+converting lines, printing presses, coaters, calenders, belt drives and
+belt-driven carriages. It provides rollers, wound rolls, free spans, pressure
+nips and body-mounted belt clamps, parameterized by material properties, roll
+geometry, bearing drag and friction or synchronous (<code>noSlip</code>)
+contact.</p>
 
 <p style=\"text-align: center;\">
 <img style=\"display: block; margin-left: auto; margin-right: auto;\"
@@ -431,9 +432,10 @@ by material properties, roll geometry, bearing drag and friction.</p>
 <h4>How does it work?</h4>
 <p>The library's own
 <a href=\"modelica://Roll2RollDynamics.Utilities.Interfaces\">web and nip connectors</a>
-combine geometry, forces and material transport. Connected roll positions and
-radii determine span lengths and wrap angles. Standard MSL mechanical
-connectors provide mounts and drives.</p>
+combine geometry, forces and material transport. Connected roll and clamp
+positions and radii determine span lengths, variable span stiffness and wrap
+angles. Standard MSL mechanical connectors provide mounts, carriages and
+drives.</p>
 <p>Start with <a href=\"modelica://Roll2RollDynamics.Introduction\">Introduction</a>
 for a component overview or
 <a href=\"modelica://Roll2RollDynamics.GettingStarted\">Getting Started</a>
@@ -443,9 +445,10 @@ each effect has been checked against. Explore individual effects in
 <a href=\"modelica://Roll2RollDynamics.Examples\">Examples</a> and complete
 assemblies in <a href=\"modelica://Roll2RollDynamics.Examples.WebLines\">Examples.WebLines</a>.</p>
 <h4>Limitations</h4>
-<p>The web must remain taut. Free spans remain straight and do not resolve
-bending, wrinkling or cross-width stress. Roller mounts may translate but
-must keep a fixed orientation; fixed yaw supports lateral tracking when
+<p>Free spans remain straight and do not resolve bending, wrinkling, buckling
+or cross-width stress; optional slack cutoff (<code>allowSlack</code>) clamps
+compressive spans at zero tension. Roller mounts may translate but must keep a
+fixed orientation; fixed yaw supports lateral tracking when
 <code>world.lateralDynamics</code> is enabled. Optional detachment represents
 loss and recovery of wrap on a taut path.</p>
 <p>The library requires Modelica Standard Library 4.1.0 and is checked with
@@ -455,6 +458,15 @@ OpenModelica.</p>
 Released under the BSD 3-Clause Licence.</p>
 <p> Contact: <a href=\"mailto:vedat@nouseng.co\">vedat@nouseng.co</a>.
  </p>
+</html>",
+      revisions = "<html>
+<h4>New in Version 1.1.0</h4>
+<ul>
+<li>Add synchronous no-slip contact (<code>noSlip</code>) and zero-tension slack cutoff (<code>allowSlack</code>) to <code>WebWorld</code>, <code>Belt</code> and <code>Roller</code></li>
+<li>Add MultiBody frame-clamp mode (<code>useSupport = true</code>) to <code>WebBoundary</code></li>
+<li>Add <a href=\"modelica://Roll2RollDynamics.Examples.BeltDrivenCarriage\">BeltDrivenCarriage</a> example validated against Mehmood et al. (2026)</li>
+<li>Enforce strict Modelica 3.6 connector and initialization compliance</li>
+</ul>
 </html>"
     ));
 end Roll2RollDynamics;

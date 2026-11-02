@@ -59,13 +59,14 @@ model SlipAndTractionCapacity
     annotation(Placement(transformation(origin = {-110, 0}, extent = {{-10, -10}, {10, 10}})));
 
   // Wrap-only line, at z = 0
-  Roll2RollDynamics.Components.WebForce wrapInlet(direction = 1)
+  Roll2RollDynamics.Components.WebBoundary wrapInlet(direction = 1, force = {world.tension, 0, 0})
     "Incoming horizontal web under line tension, arriving under the master"
     annotation(Placement(transformation(origin = {-60, 20}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Roller wrapMaster(
+    noSlip = false,
     traction = Roll2RollDynamics.Utilities.Types.TractionFrictionParameters(
       muAdhesion = 1, muSliding = 0.8),
-    useFlange = true, fixedInitialAngle = true, fixedInitialWebState = true,
+    useFlange = true, fixedInitialWebState = true,
     xPosition = 0, zPosition = 0, rotationDirection = 1,
     entryAngleStart = -Modelica.Constants.pi, exitAngleStart = 0)
     "Half-wrapped high-grip roller that sets the web speed"
@@ -73,12 +74,13 @@ model SlipAndTractionCapacity
   Roll2RollDynamics.Components.Belt wrapSpan "Free span between the rollers"
     annotation(Placement(transformation(origin = {20, 70}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Roller wrapTest(
-    useFlange = true, fixedInitialAngle = true, fixedInitialWebState = true,
+    noSlip = false,
+    useFlange = true, fixedInitialWebState = true,
     xPosition = world.spanLength, zPosition = 0, rotationDirection = 1,
     entryAngleStart = 0, exitAngleStart = Modelica.Constants.pi/2)
     "Quarter-wrapped roller driven through the slip sweep, held by its wrap alone"
     annotation(Placement(transformation(origin = {80, 50}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
-  Roll2RollDynamics.Components.WebForce wrapOutlet(direction = -1)
+  Roll2RollDynamics.Components.WebBoundary wrapOutlet(direction = -1, force = {0, 0, -world.tension})
     "Outgoing vertical web under line tension"
     annotation(Placement(transformation(origin = {80, 10}, extent = {{10, -10}, {-10, 10}}, rotation = -90)));
   Modelica.Mechanics.Rotational.Sources.Speed wrapMasterDrive(exact = true)
@@ -89,13 +91,14 @@ model SlipAndTractionCapacity
     annotation(Placement(transformation(origin = {50, 30}, extent = {{-10, -10}, {10, 10}})));
 
   // Nip-loaded line, the same geometry at z = -0.5
-  Roll2RollDynamics.Components.WebForce nipInlet(direction = 1)
+  Roll2RollDynamics.Components.WebBoundary nipInlet(direction = 1, force = {world.tension, 0, 0})
     "Incoming horizontal web under line tension, arriving under the master"
     annotation(Placement(transformation(origin = {-60, -70}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Roller nipMaster(
+    noSlip = false,
     traction = Roll2RollDynamics.Utilities.Types.TractionFrictionParameters(
       muAdhesion = 1, muSliding = 0.8),
-    useFlange = true, fixedInitialAngle = true, fixedInitialWebState = true,
+    useFlange = true, fixedInitialWebState = true,
     xPosition = 0, zPosition = -0.5, rotationDirection = 1,
     entryAngleStart = -Modelica.Constants.pi, exitAngleStart = 0)
     "Half-wrapped high-grip roller that sets the web speed"
@@ -103,7 +106,8 @@ model SlipAndTractionCapacity
   Roll2RollDynamics.Components.Belt nipSpan "Free span between the rollers"
     annotation(Placement(transformation(origin = {20, -20}, extent = {{-10, -10}, {10, 10}})));
   Roll2RollDynamics.Components.Roller nipTest(
-    useFlange = true, useNip = true, fixedInitialAngle = true, fixedInitialWebState = true,
+    noSlip = false,
+    useFlange = true, useNip = true, fixedInitialWebState = true,
     xPosition = world.spanLength, zPosition = -0.5, rotationDirection = 1,
     entryAngleStart = 0, exitAngleStart = Modelica.Constants.pi/2)
     "Quarter-wrapped roller driven through the slip sweep, with a nip on its wrap"
@@ -118,7 +122,7 @@ model SlipAndTractionCapacity
     fixedInitialAngle = true, fixedInitialSpeed = true)
     "Fixed nip pressing on the middle of the test roller's wrap"
     annotation(Placement(transformation(origin = {110, -40}, extent = {{-10, -10}, {10, 10}}, rotation = -180)));
-  Roll2RollDynamics.Components.WebForce nipOutlet(direction = -1)
+  Roll2RollDynamics.Components.WebBoundary nipOutlet(direction = -1, force = {0, 0, -world.tension})
     "Outgoing vertical web under line tension"
     annotation(Placement(transformation(origin = {80, -80}, extent = {{10, -10}, {-10, 10}}, rotation = -90)));
   Modelica.Mechanics.Rotational.Sources.Speed nipMasterDrive(exact = true)
@@ -129,10 +133,10 @@ model SlipAndTractionCapacity
     annotation(Placement(transformation(origin = {50, -60}, extent = {{-10, -10}, {10, 10}})));
 
 equation
-  wrapInlet.force = {world.tension, 0, 0};
-  wrapOutlet.force = {0, 0, -world.tension};
-  nipInlet.force = {world.tension, 0, 0};
-  nipOutlet.force = {0, 0, -world.tension};
+
+
+
+
   wrapMasterDrive.w_ref = startup.y/(world.rollRadius + world.web.thickness/2);
   nipMasterDrive.w_ref = startup.y/(world.rollRadius + world.web.thickness/2);
   wrapTestDrive.w_ref = testSpeed.y/(world.rollRadius + world.web.thickness/2);
@@ -197,7 +201,9 @@ with and without a 300 N
 <a href=\"modelica://Roll2RollDynamics.Components.NipRoller\">NipRoller</a>.
 A half-wrapped high-grip master drives each path; test rollers run at its
 surface speed minus the slip command. After reaching 2 m/s in 0.5 s,
-the command sweeps -10 to +10 mm/s over 1–5 s.
+the command sweeps -10 to +10 mm/s over 1–5 s. The rollers keep
+<code>noSlip = false</code> whatever <code>world.noSlip</code> says: a
+locked contact cannot follow a slip command.
 <code>world.web.EA = 2e6</code> N makes this mainly a slip change.
 The curves exercise the contact law, not measured friction.</p>
 <p>Figure 1 plots traction against measured slip. The quarter wrap provides

@@ -6,12 +6,12 @@ function tripleS
     "Velocity of the adhesion peak";
   input Modelica.Units.SI.Velocity xSat
     "Velocity at which sliding friction saturates";
-  input Real yMax(unit = "1") "Peak adhesion friction coefficient";
-  input Real ySat(unit = "1") "Saturated sliding friction coefficient";
+  input Modelica.Units.SI.CoefficientOfFriction yMax "Peak adhesion friction coefficient";
+  input Modelica.Units.SI.CoefficientOfFriction ySat "Saturated sliding friction coefficient";
   input Modelica.Units.SI.Velocity x "Relative sliding velocity";
   input Real viscousSlope(min = 0, unit = "s/m") = 0
     "Slope of the linear viscous term the characteristic rises on";
-  output Real y(unit = "1") "Signed regularized friction coefficient";
+  output Modelica.Units.SI.DimensionlessRatio y "Signed regularized friction coefficient";
 algorithm
   assert(xMax > 0, "tripleS requires xMax > 0");
   assert(xSat > xMax, "tripleS requires xSat > xMax");

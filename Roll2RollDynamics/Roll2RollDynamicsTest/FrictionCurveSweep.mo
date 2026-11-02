@@ -14,7 +14,7 @@ model FrictionCurveSweep
   output Modelica.Units.SI.Velocity slipVelocity =
     maximumSlipVelocity*(2*time/sweepDuration - 1)
     "Signed web-to-roll slip velocity, swept from -max to +max";
-  output Real tripleSCoefficient(unit = "1") = Roll2RollDynamics.Functions.tripleS(
+  output Modelica.Units.SI.DimensionlessRatio tripleSCoefficient = Roll2RollDynamics.Functions.tripleS(
     traction.vAdhesion,
     traction.vSlide,
     traction.muAdhesion,
@@ -22,7 +22,7 @@ model FrictionCurveSweep
     slipVelocity,
     traction.viscousSlope)
     "Signed Triple-S coefficient";
-  output Real stribeckCoefficient(unit = "1") =
+  output Modelica.Units.SI.DimensionlessRatio stribeckCoefficient =
     sign(slipVelocity)*(traction.muSliding +
       (traction.muAdhesion - traction.muSliding)*exp(
         -(slipVelocity/traction.vAdhesion)^2)) +

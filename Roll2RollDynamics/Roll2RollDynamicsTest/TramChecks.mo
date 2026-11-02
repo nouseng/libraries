@@ -7,7 +7,7 @@ package TramChecks "Out-of-plane roll tilt regressions"
       idler(yaw = 0, tram = 0.004), world(enableAnimation = false));
     // The entry span, inclined 0.6 rad, must skew across the machine by the
     // tilt seen along that inclination before it enters the tilted axis normally
-    Real expectedSpanSkew(unit = "1") = -sin(WebWorldAngle)*sin(idler.tram)
+    Modelica.Units.SI.DimensionlessRatio expectedSpanSkew = -sin(WebWorldAngle)*sin(idler.tram)
       "Cross-machine sine the entry span settles to for normal entry";
   equation
     when terminal() then
@@ -41,23 +41,13 @@ package TramChecks "Out-of-plane roll tilt regressions"
     annotation(Documentation(info = "<html><h4>Trammed nip</h4>
 <p>Tilt the nip out of plane by 0.0025 rad with zero yaw during the loading stroke. Assertions require the correct wedge angle, relative tilt and end opening, zero crossed-axis edge lift and a normal-load resultant on the closed side.</p></html>"));
   end TrammedNip;
-
-  model CrossedNip "Yawed nip still reports crossed axes and no wedge"
-    extends Roll2RollDynamics.Examples.NipLoading(
-      nip(yaw = -0.06), world(enableAnimation = false));
-  equation
-    assert(abs(nip.nipContact.wedgeAngle) < 1e-9,
-      "In-plane yaw above the roller must give no wedge");
-    assert(abs(nip.nipContact.endOpening) < 1e-9,
-      "In-plane yaw above the roller must open neither end");
-    annotation(Documentation(info = "<html><h4>Crossed nip</h4>
-<p>Yaw the nip by -0.06 rad without out-of-plane tilt during the loading stroke. Assertions require zero wedge angle and zero end opening, distinguishing crossed-axis contact from a tram-induced wedge.</p></html>"));
-  end CrossedNip;
   annotation(Documentation(info = "<html>
 <h4>Tram checks</h4>
 <p>Check the effect of out-of-plane roll tilt on lateral steering and nip
 contact. The idler case relates the span skew to the tilted axis; the nip
-cases distinguish the one-sided opening caused by tilt from the symmetric
-edge lift caused by crossed axes.</p>
+case separates the one-sided opening caused by tilt from the symmetric edge
+lift caused by crossed axes, which
+<a href=\"modelica://Roll2RollDynamicsTest.SkewNipChecks.SkewNipIntegrationCheck\">SkewNipIntegrationCheck</a>
+checks.</p>
 </html>"));
 end TramChecks;

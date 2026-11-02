@@ -20,7 +20,7 @@ model NipContact
     "Nip roller face width over which the cover law is integrated";
   parameter Boolean prescribedLoad = false
     "= true, set the middle penetration from loadFraction instead of centre separation";
-  parameter Real loadFraction(unit = "1", min = 0, max = 1) = 0.5
+  parameter Modelica.Units.SI.DimensionlessRatio loadFraction(min = 0, max = 1) = 0.5
     "Nominal preload as a fraction of maximum actuator force when prescribedLoad is true";
   parameter Boolean lateral = false
     "= true, friction also acts on cross-machine slip through nipPort.lateral";
@@ -36,13 +36,13 @@ model NipContact
     "Centre separation projected perpendicular to the roller axis";
   Modelica.Units.SI.Distance radialDistance
     "Distance between the roll axes in their radial plane";
-  Real rollerAxis[3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio rollerAxis[3]
     "Wrapped-roller axis resolved in world coordinates";
-  Real nipAxis[3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio nipAxis[3]
     "Nip-roll axis resolved in world coordinates";
-  Real normalDirection[3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio normalDirection[3]
     "Contact normal from the wrapped roller toward the nip";
-  Real webDirection[3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio webDirection[3]
     "Local direction of positive web travel at the nip";
   Modelica.Units.SI.Velocity relativeCentreVelocity[3]
     "Nip-centre velocity relative to the roller centre";
@@ -52,18 +52,18 @@ model NipContact
     "Elastic contribution to normal load";
   Modelica.Units.SI.Force dampingForce
     "Viscous contribution to normal load";
-  Real axisAlignment(unit = "1")
+  Modelica.Units.SI.DimensionlessRatio axisAlignment
     "+1 when the two roll axes point the same way, -1 when opposed";
-  Real axisCross[3](each unit = "1") "Cross product of the two roll axes";
-  Real crossedSkewSin(unit = "1")
+  Modelica.Units.SI.DimensionlessRatio axisCross[3] "Cross product of the two roll axes";
+  Modelica.Units.SI.DimensionlessRatio crossedSkewSin
     "Sine of the axis crossing about the contact normal";
-  Real crossedSlope(unit = "1")
+  Modelica.Units.SI.DimensionlessRatio crossedSlope
     "Tangential offset of the nip axis per unit cross-machine distance";
-  Real wedgeSlope(unit = "1")
+  Modelica.Units.SI.DimensionlessRatio wedgeSlope
     "Signed opening of the nip gap per unit cross-machine distance";
   Real gapCurvature(unit = "1/m")
     "Quadratic coefficient of the gap across the face from the crossed axes";
-  Real gapDiscriminant(unit = "1")
+  Modelica.Units.SI.DimensionlessRatio gapDiscriminant
     "Discriminant of the gap quadratic; negative when no point of the face touches";
   Modelica.Units.SI.Position contactStart
     "Cross-machine position where contact begins along the roller axis";
@@ -75,7 +75,7 @@ model NipContact
     "Nip angular velocity about its own axis";
   Modelica.Units.SI.Velocity slipMagnitude
     "Regularized magnitude of the nip-to-web slip the friction law is evaluated on";
-  Real frictionCoefficient(unit = "1")
+  Modelica.Units.SI.DimensionlessRatio frictionCoefficient
     "Triple-S friction coefficient at the slip magnitude";
   Modelica.Units.SI.Force nipForce[3]
     "Contact force acting on the nip resolved in world coordinates";

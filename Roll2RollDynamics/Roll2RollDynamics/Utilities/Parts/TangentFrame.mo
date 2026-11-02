@@ -19,7 +19,7 @@ model TangentFrame "Tangency position and freely aligned span frame"
   Modelica.Units.SI.Torque longitudinalOffsetMoment[3]
     "Moment of the local span-x force about the centre";
   //Inputs and Outputs
-  input Real spanDirection[3](each unit="1")
+  input Modelica.Units.SI.DimensionlessRatio spanDirection[3]
     "Unit material-travel direction resolved in world coordinates";
   input Modelica.Units.SI.Position r[3]
     "Centre-to-tangency offset resolved in the centre frame";
@@ -33,7 +33,7 @@ model TangentFrame "Tangency position and freely aligned span frame"
     "Tangency frame with local x directed along the span"
     annotation(Placement(transformation(extent={{84,-16},{116,16}})));
 protected
-  Real localDirection[3](each unit="1")
+  Modelica.Units.SI.DimensionlessRatio localDirection[3]
     "Supplied span direction resolved in the non-spinning roll-centre frame";
 equation
   // Invert the width-axis alignment on the forward-facing branch.

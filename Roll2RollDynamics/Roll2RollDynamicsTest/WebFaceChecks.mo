@@ -49,7 +49,7 @@ package WebFaceChecks "Web-face selection on the supporting roller and its nip"
 <p>Reverse transport to -2 m/s with the supporting roller on the outer face and the nip on the inner face. The opposite-face friction selection must remain valid in reverse travel while the inherited dissipation and mass checks hold.</p></html>"));
   end ReverseOuter;
 
-  annotation(uses(Modelica(version="4.1.0")),
-    Documentation(info="<html><p>Material-face selection and contact
-    dissipation checks using the existing nip-loading example.</p></html>"));
+  annotation(Documentation(info="<html><h4>Web face checks</h4><p>Material-face selection and contact dissipation checks using the existing nip-loading example.</p></html>"));
+
+
 end WebFaceChecks;

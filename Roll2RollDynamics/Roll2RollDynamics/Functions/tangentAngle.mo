@@ -13,8 +13,8 @@ algorithm
     angle := Modelica.Math.atan2(x,z);
   end if;
   annotation(Inline=false,derivative=tangentAngleRate,
-    Documentation(info="<html><p>Returns the angle atan2(x,z), with the
-negative-z half-plane evaluated explicitly to preserve its quadrant when
-x is identically zero. The force vector must be nonzero. Its derivative is
+    Documentation(info="<html><p>Returns the angle <code>atan2(x, z)</code>, with the
+negative-<code>z</code> half-plane evaluated explicitly to preserve its quadrant when
+<code>x</code> is identically zero. The force vector must be nonzero. Its derivative is
 smooth away from the angle branch cut.</p></html>"));
 end tangentAngle;

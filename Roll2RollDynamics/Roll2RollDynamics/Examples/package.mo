@@ -3,8 +3,8 @@ package Examples
   "Worked examples of web mechanics and complete winding lines"
   extends Modelica.Icons.ExamplesPackage;
   annotation(Documentation(info = "<html>
-<p>Six focused examples demonstrate web geometry, traction, steering and nip
-loading. Two assembled examples in
+<p>Seven focused examples demonstrate web geometry, traction, belt-driven
+positioning, steering and nip loading. Two assembled examples in
 <a href=\"modelica://Roll2RollDynamics.Examples.WebLines\">WebLines</a>
 combine transport and winding-line dynamics.
 Material conservation is built into every span, wrap and winder.</p>
@@ -15,6 +15,10 @@ common-tangent wrap angles and the capstan tension limit.</li>
 <li><a href=\"modelica://Roll2RollDynamics.Examples.ThreeRollWebLoop\">ThreeRollWebLoop</a>
 closes a web path round three rolls of different sizes and checks that the
 wraps add to a full turn.</li>
+<li><a href=\"modelica://Roll2RollDynamics.Examples.BeltDrivenCarriage\">BeltDrivenCarriage</a>
+closes a pre-tensioned synchronous belt loop through a translating carriage
+body to show bi-directional shuttle motion, variable-length span stiffness and
+zero-tension slack cutoff.</li>
 <li><a href=\"modelica://Roll2RollDynamics.Examples.SlipAndTractionCapacity\">SlipAndTractionCapacity</a>
 sweeps signed slip and compares wrap-only and nip-loaded traction with their
 total dry capacity limits.</li>

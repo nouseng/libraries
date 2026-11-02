@@ -1,5 +1,33 @@
 # Roll2RollDynamics changelog
 
+## 1.1.0 - 2026-11-02
+
+This release bundles Roll2RollDynamics 1.1.0 and Roll2RollDynamicsTest 1.1.0,
+adding synchronous belt-drive contact, zero-tension slack cutoff, MultiBody
+belt clamps and the `BeltDrivenCarriage` benchmark example.
+
+### 1.1.0 changes
+
+- Add `noSlip` (synchronous kinematic roll contact) and `allowSlack`
+  (zero-tension compressive cutoff) to `WebWorld`, `Belt`, `Roller` and
+  `Utilities.Parts.WebFriction`.
+- Generalize `Components.WebForce` into `Components.WebBoundary`, preserving
+  prescribed-force pull (`useSupport = false`) and adding MultiBody frame-clamp
+  mode (`useSupport = true`) to anchor belt ends onto moving bodies.
+- Add `Examples.BeltDrivenCarriage`, modelling a pre-tensioned Megadyne AT10
+  linear belt-drive stage validated against Mehmood et al. (2026) for
+  position-dependent span stiffness, dynamic tension sharing and fast-return
+  slack cutoff.
+- Enforce strict Modelica 3.6 connector and initialization compliance across
+  library examples and test suites.
+- Update package versions, the Test dependency and the interface version check.
+
+### 1.1.0 validation
+
+The 1.1.0 bundle was validated with OpenModelica 1.27.0 and Modelica Standard
+Library 4.1.0 on Windows with `CheckLibrary`, `TestInterfaces`,
+`TestAnnotations` and `test_build_images.py`.
+
 ## 1.0.1 - 2026-10-23
 
 This patch bundles Roll2RollDynamics 1.0.1 and Roll2RollDynamicsTest 1.0.1.

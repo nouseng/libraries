@@ -4,9 +4,9 @@ package Interfaces
   extends Modelica.Icons.InterfacesPackage;
 
   connector SpanPort "Span end: tangent geometry, spatial load and material transport"
-    output Real stretch(unit="1")
+    output Modelica.Units.SI.DimensionlessRatio stretch
       "Actual material stretch supplied by the span for boundary mass flux";
-    output Real spanDirection[3](each unit="1")
+    output Modelica.Units.SI.DimensionlessRatio spanDirection[3]
       "Unit material-travel direction supplied by the span, resolved in world coordinates";
     // Diagram draws the terminals; placements locate their connection endpoints.
     Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame "Tangency geometry and tension load"
@@ -27,13 +27,14 @@ package Interfaces
             fillPattern = FillPattern.Solid),
           Rectangle(extent = {{-10, -70}, {10, -50}},
             lineColor = {0, 127, 0}, fillColor = {0, 127, 0},
-            fillPattern = FillPattern.Solid)}));
+            fillPattern = FillPattern.Solid)}),
+      Documentation(info = "<html><p>Span-side connector combining a MultiBody tangency frame, a boundary-relative translational material-transport flange, and signals for material <code>stretch</code> and unit <code>spanDirection</code>.</p></html>"));
   end SpanPort;
 
   connector RollPort "Roll end: tangent geometry, spatial load and material transport"
-    input Real stretch(unit="1")
+    input Modelica.Units.SI.DimensionlessRatio stretch
       "Actual material stretch supplied by the connected span";
-    input Real spanDirection[3](each unit="1")
+    input Modelica.Units.SI.DimensionlessRatio spanDirection[3]
       "Unit material-travel direction supplied by the connected span, resolved in world coordinates";
     // Diagram draws the terminals; placements locate their connection endpoints.
     Modelica.Mechanics.MultiBody.Interfaces.Frame_a frame "Tangency geometry and tension load"
@@ -54,22 +55,23 @@ package Interfaces
             fillPattern = FillPattern.Solid),
           Rectangle(extent = {{-10, -70}, {10, -50}},
             lineColor = {0, 127, 0}, fillColor = {255, 255, 255},
-            fillPattern = FillPattern.Solid)}));
+            fillPattern = FillPattern.Solid)}),
+      Documentation(info = "<html><p>Span-side connector combining a MultiBody tangency frame, a boundary-relative translational material-transport flange, and signals for material <code>stretch</code> and unit <code>spanDirection</code>.</p></html>"));
   end RollPort;
 
   connector NipGeometry
     "Wrapped roller radius and web direction carried on the nip port"
     Modelica.Units.SI.Radius radius "Wrapped roller mechanical radius";
-    Real rotationDirection(unit = "1")
+    Modelica.Units.SI.DimensionlessRatio rotationDirection
       "Signed web travel direction of the wrapped roller, +1 or -1";
     Modelica.Units.SI.Velocity lateralDrift
       "Contact-line speed along the roller axis at which the wrapped web has no axial slip";
     // ponytail: zero-valued flow partners keep the connector balanced; the
     // reading side sets them to zero, the wrapped roller sets the values
-    flow Real radiusFlow(unit = "1") "Balancing flow partner of radius";
-    flow Real rotationDirectionFlow(unit = "1")
+    flow Modelica.Units.SI.DimensionlessRatio radiusFlow "Balancing flow partner of radius";
+    flow Modelica.Units.SI.DimensionlessRatio rotationDirectionFlow
       "Balancing flow partner of rotationDirection";
-    flow Real lateralDriftFlow(unit = "1") "Balancing flow partner of lateralDrift";
+    flow Modelica.Units.SI.DimensionlessRatio lateralDriftFlow "Balancing flow partner of lateralDrift";
     annotation(Icon(graphics = {
         Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {95, 95, 95},
           fillColor = {192, 192, 192}, fillPattern = FillPattern.Solid)}),
@@ -149,12 +151,13 @@ from span entry to exit and also supplies the direction needed for lateral
 contact calculations. The standard translational flange carries position and
 force, so these material and direction signals are supplied separately.</p>
 <p>Custom span-side boundaries must supply positive <code>stretch</code> in
-addition to <code>spanDirection</code>. WebForce supplies the elastic
-stretch of its prescribed pull. This changes the orientation contract
+addition to <code>spanDirection</code>. <code>WebBoundary</code> supplies the elastic
+stretch of its prescribed pull, or clamps a span to a MultiBody frame when
+<code>useSupport = true</code>. This changes the orientation contract
 for custom boundaries: span-side boundaries must supply the directed unit
 vector and impose <code>frame.R.T[3,:]*spanDirection = 0</code> for the
 in-plane tangency. Roll-side boundaries use the vector to compute skew while
 leaving that tangency free.
-Use WebForce for a prescribed pull. The nip port retains its centre frame
+Use <code>WebBoundary</code> for a prescribed pull or body clamp. The nip port retains its centre frame
 and physical contact transport.</p></html>"));
 end Interfaces;

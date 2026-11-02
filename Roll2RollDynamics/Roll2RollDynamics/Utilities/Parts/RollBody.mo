@@ -130,7 +130,7 @@ protected
   // non-connector name of an alias set; without these it keeps a shape's
   // R.T or r, and the derivative it then needs of that shape variable shows
   // up in the 3D viewer as a stray "Unknown type DUMMY" capsule.
-  Real drumTransform[3, 3](each unit = "1") = frame_drum.R.T
+  Modelica.Units.SI.DimensionlessRatio drumTransform[3, 3] = frame_drum.R.T
     "Drum orientation, transformation matrix from world to drum frame";
   Modelica.Units.SI.Position drumPosition[3] = frame_drum.r_0
     "Drum centre position resolved in the world frame";
@@ -232,8 +232,6 @@ equation
   end if;
 
   annotation(
-    Line(points = {{-13.333, -13.333}, {-13.333, 6.667}, {26.667, 6.667}}, origin = {13.333, -6.667}),
-    Line(points = {{60, 0}, {120, 0}, {120, 60}, {0, 60}, {0, 100}}, color = {0, 127, 0}),
     Icon(coordinateSystem(extent = {{-200, -100}, {200, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}),
       graphics = {
         Line(origin = {42, 0}, rotation = -90, points = {{0, 158}, {0, 35.517}}, color = {95, 95, 95}, thickness = 0.5),
@@ -241,7 +239,8 @@ equation
         Ellipse(origin = {0, -2}, lineColor = {64, 64, 64}, fillColor = {210, 218, 224}, fillPattern = FillPattern.Solid, lineThickness = 0.5, extent = {{-78, 78}, {78, -78}}),
         Ellipse(lineColor = {95, 95, 95}, fillColor = {255, 255, 255}, fillPattern = FillPattern.Solid,extent = {{-22, 22}, {22, -22}}),
         Ellipse(lineColor = {64, 64, 64}, fillColor = {64, 64, 64}, fillPattern = FillPattern.Solid, extent = {{-9, 9}, {9, -9}}),
-        Rectangle(origin = {-0, 0}, lineColor = {128, 128, 128}, fillColor = {0, 116, 0}, lineThickness = 5, extent = {{-197.678, -97}, {197.678, 97}}, radius = 25)}),
+        Rectangle(origin = {-0, 0}, lineColor = {128, 128, 128}, fillColor = {0, 116, 0}, lineThickness = 5, extent = {{-197.678, -97}, {197.678, 97}}, radius = 25),
+        Text(textColor = {64, 64, 64}, extent = {{-150, -96}, {150, -66}}, textString = "%name")}),
     Diagram(coordinateSystem(extent = {{-120, -100}, {120, 80}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}),
       graphics = {
       Text(origin = {40, -30}, textColor = {64, 64, 64}, extent = {{-40, 70}, {40, 90}}, textString = "%name")}),

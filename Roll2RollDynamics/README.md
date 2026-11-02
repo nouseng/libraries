@@ -2,7 +2,7 @@
 
 A Modelica library for roll-to-roll web handling: tension, traction, winding,
 pressure nips and lateral tracking in converting lines, printing presses,
-coaters, calenders and belt drives.
+coaters, calenders, belt drives and belt-driven carriages.
 
 ![A seven-roll film line running from unwind to rewind](Roll2RollDynamics/Resources/Images/MisalignedIdlerLine/MisalignmentGif3D.gif)
 
@@ -14,13 +14,15 @@ Worked examples with results and discussion are on
 
 ## What it models
 
-- Rollers, wound rolls, free web spans, pressure nips and prescribed web
-  loads, parameterized by material properties, roll geometry, bearing drag and
-  friction.
+- Rollers, wound rolls, free web spans, pressure nips and web boundaries
+  (prescribed loads or MultiBody frame clamps), parameterized by material
+  properties, roll geometry, bearing drag and friction or synchronous
+  (`noSlip`) contact.
 - Web routes solved from connected roll positions and radii: tangency points,
   span lengths and wrap angles follow from the geometry.
 - Material conservation in every span, wrap and winder, with elastic stretch,
-  Kelvin-Voigt damping and longitudinal inertia setting tension.
+  Kelvin-Voigt damping, longitudinal inertia and optional zero-tension slack
+  cutoff (`allowSlack`) setting tension.
 - Roll yaw and tram, drum runout and crossed or wedged nips, with a lateral
   steering model for fixed yaw.
 
@@ -29,11 +31,13 @@ Library (MSL) components for drives, joints and controllers. The
 `Validation` page in the library lists what each effect has been checked
 against and what it has not.
 
-## Version 1.0.1
+## Version 1.1.0
 
-Both packages are distributed together at version 1.0.1. This patch improves
-Test library diagrams, example icons and scenario documentation. See
-[CHANGELOG.md](CHANGELOG.md) for changes and validation.
+Both packages are distributed together at version 1.1.0. This release adds
+synchronous no-slip contact (`noSlip`), zero-tension slack cutoff
+(`allowSlack`), MultiBody frame clamps (`WebBoundary` with `useSupport = true`)
+and the `BeltDrivenCarriage` example. See [CHANGELOG.md](CHANGELOG.md) for
+changes and validation.
 
 ## Requirements
 
@@ -47,8 +51,8 @@ verified.
 
 1. Install OpenModelica and the Modelica Standard Library 4.1.0.
 2. Get the library, either way:
-   - Download `Roll2RollDynamics-1.0.1.zip` from the
-     [1.0.1 release](https://github.com/nouseng/libraries/releases/tag/Roll2RollDynamics-v1.0.1)
+   - Download `Roll2RollDynamics-1.1.0.zip` from the
+     [1.1.0 release](https://github.com/nouseng/libraries/releases/tag/Roll2RollDynamics-v1.1.0)
      and unzip it.
    - Or clone the repository and change into this folder:
 
@@ -92,9 +96,10 @@ change are listed in [Roll2RollDynamicsTest/README.md](Roll2RollDynamicsTest/REA
 
 ## Limitations
 
-The web must remain taut and roller mount orientations fixed. Spans remain
-straight: bending, wrinkling, buckling and distributed wave propagation are not
-modelled. Lateral motion has one degree of freedom per roll.
+Roller mount orientations must remain fixed. Spans remain straight: bending,
+wrinkling, buckling and distributed wave propagation are not modelled;
+optional slack cutoff (`allowSlack`) clamps compressive spans at zero tension.
+Lateral motion has one degree of freedom per roll.
 
 ## Licence
 
@@ -106,7 +111,7 @@ Copyright (c) 2026 Vedat Senol. Released under the BSD 3-Clause Licence; see
 If you use the library in published work, please cite:
 
 > Senol, V. (2026). *Roll2RollDynamics: a Modelica library for roll-to-roll
-> web handling* (Version 1.0.1) [Computer software].
+> web handling* (Version 1.1.0) [Computer software].
 > <https://github.com/nouseng/libraries/tree/main/Roll2RollDynamics>
 
 ## Consulting and contact

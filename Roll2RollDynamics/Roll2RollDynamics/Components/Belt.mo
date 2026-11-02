@@ -15,6 +15,9 @@ model Belt
   parameter Modelica.Units.SI.Time dampingTime(min=0) = world.webDampingTime
     "Kelvin-Voigt viscosity divided by elastic modulus; zero disables damping"
     annotation(Dialog(group = "Dynamics"));
+  parameter Boolean allowSlack = world.allowSlack
+    "= true, clamp transmitted tension at zero while tracking slack inventory"
+    annotation(Evaluate = true, Dialog(group = "Dynamics"));
 
   // Initialization
   parameter Boolean fixedInitialTension=true
@@ -59,10 +62,10 @@ model Belt
     Modelica.Units.SI.Force tensionIn "Total elastic and viscous entry tension";
     Modelica.Units.SI.Force tensionOut "Total elastic and viscous exit tension";
     Modelica.Units.SI.Stress stress "Axial web stress in the span";
-    Real stretch(unit = "1") "Current length divided by unstretched length";
+    Modelica.Units.SI.DimensionlessRatio stretch "Current length divided by unstretched length";
     Modelica.Units.SI.Length freeLength "Free length between the two tangency points";
     Modelica.Units.SI.Mass webMass "Material inventory in the span";
-    Real spanSkewSin(unit = "1")
+    Modelica.Units.SI.DimensionlessRatio spanSkewSin
       "Sine of the angle the span makes across the machine";
   end BeltVariables;
   BeltVariables beltVariables "Span results displayed in the variable browser";
@@ -117,11 +120,11 @@ model Belt
 
 protected
   //Parameters
-  final parameter Real segmentBlend[ribbonSegments](each unit = "1") =
+  final parameter Modelica.Units.SI.DimensionlessRatio segmentBlend[ribbonSegments] =
     {if ribbonSegments > 1 then (i - 1)/(ribbonSegments - 1) else 0.5
       for i in 1:ribbonSegments}
     "Endpoint blend fraction of each ribbon segment";
-  final parameter Real referenceDensity(unit="kg/m")=web.density*web.thickness*web.width
+  final parameter Modelica.Units.SI.LinearDensity referenceDensity=web.density*web.thickness*web.width
     "Unstrained material mass per unit length";
 
   //Variables
@@ -130,28 +133,28 @@ protected
   Modelica.Units.SI.Force tensionIn "Total elastic and viscous entry tension";
   Modelica.Units.SI.Force tensionOut "Total elastic and viscous exit tension";
   Modelica.Units.SI.Stress stress "Axial web stress in the span";
-  Real stretch(unit = "1") "Current length divided by unstretched length";
+  Modelica.Units.SI.DimensionlessRatio stretch "Current length divided by unstretched length";
   Modelica.Units.SI.Length freeLength "Free length between the two tangency points";
   Modelica.Units.SI.Mass webMass "Material inventory in the span";
-  Real spanSkewSin(unit = "1")
+  Modelica.Units.SI.DimensionlessRatio spanSkewSin
     "Sine of the angle the span makes across the machine";
-  Real e[3](each unit = "1") "Unit vector from frame_a to frame_b";
+  Modelica.Units.SI.DimensionlessRatio e[3] "Unit vector from frame_a to frame_b";
   Real directionRate[3](each unit="1/s") "Rate of the directed span unit vector";
-  Real widthAxisA[3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio widthAxisA[3]
     "Upstream local y-axis resolved in world coordinates";
-  Real widthAxisB[3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio widthAxisB[3]
     "Downstream local y-axis resolved in world coordinates";
-  Real segmentWidth[ribbonSegments, 3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio segmentWidth[ribbonSegments, 3]
     "Blended endpoint width axis of each segment, projected normal to the span";
-  Real segmentWidthDirection[ribbonSegments, 3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio segmentWidthDirection[ribbonSegments, 3]
     "Normalized ribbon width direction of each segment in world coordinates";
   Integer markerSegment "Ribbon segment currently under the marker";
-  Real markerWidthDirection[3](each unit = "1")
+  Modelica.Units.SI.DimensionlessRatio markerWidthDirection[3]
     "Marker width direction, same plate orientation as the segment it rides on";
   Modelica.Units.SI.Velocity vA "Upstream material velocity";
   Modelica.Units.SI.Velocity vB "Downstream material velocity";
-  Real stretchA(unit="1") "Inlet-cell stretch";
-  Real stretchB(unit="1") "Outlet-cell stretch";
+  Modelica.Units.SI.DimensionlessRatio stretchA "Inlet-cell stretch";
+  Modelica.Units.SI.DimensionlessRatio stretchB "Outlet-cell stretch";
   Real materialStrainRateA(unit="1/s") "Inlet-cell material strain rate";
   Real materialStrainRateB(unit="1/s") "Outlet-cell material strain rate";
   Modelica.Units.SI.Velocity boundaryVelocityA[3] "Entry tangency velocity in world coordinates";
@@ -166,7 +169,7 @@ protected
   Modelica.Units.SI.Force forceB[3] "Total spatial force entering the span at exit";
 
 
-  Real markerProgress(unit = "1") "Marker progress along the span";
+  Modelica.Units.SI.DimensionlessRatio markerProgress "Marker progress along the span";
   Real ribbonColor[3] "Span color, cool when slack and hot when tight";
 
 public
@@ -304,8 +307,10 @@ equation
     dampingTensionIn = 0;
     dampingTensionOut = 0;
   end if;
-  tensionIn = elasticTensionIn + dampingTensionIn;
-  tensionOut = elasticTensionOut + dampingTensionOut;
+  tensionIn = if allowSlack then max(0, elasticTensionIn + dampingTensionIn)
+    else elasticTensionIn + dampingTensionIn;
+  tensionOut = if allowSlack then max(0, elasticTensionOut + dampingTensionOut)
+    else elasticTensionOut + dampingTensionOut;
   dampingPower = web.EA*dampingTime*freeLength/2
     * (materialStrainRateA^2/stretchA + materialStrainRateB^2/stretchB);
 
@@ -376,8 +381,8 @@ equation
   // Validity checks
   assert(dampingTime >= 0, "Belt dampingTime must be nonnegative");
   assert(min(stretchA, stretchB) > 0, "Belt cell stretches must be positive");
-  assert(min(tensionIn, tensionOut) > 0,
-    "Belt requires taut entry and exit cells; slack and buckling are not modeled");
+  assert(allowSlack or min(tensionIn, tensionOut) > 0,
+    "Belt requires taut entry and exit cells; enable allowSlack for slack spans");
   assert(freeLength > Roll2RollDynamics.Utilities.Types.lengthTol,
     "Belt requires distinct tangency positions");
   assert(frame_a.frame.R.T[1, :]*e > 0 and frame_b.frame.R.T[1, :]*e > 0,
@@ -442,7 +447,9 @@ throughout the line<br>
 <code>tensionNominal</code> = Initial elastic cell tension, from
 <code>world.tension</code><br>
 <code>dampingTime</code> = From <code>world.webDampingTime</code>, default
-0.01 s; zero gives elastic cells</p>
+0.01 s; zero gives elastic cells<br>
+<code>allowSlack</code> = From <code>world.allowSlack</code>, default
+<code>false</code>; when <code>true</code>, transmitted cell tensions clamp at zero while slack material inventory is retained</p>
 <p>Figure 2 gives the Kelvin&ndash;Voigt law [3], with EA =
 <code>web.EA</code> and tau = <code>dampingTime</code>. Physical velocity
 differences across each half-span determine strain rate; uniform transport
@@ -498,7 +505,8 @@ shows web motion and stress.</p>
 <h4>Limitations</h4>
 <p>Mass and linear momentum are conserved, but energy conservation is not
 guaranteed: signed <code>energyDefect</code> is approximation error, not heat.
-Sag, slack, bending and distributed dynamics are omitted.</p>
+Optional slack cutoff (<code>allowSlack</code>) clamps compressive cell tension
+at zero; sag, bending and distributed dynamics are omitted.</p>
 <h4>References</h4>
 <ul>
 <li>[<a href=\"https://www.intechopen.com/chapters/68827\">1</a>]

@@ -17,3 +17,5 @@ simulate(Roll2RollDynamicsTest.LocalBeltDynamicsChecks.ChangingInventory, fileNa
 getErrorString();
 simulate(Roll2RollDynamicsTest.LocalBeltDynamicsChecks.ReverseTransport, fileNamePrefix="LocalBeltDynamicsChecks.ReverseTransport",stopTime=0.5,tolerance=1e-9);
 getErrorString();
+simulate(Roll2RollDynamicsTest.NoSlipBeltDriveCheck, fileNamePrefix="NoSlipBeltDriveCheck",stopTime=0.2,tolerance=1e-6);
+getErrorString();

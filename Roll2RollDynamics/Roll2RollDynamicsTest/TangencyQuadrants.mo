@@ -5,7 +5,8 @@ model TangencyQuadrants
   import Modelica.Constants.pi;
 
   inner Roll2RollDynamics.WebWorld world
-    annotation(Placement(transformation(extent = {{-120, 60}, {-100, 80}})));
+    annotation(Placement(transformation(origin = {-110, 70},
+        extent = {{-10, -10}, {10, 10}})));
 
 protected
   final parameter Modelica.Units.SI.Length a = 0.7
@@ -81,32 +82,32 @@ public
     "Lower-right tangency, on the east roll";
 equation
   connect(drive.flange, west.flange_a)
-    annotation(Line(visible = true, points = {{-100, 0}, {-70, 0}},
-      color = {0, 0, 0}, smooth = Smooth.None));
+      annotation(Line(points = {{-100, 0}, {-70, 0}},
+        color = {0, 0, 0}, smooth = Smooth.None));
   connect(west.frame_b, northWest.frame_a)
-    annotation(Line(visible = true, points = {{-70, 10}, {-60, 50}},
-      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{-70, 10}, {-70, 25}, {-75, 25}, {-75, 50}, {-60, 50}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(northWest.frame_b, north.frame_a)
-    annotation(Line(visible = true, points = {{-40, 50}, {-10, 50}},
-      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{-40, 50}, {-10, 50}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(north.frame_b, northEast.frame_a)
-    annotation(Line(visible = true, points = {{10, 50}, {40, 50}},
-      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{10, 50}, {40, 50}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(northEast.frame_b, east.frame_a)
-    annotation(Line(visible = true, points = {{60, 50}, {70, 10}},
-      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{60, 50}, {75, 50}, {75, 25}, {70, 25}, {70, 10}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(east.frame_b, southEast.frame_a)
-    annotation(Line(visible = true, points = {{70, -10}, {60, -50}},
-      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{70, -10}, {70, -25}, {75, -25}, {75, -50}, {60, -50}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(southEast.frame_b, south.frame_a)
-    annotation(Line(visible = true, points = {{40, -50}, {10, -50}},
-      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{40, -50}, {10, -50}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(south.frame_b, southWest.frame_a)
-    annotation(Line(visible = true, points = {{-10, -50}, {-40, -50}},
-      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{-10, -50}, {-40, -50}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
   connect(southWest.frame_b, west.frame_a)
-    annotation(Line(visible = true, points = {{-60, -50}, {-70, -10}},
-      color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
+      annotation(Line(points = {{-60, -50}, {-75, -50}, {-75, -25}, {-70, -25}, {-70, -10}},
+        color = {0, 128, 180}, thickness = 0.5, smooth = Smooth.None));
 
   assert(quadrant1[1] > 0 and quadrant1[2] > 0, "Upper-right tangency left the first quadrant");
   assert(quadrant2[1] < 0 and quadrant2[2] > 0, "Upper-left tangency left the second quadrant");
@@ -115,7 +116,7 @@ equation
 
   annotation(
     experiment(StartTime = 0, StopTime = 1, Interval = 0.001),
-    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-140, -80}, {100, 100}})),
+    Diagram(coordinateSystem(extent = {{-160, -100}, {120, 120}})),
     Documentation(figures = {Figure(
       title = "Tangency points in local roll frames", identifier = "quadrants", preferred = true,
       plots = {Plot(title = "Solved tangency points in local roll frames",
@@ -159,7 +160,6 @@ Fig. 17&ndash;1 and Eq. (17&ndash;1), pp. 873 and 875, give the common-tangent
 geometry for unequal pulleys; Ex. 17&ndash;1, pp. 882&ndash;883, works it through
 for a 6 in / 18 in drive. Accessed 2026-09-04.</li>
 </ul>
-</html>"));
-  annotation(
-    Diagram(coordinateSystem(extent = {{-150, -100}, {110, 110}})));
+</html>"),
+    Diagram(coordinateSystem(extent = {{-160, -100}, {120, 120}})));
 end TangencyQuadrants;

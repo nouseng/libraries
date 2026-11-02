@@ -43,6 +43,12 @@ model WebWorld "Multibody world and machine-wide roll-to-roll defaults in one co
   parameter Roll2RollDynamics.Utilities.Types.TractionFrictionParameters outerTraction
     "Default traction of the outer web face"
     annotation(Dialog(group = "Process"));
+  parameter Boolean noSlip = false
+    "= true, wrapped rollers default to no web-to-roll slip, for example toothed belts"
+    annotation(Evaluate = true, Dialog(group = "Process"));
+  parameter Boolean allowSlack = false
+    "= true, free spans may go slack with zero transmitted pull"
+    annotation(Evaluate = true, Dialog(group = "Process"));
   parameter Modelica.Units.SI.RotationalDampingConstant bearingDamping(min=0) = 0.001
     "Default viscous bearing damping"
     annotation(Dialog(group = "Process"));
@@ -77,7 +83,7 @@ model WebWorld "Multibody world and machine-wide roll-to-roll defaults in one co
   final parameter Modelica.Units.SI.Length stressBarSegmentLength =
     nominalLength/stressBarSegments
     "Length of one colored segment of the column";
-  final parameter Real stressBarNominalFraction(unit = "1") =
+  final parameter Modelica.Units.SI.DimensionlessRatio stressBarNominalFraction =
     min(1, max(0, (stressNominal - stressLow)/max(
       stressHigh - stressLow, Modelica.Constants.small)))
     "Height of the nominal stress up the column, as a fraction of its length";
@@ -247,6 +253,11 @@ scale, defaulting to 0.8 and 1.2 times <code>stressNominal</code><br>
 <code>innerTraction</code>, <code>outerTraction</code> = Independent face
 friction records selected by each contact's <code>contactFace</code>;
 defaults match, but differing faces require both records<br>
+<code>noSlip</code> = Default <code>false</code> keeps regularized Triple-S
+traction; <code>true</code> locks the web to every roller surface unless a
+roller overrides it, a good model for toothed (timing) belts<br>
+<code>allowSlack</code> = Default <code>false</code> requires taut spans;
+<code>true</code> clamps slack cell tension to zero while tracking slack inventory<br>
 <code>bearingDamping</code> = Viscous shaft drag, 0.001 N m s/rad by default;
 zero disables it<br>
 <code>webDampingTime</code> = Span viscosity/modulus ratio, default 0.01 s;

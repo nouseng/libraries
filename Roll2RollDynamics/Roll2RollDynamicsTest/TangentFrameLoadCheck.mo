@@ -14,8 +14,7 @@ package TangentFrameLoadCheck "Tangency support force and moment regressions"
   equation
     frame.f = -force;
     frame.t = -moment;
-    annotation(Documentation(info = "<html><h4>Local load</h4><p>Helper boundary that applies prescribed local force and moment to a connected tangency adapter. It supplies the load used by parent tests and is not a standalone scenario.</p></html>"));
-    annotation(
+    annotation(Documentation(info = "<html><h4>Local load</h4><p>Helper boundary that applies prescribed local force and moment to a connected tangency adapter. It supplies the load used by parent tests and is not a standalone scenario.</p></html>"),
       Diagram(coordinateSystem(extent = {{-140, -100}, {100, 100}})));
   end LocalLoad;
 
@@ -52,7 +51,7 @@ package TangentFrameLoadCheck "Tangency support force and moment regressions"
     //Components
     inner Modelica.Mechanics.MultiBody.World world(g=0,enableAnimation=false)
       "Inertial reference"
-      annotation(Placement(visible = true, transformation(origin = {-160, 80},
+      annotation(Placement(visible = true, transformation(origin = {-140, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Parts.FixedRotation base(
       n={1,2,3},angle=37,animation=false)
@@ -71,7 +70,7 @@ package TangentFrameLoadCheck "Tangency support force and moment regressions"
         extent = {{-10, -10}, {10, 10}})));
   equation
     connect(world.frame_b, base.frame_a)
-      annotation(Line(visible = true, points = {{-150, 80}, {-90, 0}},
+      annotation(Line(visible = true, points = {{-130, 0}, {-90, 0}},
         color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     connect(base.frame_b, adapter.frame_a)
       annotation(Line(visible = true, points = {{-70, 0}, {-10, 0}},
@@ -87,8 +86,7 @@ package TangentFrameLoadCheck "Tangency support force and moment regressions"
       +fullOffset-{0,excludedAxialMoment,0})<1e-9,
       "Tangency adapter lost a transverse-load offset moment or a boundary moment");
     annotation(experiment(StopTime=0.01,Tolerance=1e-9),
-      Documentation(info = "<html><h4>Tangency load fixture</h4><p>Partial helper fixture that uses independent trigonometric basis vectors to resolve forces and moments through a rotated tangency adapter. The recovered skew and housing reactions must match the independent spatial balances, retaining all boundary and transverse-force moments; only the longitudinal force moment about the shaft may be excluded when <code>transmitAxialMoment=false</code>. Concrete derived tests select the loads and winding direction.</p></html>"));
-    annotation(
+      Documentation(info = "<html><h4>Tangency load fixture</h4><p>Partial helper fixture that uses independent trigonometric basis vectors to resolve forces and moments through a rotated tangency adapter. The recovered skew and housing reactions must match the independent spatial balances, retaining all boundary and transverse-force moments; only the longitudinal force moment about the shaft may be excluded when <code>transmitAxialMoment=false</code>. Concrete derived tests select the loads and winding direction.</p></html>"),
       Diagram(coordinateSystem(extent = {{-200, -100}, {120, 120}})));
   end Fixture;
 
@@ -132,7 +130,7 @@ package TangentFrameLoadCheck "Tangency support force and moment regressions"
     //Components
     inner Modelica.Mechanics.MultiBody.World world(g=0,enableAnimation=false)
       "Inertial reference"
-      annotation(Placement(visible = true, transformation(origin = {-160, 80},
+      annotation(Placement(visible = true, transformation(origin = {-140, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Parts.FixedRotation base(
       n={1,2,3},angle=37,animation=false) "Rotated roll-centre frame"
@@ -149,7 +147,7 @@ package TangentFrameLoadCheck "Tangency support force and moment regressions"
         extent = {{-10, -10}, {10, 10}})));
   equation
     connect(world.frame_b, base.frame_a)
-      annotation(Line(visible = true, points = {{-150, 80}, {-90, 0}},
+      annotation(Line(visible = true, points = {{-130, 0}, {-90, 0}},
         color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     connect(base.frame_b, adapter.frame_a)
       annotation(Line(visible = true, points = {{-70, 0}, {-10, 0}},
@@ -161,13 +159,12 @@ package TangentFrameLoadCheck "Tangency support force and moment regressions"
       "Explicit skew must follow the supplied direction through zero");
     assert(Modelica.Math.Vectors.length(adapter.frame_b.R.w-{0,0,0.2*cos(time)})<1e-12,
       "Tangency angular velocity must retain the derivative of the supplied skew");
-    annotation(experiment(StopTime=4,Tolerance=1e-9),Documentation(info = "<html><h4>Moving skew</h4><p>Supplies a sinusoidal span direction to a rotated reverse-travel tangency frame. Recovered skew and frame angular velocity must follow the imposed angle and its derivative through zero, within 1e-12.</p></html>"));
-    annotation(
+    annotation(experiment(StopTime=4,Tolerance=1e-9),Documentation(info = "<html><h4>Moving skew</h4><p>Supplies a sinusoidal span direction to a rotated reverse-travel tangency frame. Recovered skew and frame angular velocity must follow the imposed angle and its derivative through zero, within 1e-12.</p></html>"),
       Diagram(coordinateSystem(extent = {{-200, -100}, {120, 120}})));
   end MovingSkew;
 
-  annotation(uses(Modelica(version="4.1.0")),
-    Documentation(info="<html><p>Checks the tangency adapter using independently
-    resolved forces and moments, without a Belt or parent-level correction.
-    </p></html>"));
+  annotation(Documentation(info="<html><h4>Tangent frame load checks</h4><p>Checks the tangency adapter using independently resolved forces and moments, without a <code>Belt</code> or parent-level correction.</p></html>"));
+
+
+
 end TangentFrameLoadCheck;

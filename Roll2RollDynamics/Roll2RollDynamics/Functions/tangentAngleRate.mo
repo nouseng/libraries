@@ -10,6 +10,6 @@ function tangentAngleRate "Rate of a nonzero force direction"
 algorithm
   rate := (z*dx-x*dz)/(x*x+z*z);
   annotation(Inline=true,smoothOrder=2,
-    Documentation(info="<html><p>Time derivative of tangentAngle for a
+    Documentation(info="<html><p>Time derivative of <code>tangentAngle</code> for a
 nonzero force vector, away from its angle branch cut.</p></html>"));
 end tangentAngleRate;

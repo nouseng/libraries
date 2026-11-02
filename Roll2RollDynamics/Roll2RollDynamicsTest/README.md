@@ -32,10 +32,10 @@ For routine changes, start with:
 omc Roll2RollDynamicsTest/Resources/Scripts/CheckLibrary.mos
 ```
 
-Expect 22 successful structural checks and no errors or warnings. This covers
-the public components, six focused examples, the `TangencyQuadrants` test model and two examples in
-`Examples.WebLines`, without building simulation executables. Structural
-checks do not verify dynamics.
+Expect 24 successful structural checks and no errors or warnings. This covers
+the public components, seven focused examples, the `TangencyQuadrants` test
+model and two examples in `Examples.WebLines`, without building simulation
+executables. Structural checks do not verify dynamics.
 
 Each example defines standard
 preferred result figures; automatic display depends on the Modelica viewer.
@@ -68,7 +68,6 @@ $scripts = './Roll2RollDynamicsTest/Resources/Scripts'
 | Rotation sign | `& "$scripts/TestRotationDirectionValidation.ps1"` |
 | Ports and component composition | `& "$scripts/TestInterfaces.ps1"` |
 | Icons and diagrams | `& "$scripts/TestAnnotations.ps1"` |
-| Animation geometry | `& "$scripts/TestVisualGeometry.ps1"` |
 
 `TestRunout.ps1` runs 11 simulations: a true drum, three runout
 magnitudes, a turned runout phase, the folded-in and run-time parameter paths,

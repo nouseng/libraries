@@ -17,18 +17,18 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
     //Components
     inner Modelica.Mechanics.MultiBody.World world(g=0, enableAnimation=false)
       "Inertial reference"
-      annotation(Placement(visible = true, transformation(origin = {-120, 120},
+      annotation(Placement(visible = true, transformation(origin = {-40, -40},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Forces.WorldForce inlet(
       animation=false)
       "Entry tension boundary"
-      annotation(Placement(visible = true, transformation(origin = {-40, 40},
+      annotation(Placement(visible = true, transformation(origin = {-40, 0},
         extent = {{-10, -10}, {10, 10}})));
     Modelica.Mechanics.MultiBody.Forces.WorldForce outlet(
       animation=false)
       "Exit tension boundary"
-      annotation(Placement(visible = true, transformation(origin = {-40, -40},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(visible = true, transformation(origin = {40, 0},
+        extent = {{10, -10}, {-10, 10}})));
     Roll2RollDynamics.Utilities.Parts.WebWrap wrap(
       spanDirectionA=-entryAlignment/sqrt(entryAlignment*entryAlignment),
       spanDirectionB=exitLoad/sqrt(exitLoad*exitLoad),
@@ -37,8 +37,8 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
       exitTension=sqrt(exitLoad*exitLoad),
       stressLow=0, stressHigh=100000, stressNominal=50000, colorGamma=1, animation=false)
       "Wrap under test"
-      annotation(Placement(visible = true, transformation(origin = {40, 0},
-        extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {0, 0},
+        extent = {{-20, -10}, {20, 10}})));
   equation
     inlet.force = entryLoad;
     outlet.force = exitLoad;
@@ -49,18 +49,17 @@ package WebWrapChecks "Directed wrap geometry and load regression checks"
     end if;
     0 = wrap.frame_b.R.T[3,:]*exitLoad;
     connect(world.frame_b, wrap.frame_center)
-      annotation(Line(visible = true, points = {{-110, 120}, {31, -10}},
+      annotation(Line(points = {{-30, -40}, {-15, -40}, {-15, -25}, {-18, -25}, {-18, -10}},
         color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     connect(inlet.frame_b, wrap.frame_a)
-      annotation(Line(visible = true, points = {{-30, 40}, {30, 0}},
+      annotation(Line(points = {{-30, 0}, {-20, 0}},
         color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     connect(outlet.frame_b, wrap.frame_b)
-      annotation(Line(visible = true, points = {{-30, -40}, {50, 0}},
+      annotation(Line(points = {{30, 0}, {20, 0}},
         color = {95, 95, 95}, thickness = 0.5, smooth = Smooth.None));
     annotation(experiment(StopTime=0.01, Tolerance=1e-9),
-      Documentation(info = "<html><h4>Loaded wrap fixture</h4><p>Helper fixture that applies independently specified spatial entry and exit loads to a grounded wrap and aligns the tangencies with their projected directions. Derived tests select the geometry, visual options or invalid inputs and provide the acceptance assertions.</p></html>"));
-    annotation(
-      Diagram(coordinateSystem(extent = {{-160, -100}, {100, 160}})));
+      Documentation(info = "<html><h4>Loaded wrap fixture</h4><p>Helper fixture that applies independently specified spatial entry and exit loads to a grounded wrap and aligns the tangencies with their projected directions. Derived tests select the geometry, visual options or invalid inputs and provide the acceptance assertions.</p></html>"),
+      Diagram(coordinateSystem(extent = {{-100, -100}, {100, 60}})));
   end LoadedWrap;
 
   model SpatialResultant "Skewed loads retain their lateral resultant"
