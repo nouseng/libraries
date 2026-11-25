@@ -6,11 +6,11 @@ results and discussion are on [nouseng.co/libraries](https://www.nouseng.co/libr
 
 | Library | Version | What it models |
 | --- | --- | --- |
-| [Roll2RollDynamics](Roll2RollDynamics/) | 1.1.0 | Roll-to-roll web handling: tension, traction, winding, pressure nips and lateral tracking |
+| [Roll2RollDynamics](https://github.com/nouseng/Roll2RollDynamics) | 1.1.0 | Roll-to-roll web handling: tension, traction, winding, pressure nips and lateral tracking (standalone repository) |
 | [MicroDuck](RoboticsAtelier/MicroDuck/) | 0.1.0 | 14-servo MicroDuck biped plant: multibody kinematics, XL330 servos with gear play and thermal network, 2S battery and soft pyramidal sole contact, verified against MuJoCo |
 
-Each library sits in its own folder with its test library, README and licence.
-Releases are tagged per library, for example `Roll2RollDynamics-v1.1.0`.
+`Roll2RollDynamics` moved to its own repository at [nouseng/Roll2RollDynamics](https://github.com/nouseng/Roll2RollDynamics).
+Libraries hosted in this repository sit in their own folder with their test library, README and licence.
 
 ## Requirements
 
